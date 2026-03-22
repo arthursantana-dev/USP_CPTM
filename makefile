@@ -7,6 +7,7 @@ SRCS = programaTrab.c \
 	utils/utils.c \
 	Estacao/Estacao.c \
 	arquivo/arquivo.c \
+	ParEstacoes/ParEstacoes.c
 
 
 OBJS = $(SRCS:.c=.o)
