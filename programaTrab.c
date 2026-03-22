@@ -7,6 +7,22 @@
 #define CHAR_LIXO '$'
 #define MAX_ESTACOES 1000
 
+/*
+
+	1. CREATE - Santana
+
+	2. SELECT FROM - Martins
+
+	3. SELECT WHERE - Martins
+
+	4. DELETE - Santana
+
+	5. INSERT INTO - Martins
+
+	6. UPDATE - Santana
+
+*/
+
 typedef struct
 {
 	char status;		 // '0' para inconsistente, '1' para consistente
@@ -41,7 +57,7 @@ typedef struct
 char buffer[TAM_REGISTRO];
 
 // --------------------------------------------------------------------
-// |                                DEBUG                             |
+// |                              DEBUG/ERRO                          |
 // --------------------------------------------------------------------
 
 void mostrar_erro()
@@ -49,7 +65,7 @@ void mostrar_erro()
 	printf("Falha no processamento do arquivo.\n");
 }
 
-void mostrar_buffer_como_bytes()
+void debug_mostrar_buffer_como_bytes()
 {
 	for (int i = 0; i < TAM_REGISTRO; i++)
 	{
@@ -62,7 +78,7 @@ void mostrar_buffer_como_bytes()
 	printf("\n");
 }
 
-void imprimir_estacao(Estacao *estacao)
+void debug_imprimir_estacao(Estacao *estacao)
 {
 	printf("Código da estação: %d\n", estacao->codEstacao);
 	printf("Nome da estação: %s\n", estacao->nomeEstacao);
@@ -74,7 +90,7 @@ void imprimir_estacao(Estacao *estacao)
 	printf("Código da estação de integração: %d\n", estacao->codEstIntegra);
 }
 
-void mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
+void debug_mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
 {
 	fseek(f, 0, SEEK_SET);
 	unsigned char byte;
@@ -317,12 +333,12 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 		}
 
 		// if(contador_estacoes == 0) {
-		// 	mostrar_buffer_como_bytes();
+		// 	debug_mostrar_buffer_como_bytes();
 		// }
 
 		contador_estacoes++;
 
-		// imprimir_estacao(estacao);
+		// debug_imprimir_estacao(estacao);
 	}
 
 	/*
@@ -355,12 +371,16 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 
 	escrever_header_no_arquivo(bin, &header);
 
-	mostrar_bytes_do_arquivo(bin, 17);
+	debug_mostrar_bytes_do_arquivo(bin, 17);
 
 	fclose(csv);
 	fclose(bin);
 	return EXIT_SUCCESS;
 }
+
+// --------------------------------------------------------------------
+// |                   SELECT FROM (listar todos)                     |
+// --------------------------------------------------------------------
 
 int main()
 {
@@ -404,11 +424,11 @@ int main()
 
 	// escrever_header_no_arquivo(f, header);
 
-	// mostrar_bytes_do_arquivo(f, 100);
+	// debug_mostrar_bytes_do_arquivo(f, 100);
 
 	// escrever_estacao_no_buffer(estacao);
 
-	// mostrar_buffer_como_bytes();
+	// debug_mostrar_buffer_como_bytes();
 
 	// --------------------------------------------------------------------
 	// |                    TESTE DE LEITURA DO HEADER                    |
