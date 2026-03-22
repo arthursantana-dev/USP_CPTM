@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TAM_HEADER 17
 #define TAM_REGISTRO 80
 #define CHAR_LIXO '$'
+#define MAX_ESTACOES 1000
 
 typedef struct
 {
@@ -30,7 +32,19 @@ typedef struct
 	char *nomeLinha;	 // Nome da linha (string de tamanho variável)
 } Estacao;
 
+typedef struct
+{
+	int prod;
+	int origem;
+	int destino;
+} ParEstacoes;
+
 char buffer[TAM_REGISTRO];
+
+void mostrar_erro()
+{
+	printf("Falha no processamento do arquivo.\n");
+}
 
 void mostrar_buffer_como_bytes()
 {
@@ -43,6 +57,14 @@ void mostrar_buffer_como_bytes()
 		}
 	}
 	printf("\n");
+}
+
+int comparar_pares(const void *a, const void *b)
+{
+	ParEstacoes *p1 = (ParEstacoes *)a;
+	ParEstacoes *p2 = (ParEstacoes *)b;
+
+	return p1->prod - p2->prod;
 }
 
 int escrever_estacao_no_buffer(Estacao *estacao)
@@ -106,6 +128,179 @@ void mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
 	printf("\n");
 }
 
+void imprimir_estacao(Estacao *estacao)
+{
+	printf("Código da estação: %d\n", estacao->codEstacao);
+	printf("Nome da estação: %s\n", estacao->nomeEstacao);
+	printf("Código da linha: %d\n", estacao->codLinha);
+	printf("Nome da linha: %s\n", estacao->nomeLinha);
+	printf("Código da próxima estação: %d\n", estacao->codProxEstacao);
+	printf("Distância para a próxima estação: %d\n", estacao->distProxEstacao);
+	printf("Código da linha de integração: %d\n", estacao->codLinhaIntegra);
+	printf("Código da estação de integração: %d\n", estacao->codEstIntegra);
+}
+
+void escrever_buffer_no_arquivo(FILE *f, char *buffer)
+{
+	fwrite(buffer, sizeof(char), TAM_REGISTRO, f);
+}
+
+char *obter_proximo_campo(char **ponteiro_linha)
+{
+	char *inicio = *ponteiro_linha;
+
+	if (inicio == NULL)
+		return NULL;
+
+	char *virgula = strchr(inicio, ',');
+
+	if (virgula != NULL)
+	{
+		*virgula = '\0';
+		*ponteiro_linha = virgula + 1;
+	}
+	else
+	{
+		char *quebra_linha = strpbrk(inicio, "\r\n");
+		if (quebra_linha)
+			*quebra_linha = '\0';
+
+		*ponteiro_linha = NULL;
+	}
+
+	return inicio;
+}
+
+// CodEstacao,NomeEstacao,CodLinha,NomeLinha,CodProxEst,DistanciaProxEst,CodLinhaInteg,CodEstacaoInteg
+
+int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
+{
+	char *ponteiro_linha = linha_csv;
+	char *token;
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->codEstacao = atoi(token);
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->tamNomeEstacao = strlen(token);
+	estacao->nomeEstacao = strdup(token);
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->codLinha = atoi(token) == 0 ? -1 : atoi(token);
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->tamNomeLinha = strlen(token);
+	estacao->nomeLinha = strdup(token);
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->codProxEstacao = atoi(token) == 0 ? -1 : atoi(token);
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->distProxEstacao = atoi(token) == 0 ? -1 : atoi(token);
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->codLinhaIntegra = atoi(token) == 0 ? -1 : atoi(token);
+
+	token = obter_proximo_campo(&ponteiro_linha);
+	if (token == NULL)
+		return -1;
+	estacao->codEstIntegra = atoi(token) == 0 ? -1 : atoi(token);
+
+	return 0;
+}
+
+int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo_binario)
+{
+	FILE *csv = fopen(nome_arquivo_csv, "r");
+	if (csv == NULL)
+	{
+		mostrar_erro();
+		return EXIT_FAILURE;
+	}
+
+	fseek(csv, 101, SEEK_SET); // Pula os primeiros 101 bytes do arquivo CSV
+
+	FILE *bin = fopen(nome_arquivo_binario, "wb+");
+	if (bin == NULL)
+	{
+		mostrar_erro();
+		fclose(csv);
+		return EXIT_FAILURE;
+	}
+
+	Header header = {'1', -1, 0, 0, 0};
+
+	escrever_header_no_arquivo(bin, &header);
+
+	char linha[256];
+	// fgets(linha, sizeof(linha), csv);
+
+	escrever_header_no_arquivo(bin, &header);
+
+	int contador_estacoes = 0;
+
+	while (fgets(linha, sizeof(linha), csv))
+	{
+		Estacao *estacao = (Estacao *)malloc(sizeof(Estacao));
+		if (estacao == NULL)
+		{
+			mostrar_erro();
+			fclose(csv);
+			return EXIT_FAILURE;
+		}
+
+		int err = linha_csv_para_estacao(linha, estacao);
+		if (err != 0)
+		{
+			mostrar_erro();
+			fclose(csv);
+			return EXIT_FAILURE;
+		}
+
+		escrever_estacao_no_buffer(estacao);
+
+		escrever_buffer_no_arquivo(bin, buffer);
+
+		// if(contador_estacoes == 0) {
+		// 	mostrar_buffer_como_bytes();
+		// }
+
+		contador_estacoes++;
+
+		// imprimir_estacao(estacao);
+	}
+
+	fseek(bin, 0, SEEK_SET);
+	header.nroEstacoes = contador_estacoes;
+
+	// TODO: header.nroParesEstacao = nroParesEstacao;
+
+	printf("Número de estações: %d\n", header.nroEstacoes);
+	printf("Número de pares de estação: %d\n", header.nroParesEstacao);
+
+	escrever_header_no_arquivo(bin, &header);
+
+	mostrar_bytes_do_arquivo(bin, 17);
+
+	fclose(csv);
+	fclose(bin);
+	return EXIT_SUCCESS;
+}
+
 Header *ler_header_do_arquivo(FILE *f)
 {
 	Header *header = (Header *)malloc(sizeof(Header));
@@ -127,6 +322,10 @@ int main()
 		perror("Erro ao abrir o arquivo");
 		return EXIT_FAILURE;
 	}
+
+	criar_arquivo_binario("estacoes.csv", "estacoes.bin");
+
+	// printf("Teste de leitura do header:\n");
 
 	// Header *header = (Header*) malloc(sizeof(Header));
 	// header->status = '1';
@@ -171,7 +370,7 @@ int main()
 	// printf("Topo: %d\n", header_lido->topo);
 	// printf("Próximo RRN: %d\n", header_lido->proxRRN);
 	// printf("Número de estações: %d\n", header_lido->nroEstacoes);
-	// printf("Número de pares de estação: %d\n", header_lido->nroParesEstacao);	
+	// printf("Número de pares de estação: %d\n", header_lido->nroParesEstacao);
 
 	return 0;
 }
