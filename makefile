@@ -1,7 +1,27 @@
-all: programaTrab.c
-	gcc -o programaTrab programaTrab.c
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
 
-run: programaTrab
+SRCS = programaTrab.c \
+	buffer/buffer.c \
+	CREATE/CREATE.c \
+	utils/utils.c \
+	Estacao/Estacao.c \
+	arquivo/arquivo.c \
+
+
+OBJS = $(SRCS:.c=.o)
+
+EXEC = programaTrab
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+run: all programaTrab
 	./programaTrab
 
 truncate: clean
@@ -11,5 +31,4 @@ v:
 	valgrind --leak-check=yes ./programaTrab
 
 clean:
-	rm -f programaTrab
-	rm -f *.o
+	rm -f $(OBJS) $(EXEC)
