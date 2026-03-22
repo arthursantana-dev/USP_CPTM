@@ -34,7 +34,6 @@ typedef struct
 
 typedef struct
 {
-	int prod;
 	int origem;
 	int destino;
 } ParEstacoes;
@@ -64,7 +63,11 @@ int comparar_pares(const void *a, const void *b)
 	ParEstacoes *p1 = (ParEstacoes *)a;
 	ParEstacoes *p2 = (ParEstacoes *)b;
 
-	return p1->prod - p2->prod;
+	if(p1->origem != p2->origem) {
+		return p1->origem - p2->origem;
+	}
+
+	return p1->destino - p2->destino;
 }
 
 int escrever_estacao_no_buffer(Estacao *estacao)
@@ -252,6 +255,9 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 	escrever_header_no_arquivo(bin, &header);
 
 	int contador_estacoes = 0;
+	int total_pares_lidos = 0;
+
+	ParEstacoes pares[MAX_ESTACOES];
 
 	while (fgets(linha, sizeof(linha), csv))
 	{
@@ -275,6 +281,13 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 
 		escrever_buffer_no_arquivo(bin, buffer);
 
+		if (estacao->codProxEstacao != -1)
+		{
+			pares[total_pares_lidos].origem = estacao->codEstacao;
+			pares[total_pares_lidos].destino = estacao->codProxEstacao;
+			total_pares_lidos++;
+		}
+
 		// if(contador_estacoes == 0) {
 		// 	mostrar_buffer_como_bytes();
 		// }
@@ -284,10 +297,30 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 		// imprimir_estacao(estacao);
 	}
 
+	/*
+		pares[] registra todos os diferentes pares de estacao-proxEstacao.
+		para encontrar o número de diferentes pares, ordena-se o vetor e o percorre.
+		caso duas linhas consecutivas diferem de origem ou destino, contabiliza +1 pro número de pares.
+	*/
+
+	qsort(pares, total_pares_lidos, sizeof(ParEstacoes), comparar_pares);
+	
+	int nroParesEstacao = 0;
+	if (total_pares_lidos > 0)
+	{
+		nroParesEstacao = 1;
+		for (int i = 1; i < total_pares_lidos; i++)
+		{
+			if (pares[i].origem != pares[i - 1].origem || pares[i].destino != pares[i - 1].destino)
+			{
+				nroParesEstacao++;
+			}
+		}
+	}
+
 	fseek(bin, 0, SEEK_SET);
 	header.nroEstacoes = contador_estacoes;
-
-	// TODO: header.nroParesEstacao = nroParesEstacao;
+	header.nroParesEstacao = nroParesEstacao;
 
 	printf("Número de estações: %d\n", header.nroEstacoes);
 	printf("Número de pares de estação: %d\n", header.nroParesEstacao);
