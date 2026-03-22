@@ -40,6 +40,10 @@ typedef struct
 
 char buffer[TAM_REGISTRO];
 
+// --------------------------------------------------------------------
+// |                                DEBUG                             |
+// --------------------------------------------------------------------
+
 void mostrar_erro()
 {
 	printf("Falha no processamento do arquivo.\n");
@@ -57,6 +61,38 @@ void mostrar_buffer_como_bytes()
 	}
 	printf("\n");
 }
+
+void imprimir_estacao(Estacao *estacao)
+{
+	printf("Código da estação: %d\n", estacao->codEstacao);
+	printf("Nome da estação: %s\n", estacao->nomeEstacao);
+	printf("Código da linha: %d\n", estacao->codLinha);
+	printf("Nome da linha: %s\n", estacao->nomeLinha);
+	printf("Código da próxima estação: %d\n", estacao->codProxEstacao);
+	printf("Distância para a próxima estação: %d\n", estacao->distProxEstacao);
+	printf("Código da linha de integração: %d\n", estacao->codLinhaIntegra);
+	printf("Código da estação de integração: %d\n", estacao->codEstIntegra);
+}
+
+void mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
+{
+	fseek(f, 0, SEEK_SET);
+	unsigned char byte;
+	for (int i = 0; i < num_bytes; i++)
+	{
+		fread(&byte, sizeof(byte), 1, f);
+		printf("%02X ", byte);
+		if ((i + 1) % 4 == 0)
+		{
+			printf("\n");
+		}
+	}
+	printf("\n");
+}
+
+// --------------------------------------------------------------------
+// |                    ESCRITA/LEITURA NO BUFFER                     |
+// --------------------------------------------------------------------
 
 int comparar_pares(const void *a, const void *b)
 {
@@ -104,50 +140,11 @@ int escrever_estacao_no_buffer(Estacao *estacao)
 	return offset; // Retorna o número de bytes escritos no buffer
 }
 
-int escrever_header_no_arquivo(FILE *f, Header *header)
-{
-	fseek(f, 0, SEEK_SET);
-	fwrite(&header->status, sizeof(header->status), 1, f);
-	fwrite(&header->topo, sizeof(header->topo), 1, f);
-	fwrite(&header->proxRRN, sizeof(header->proxRRN), 1, f);
-	fwrite(&header->nroEstacoes, sizeof(header->nroEstacoes), 1, f);
-	fwrite(&header->nroParesEstacao, sizeof(header->nroParesEstacao), 1, f);
-	return 0;
-}
+// --------------------------------------------------------------------
+// |                   ESCRITA/LEITURA NO ARQUIVO                     |
+// --------------------------------------------------------------------
 
-void mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
-{
-	fseek(f, 0, SEEK_SET);
-	unsigned char byte;
-	for (int i = 0; i < num_bytes; i++)
-	{
-		fread(&byte, sizeof(byte), 1, f);
-		printf("%02X ", byte);
-		if ((i + 1) % 4 == 0)
-		{
-			printf("\n");
-		}
-	}
-	printf("\n");
-}
-
-void imprimir_estacao(Estacao *estacao)
-{
-	printf("Código da estação: %d\n", estacao->codEstacao);
-	printf("Nome da estação: %s\n", estacao->nomeEstacao);
-	printf("Código da linha: %d\n", estacao->codLinha);
-	printf("Nome da linha: %s\n", estacao->nomeLinha);
-	printf("Código da próxima estação: %d\n", estacao->codProxEstacao);
-	printf("Distância para a próxima estação: %d\n", estacao->distProxEstacao);
-	printf("Código da linha de integração: %d\n", estacao->codLinhaIntegra);
-	printf("Código da estação de integração: %d\n", estacao->codEstIntegra);
-}
-
-void escrever_buffer_no_arquivo(FILE *f, char *buffer)
-{
-	fwrite(buffer, sizeof(char), TAM_REGISTRO, f);
-}
-
+// leitura dos campos do arquivo .csv
 char *obter_proximo_campo(char **ponteiro_linha)
 {
 	char *inicio = *ponteiro_linha;
@@ -175,7 +172,6 @@ char *obter_proximo_campo(char **ponteiro_linha)
 }
 
 // CodEstacao,NomeEstacao,CodLinha,NomeLinha,CodProxEst,DistanciaProxEst,CodLinhaInteg,CodEstacaoInteg
-
 int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
 {
 	char *ponteiro_linha = linha_csv;
@@ -225,6 +221,38 @@ int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
 
 	return 0;
 }
+
+void escrever_buffer_no_arquivo(FILE *f, char *buffer)
+{
+	fwrite(buffer, sizeof(char), TAM_REGISTRO, f);
+}
+
+int escrever_header_no_arquivo(FILE *f, Header *header)
+{
+	fseek(f, 0, SEEK_SET);
+	fwrite(&header->status, sizeof(header->status), 1, f);
+	fwrite(&header->topo, sizeof(header->topo), 1, f);
+	fwrite(&header->proxRRN, sizeof(header->proxRRN), 1, f);
+	fwrite(&header->nroEstacoes, sizeof(header->nroEstacoes), 1, f);
+	fwrite(&header->nroParesEstacao, sizeof(header->nroParesEstacao), 1, f);
+	return 0;
+}
+
+Header *ler_header_do_arquivo(FILE *f)
+{
+	Header *header = (Header *)malloc(sizeof(Header));
+	fseek(f, 0, SEEK_SET);
+	fread(&header->status, sizeof(header->status), 1, f);
+	fread(&header->topo, sizeof(header->topo), 1, f);
+	fread(&header->proxRRN, sizeof(header->proxRRN), 1, f);
+	fread(&header->nroEstacoes, sizeof(header->nroEstacoes), 1, f);
+	fread(&header->nroParesEstacao, sizeof(header->nroParesEstacao), 1, f);
+	return header;
+}
+
+// --------------------------------------------------------------------
+// |                              CREATE                              |
+// --------------------------------------------------------------------
 
 int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo_binario)
 {
@@ -332,18 +360,6 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 	fclose(csv);
 	fclose(bin);
 	return EXIT_SUCCESS;
-}
-
-Header *ler_header_do_arquivo(FILE *f)
-{
-	Header *header = (Header *)malloc(sizeof(Header));
-	fseek(f, 0, SEEK_SET);
-	fread(&header->status, sizeof(header->status), 1, f);
-	fread(&header->topo, sizeof(header->topo), 1, f);
-	fread(&header->proxRRN, sizeof(header->proxRRN), 1, f);
-	fread(&header->nroEstacoes, sizeof(header->nroEstacoes), 1, f);
-	fread(&header->nroParesEstacao, sizeof(header->nroParesEstacao), 1, f);
-	return header;
 }
 
 int main()
