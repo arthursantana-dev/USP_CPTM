@@ -5,11 +5,14 @@
 	#include <stdlib.h>
 
 	#include "../CONSTS.h"
-	#include "../estacao/estacao.h"
+	#include "../Estacao/Estacao.h"
+	#include "../utils/utils.h"
 	#include "../ParEstacoes/ParEstacoes.h"
 
 	char *criar_buffer();
 
 	int escrever_estacao_no_buffer(Estacao *estacao, char *buffer);
+
+	int escrever_buffer_na_estacao(char* buffer, Estacao *estacao);
 
 #endif

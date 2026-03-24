@@ -55,6 +55,16 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 
         escrever_estacao_no_buffer(estacao, buffer);
 
+        // if (contador_estacoes == 0)
+        // {
+        //     Estacao *ea = criar_estacao_para_busca(1, "Tucuruvi", 0, "", 2, 992, 0, 0);
+
+        //     utils_imprimir_estacao(estacao);
+
+        //     printf("%d\n\n", comparar_estacoes(ea, estacao));
+
+        // }
+
         escrever_buffer_no_arquivo(bin, buffer);
 
         if (estacao->codProxEstacao != -1)

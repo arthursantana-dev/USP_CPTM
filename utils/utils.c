@@ -1,7 +1,4 @@
-#include <stdio.h>
-
-#include "../CONSTS.h"
-#include "../estacao/estacao.h"
+#include "utils.h"
 
 void mostrar_erro()
 {
@@ -51,4 +48,79 @@ void utils_mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
         }
     }
     printf("\n");
+}
+
+// quebra a linha em um vetor de strings
+int utils_decompor_linha(char *linha, char *vetor[]){
+    int contador = 0;
+    char *ptr = linha;
+
+    while (*ptr != '\0') {
+        while (isspace((unsigned char)*ptr)) {
+            ptr++;
+        }
+        
+        if (*ptr == '\0') break; 
+
+        if (*ptr == '"') {
+            ptr++;
+            vetor[contador++] = ptr;
+            
+            while (*ptr != '"' && *ptr != '\0') {
+                ptr++;
+            }
+            
+            if (*ptr == '"') {
+                *ptr = '\0';
+                ptr++;
+            }
+        } 
+        else {
+            vetor[contador++] = ptr;
+            
+            while (!isspace((unsigned char)*ptr) && *ptr != '\0') {
+                ptr++;
+            }
+
+            if (*ptr != '\0') {
+                *ptr = '\0';
+                ptr++;
+            }
+        }
+    }
+
+    return contador;
+}
+
+void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos){
+
+    for(int i = 0; i < num_campos; i++){
+        if(strcmp(vetor[i], "codEstacao") == 0){
+            estacao->codEstacao = atoi(vetor[i+1]);
+        } else if(strcmp(vetor[i], "nomeEstacao") == 0){
+            estacao->nomeEstacao = vetor[i+1];
+        } else if(strcmp(vetor[i], "codLinha") == 0){
+            estacao->codLinha = atoi(vetor[i+1]);
+        } else if(strcmp(vetor[i], "nomeLinha") == 0){
+            estacao->nomeLinha = vetor[i+1];
+        } else if(strcmp(vetor[i], "codProxEstacao") == 0){
+            estacao->codProxEstacao = atoi(vetor[i+1]);
+        } else if(strcmp(vetor[i], "distProxEstacao") == 0){
+            estacao->distProxEstacao = atoi(vetor[i+1]);
+        } else if(strcmp(vetor[i], "codLinhaIntegra") == 0){
+            estacao->codLinhaIntegra = atoi(vetor[i+1]);
+        } else if(strcmp(vetor[i], "codEstIntegra") == 0){
+            estacao->codEstIntegra = atoi(vetor[i+1]);
+        }
+    }
+
+
+}
+
+void utils_linha_para_estacao(Estacao *estacao, char *linha){
+    char *elementos[MAX_TOKENS];
+    
+    int qtd_elementos = utils_decompor_linha(linha, elementos);
+
+    utils_vetor_para_estacao(estacao, elementos, qtd_elementos);
 }

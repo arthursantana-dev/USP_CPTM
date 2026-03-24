@@ -5,6 +5,7 @@
 #include "CONSTS.h"
 
 #include "CREATE/CREATE.h"
+#include "DELETE/DELETE.h"
 
 #include "utils/utils.h"
 #include "buffer/buffer.h"
@@ -28,15 +29,42 @@
 
 int main()
 {
-	FILE *f = fopen("estacoes.bin", "rb+");
+	// FILE *f = fopen("estacoes.bin", "rb+");
 
-	if (f == NULL)
-	{
-		perror("Erro ao abrir o arquivo");
-		return EXIT_FAILURE;
-	}
+	// if (f == NULL)
+	// {
+	// 	perror("Erro ao abrir o arquivo");
+	// 	return EXIT_FAILURE;
+	// }
 
-	criar_arquivo_binario("estacoes.csv", "estacoes.bin");
+	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
+
+	Estacao *ea = criar_estacao_para_busca(1, "Tucuruvi", 0, "", 2, 992, 0, 0);
+
+	deletar_registro("estacoes.bin", ea);
+
+	// Simulando o input do usuário (precisa ser um array modificável)
+
+	// char input[200];
+
+	// scanf("%[^\n]", input); // Lê a linha inteira, incluindo espaços
+
+	// char input[] = "2 nomeLinha \"Verde\" codProxEstacao 27";
+	// char *elementos[MAX_TOKENS];
+
+	// int qtd_elementos = utils_decompor_linha(input, elementos);
+
+	// // Exibindo o resultado
+	// printf("Foram encontrados %d elementos:\n", qtd_elementos);
+	// for (int i = 0; i < qtd_elementos; i++) {
+	//     printf("Vetor[%d]: %s\n", i, elementos[i]);
+	// }
+
+	// Estacao *estacao = criar_estacao(0, "", 0, "", 0, 0, 0, 0);
+
+	// utils_linha_para_estacao(estacao, input);
+
+	// utils_imprimir_estacao(estacao);
 
 	// printf("Teste de leitura do header:\n");
 
