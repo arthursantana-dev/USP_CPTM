@@ -8,6 +8,7 @@
 
 	#include "../CONSTS.h"
 	#include "../estacao/estacao.h"
+	#include "../Header/Header.h"
 
 	void mostrar_erro();
 
@@ -18,6 +19,8 @@
 	void utils_mostrar_bytes_do_arquivo(FILE *f, int num_bytes);
 
 	void utils_linha_para_estacao(Estacao *estacao, char *linha);
+
+	void utils_mostrar_pilha_remocao(FILE *f, Header *header);
 
 #endif
 

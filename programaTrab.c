@@ -40,21 +40,27 @@
 int main()
 {
 
-	//TODO: status do arquivo (header)
+	// TODO: status do arquivo (header)
 
-	// FILE *f = fopen("estacoes.bin", "rb+");
+	FILE *f = fopen("estacoes.bin", "rb+");
 
-	// if (f == NULL)
-	// {
-	// 	perror("Erro ao abrir o arquivo");
-	// 	return EXIT_FAILURE;
-	// }
+	if (f == NULL)
+	{
+		perror("Erro ao abrir o arquivo");
+		return EXIT_FAILURE;
+	}
 
 	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
 
-	Estacao *ea = criar_estacao_para_busca(0, "Se", 0, "", 0, 0, 0, 0);
+	Estacao *ea = criar_estacao_para_busca(0, "Tatuape", 0, "", 0, 0, 0, 0);
 
 	deletar_registro("estacoes.bin", ea);
+
+	Header *header = ler_header_do_arquivo(f);
+
+	utils_mostrar_pilha_remocao(f, header);
+
+	printf("\n\n%d\n", header->nroEstacoes);
 
 	// Simulando o input do usuário (precisa ser um array modificável)
 

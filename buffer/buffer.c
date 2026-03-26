@@ -43,10 +43,6 @@ int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
 
 int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
 {
-    for (int i = 0; i < TAM_REGISTRO; i++)
-    {
-        printf("%x ", buffer[i]);
-    }
 
     int offset = 0;
     char removido;

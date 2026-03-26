@@ -5,6 +5,8 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca)
 
     char buffer[TAM_REGISTRO];
 
+    int removeu_estacao = 0;
+
     FILE *f = fopen(nome_arquivo_binario, "rb+");
 
     if (f == NULL)
@@ -15,6 +17,8 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca)
 
     Header *header = ler_header_do_arquivo(f);
 
+    header->status = 0;
+
     if (header == NULL)
     {
         mostrar_erro();
@@ -24,32 +28,68 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca)
 
     printf("n reg: %d\n", header->nroEstacoes);
 
-    int topo = header->topo;
+    int nroEstacoes = header->nroEstacoes;
+    int offset = 0;
+    int RRNnovo = 0;
 
     Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
 
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    fseek(f, TAM_REGISTRO * 0, SEEK_CUR);
+    for (int i = 0; i < nroEstacoes; i++)
+    {
 
-    fread(buffer, TAM_REGISTRO, 1, f);
+        if (fread(buffer, TAM_REGISTRO, 1, f) != 1)
+        {
+            mostrar_erro();
+            free(header);
+            free(ea);
+            fclose(f);
+            return EXIT_FAILURE;
+        }
 
-    // memcpy(ea, buffer, TAM_REGISTRO);
+        escrever_buffer_na_estacao(buffer, ea);
 
-    escrever_buffer_na_estacao(buffer, ea);
+        if (!comparar_estacoes(estacao_busca, ea) || ea->removido == 1)
+        {
+            continue;
+        }
 
-    utils_imprimir_estacao(ea);
+        removeu_estacao = 1;
 
-    printf("Tamanho nome estação: %d\n", ea->tamNomeEstacao);
-    printf("Tamanho nome linha: %d\n", ea->tamNomeLinha);
+        offset = TAM_HEADER + TAM_REGISTRO * i;
+        RRNnovo = (offset - TAM_HEADER) / TAM_REGISTRO;
 
-    // fread(ea, TAM_REGISTRO, 1, f);
+        printf("Estação encontrada (RRN: %d)\n Estação já foi removida? %s\n", RRNnovo, ea->removido == 1 ? "SIM" : "NÃO");
 
-    // utils_mostrar_buffer_como_bytes(buffer);
+        break;
+    }
 
-    // printf("%d\n\n", ea->codLinha);
+    if (!removeu_estacao)
+    {
+        printf("n reg: %d\n", header->nroEstacoes);
 
-    // utils_imprimir_estacao(ea);
+        mostrar_erro();
+        return EXIT_FAILURE;
+    }
 
-    // utils_mostrar_bytes_do_arquivo(f, 17+80);
+    ea->removido = 1;
+    ea->proximo = header->topo;
+
+    header->nroEstacoes--;
+    header->topo = RRNnovo;
+    header->status = 1;
+
+    printf("n reg: %d\n", header->nroEstacoes);
+
+    escrever_header_no_arquivo(f, header);
+
+    escrever_estacao_no_buffer(ea, buffer);
+
+    fseek(f, TAM_HEADER + TAM_REGISTRO * RRNnovo, SEEK_SET);
+
+    escrever_buffer_no_arquivo(f, buffer);
+
+    printf("Estação %s removida.\n", ea->nomeEstacao);
+
 }

@@ -55,45 +55,49 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
 // comparar estações — ea é estação de busca (campos 0 são desconsiderados; -1 são escolhidos para serem nulos)
 int comparar_estacoes(Estacao *ea, Estacao *eb)
 {
-    printf("codEstacao\n");
+    // printf("codEstacao\n");
     if (ea->codEstacao != 0 && ea->codEstacao != eb->codEstacao)
         return 0;
-    printf("codLinha = %d\n", ea->codLinha);
+    // printf("codLinha = %d\n", ea->codLinha);
 
     if (ea->codLinha != 0 && ea->codLinha != eb->codLinha)
         return 0;
-    printf("codProxEstacao\n");
+    // printf("codProxEstacao\n");
 
     if (ea->codProxEstacao != 0 && ea->codProxEstacao != eb->codProxEstacao)
         return 0;
-    printf("distProxEstacao\n");
+    // printf("distProxEstacao\n");
 
     if (ea->distProxEstacao != 0 && ea->distProxEstacao != eb->distProxEstacao)
         return 0;
-    printf("codLinhaIntegra\n");
+    // printf("codLinhaIntegra\n");
 
     if (ea->codLinhaIntegra != 0 && ea->codLinhaIntegra != eb->codLinhaIntegra)
         return 0;
-    printf("codEstIntegra\n");
+    // printf("codEstIntegra\n");
 
     if (ea->codEstIntegra != 0 && ea->codEstIntegra != eb->codEstIntegra)
         return 0;
-    printf("tamNomeEstacao\n");
+    // printf("tamNomeEstacao\n");
 
     if (ea->tamNomeEstacao != 0 && ea->tamNomeEstacao != eb->tamNomeEstacao)
         return 0;
-    printf("tamNomeLinha\n");
+    // printf("tamNomeLinha\n");
 
     if (ea->tamNomeLinha != 0 && ea->tamNomeLinha != eb->tamNomeLinha)
         return 0;
-    printf("nomeEstacao\n");
+    // printf("nomeEstacao\n");
 
     if (ea->tamNomeEstacao != 0 && strcmp(ea->nomeEstacao, eb->nomeEstacao) != 0)
         return 0;
-    printf("nomeLinha\n");
+    // printf("nomeLinha\n");
 
     if (ea->tamNomeLinha != 0 && strcmp(ea->nomeLinha, eb->nomeLinha) != 0)
         return 0;
+
+    // printf("ea: \n");
+
+    // printf("Encontrou\n");
 
     return 1;
 }
