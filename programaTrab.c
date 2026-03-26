@@ -25,10 +25,23 @@
 
 	6. UPDATE - Santana
 
+	Obs.:
+
+	- evitar repetir fopen/fclose.
+	- evitar usar ftell(), principalmente em loops. regs de tamanho fixo -> rrn via operações.
+	- settar status como inconsistente no início de operação e consistenteao fim.
+	- ignorar registros removidos (não ler de nenhum modo, somente o removido).
+	- caso: remover todas as estações com o mesmo nome (contabilizar nroEstacoes e paresEstacoes).
+	- usar fgets para o csv - opt.
+	- gnu strsep - opt.
+
 */
 
 int main()
 {
+
+	//TODO: status do arquivo (header)
+
 	// FILE *f = fopen("estacoes.bin", "rb+");
 
 	// if (f == NULL)
@@ -39,7 +52,7 @@ int main()
 
 	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
 
-	Estacao *ea = criar_estacao_para_busca(1, "Tucuruvi", 0, "", 2, 992, 0, 0);
+	Estacao *ea = criar_estacao_para_busca(0, "Se", 0, "", 0, 0, 0, 0);
 
 	deletar_registro("estacoes.bin", ea);
 
@@ -55,7 +68,7 @@ int main()
 	// int qtd_elementos = utils_decompor_linha(input, elementos);
 
 	// // Exibindo o resultado
-	// printf("Foram encontrados %d elementos:\n", qtd_elementos);
+	// // printf("Foram encontrados %d elementos:\n", qtd_elementos);
 	// for (int i = 0; i < qtd_elementos; i++) {
 	//     printf("Vetor[%d]: %s\n", i, elementos[i]);
 	// }
