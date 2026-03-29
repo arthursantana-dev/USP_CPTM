@@ -6,10 +6,12 @@
 
 #include "CREATE/CREATE.h"
 #include "DELETE/DELETE.h"
+#include "SELECT/SELECT.h"
 
 #include "utils/utils.h"
 #include "buffer/buffer.h"
 #include "Header/Header.h"
+
 
 /*
 
@@ -50,17 +52,19 @@ int main()
 		return EXIT_FAILURE;
 	}
 
+	select("estacoes.bin");
+
 	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
 
-	Estacao *ea = criar_estacao_para_busca(0, "Tatuape", 0, "", 0, 0, 0, 0);
+	// Estacao *ea = criar_estacao_para_busca(0, "Tatuape", 0, "", 0, 0, 0, 0);
 
-	deletar_registro("estacoes.bin", ea);
+	// deletar_registro("estacoes.bin", ea);
 
-	Header *header = ler_header_do_arquivo(f);
+	// Header *header = ler_header_do_arquivo(f);
 
-	utils_mostrar_pilha_remocao(f, header);
+	// utils_mostrar_pilha_remocao(f, header);
 
-	printf("\n\n%d\n", header->nroEstacoes);
+	// printf("\n\n%d\n", header->nroEstacoes);
 
 	// Simulando o input do usuário (precisa ser um array modificável)
 

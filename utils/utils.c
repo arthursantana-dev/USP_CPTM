@@ -154,7 +154,7 @@ void utils_linha_para_estacao(Estacao *estacao, char *linha)
     utils_vetor_para_estacao(estacao, elementos, qtd_elementos);
 }
 
-void utils_mostrar_pilha_remocao(FILE *f, Header *header)
+int utils_mostrar_pilha_remocao(FILE *f, Header *header)
 {
     int rrn = header->topo;
 
@@ -195,4 +195,42 @@ void utils_mostrar_pilha_remocao(FILE *f, Header *header)
 
         // j++;
     }
+}
+
+void utils_imprimir_estacao_ln(Estacao *estacao)
+{
+    printf("%d ", estacao->codEstacao);
+    printf("%s ", estacao->nomeEstacao);
+
+    if (estacao->codLinha != -1)
+        printf("%d ", estacao->codLinha);
+    else
+        printf("NULO ");
+    
+    if (estacao->nomeLinha != NULL)
+        printf("%s ", estacao->nomeLinha);
+    else
+        printf("NULO ");
+    
+    if (estacao->codProxEstacao != -1)
+        printf("%d ", estacao->codProxEstacao);
+    else
+        printf("NULO ");
+
+    if (estacao->distProxEstacao != -1)
+        printf("%d ", estacao->distProxEstacao);
+    else
+        printf("NULO ");
+    
+    if (estacao->codLinhaIntegra != -1)
+        printf("%d ", estacao->codLinhaIntegra);
+    else
+        printf("NULO ");
+
+    if (estacao->codEstIntegra != -1)
+        printf("%d ", estacao->codEstIntegra);
+    else
+        printf("NULO ");
+    
+    printf("\n");
 }
