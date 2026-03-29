@@ -1,13 +1,13 @@
 #include "DELETE.h"
 
-int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca)
+int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f)
 {
 
     char buffer[TAM_REGISTRO];
 
     int removeu_estacao = 0;
 
-    FILE *f = fopen(nome_arquivo_binario, "rb+");
+    // FILE *f = fopen(nome_arquivo_binario, "rb+");
 
     if (f == NULL)
     {
@@ -92,4 +92,5 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca)
 
     printf("Estação %s removida.\n", ea->nomeEstacao);
 
+    return EXIT_SUCCESS;
 }

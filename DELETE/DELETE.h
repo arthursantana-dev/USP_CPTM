@@ -8,5 +8,5 @@
     #include "../arquivo/arquivo.h"
     #include "../buffer/buffer.h"
 
-    int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca);
+    int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f);
 #endif
