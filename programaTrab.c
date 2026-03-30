@@ -7,6 +7,7 @@
 #include "CREATE/CREATE.h"
 #include "DELETE/DELETE.h"
 #include "UPDATE/UPDATE.h"
+#include "SELECT/SELECT.h"
 
 #include "utils/utils.h"
 #include "buffer/buffer.h"
@@ -14,6 +15,7 @@
 #include "SetNomes/SetNomes.h"
 
 #include "fornecidas.c"
+
 
 /*
 
@@ -54,61 +56,15 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	int codEstacoesRemocao[] = {78, 29, 42, 139, 98, 116, 76, 87, 33, 112, 188, 65, 12, 7, 115, 5, 126, 120, 61, 167, 58, 140, 129, 35, 89, 156, 109, 174, 38, 185, 200, 39, 32, 88, 186, 191, 24, 155, 34, 165, 9, 4, 143, 79, 132, 125, 11, 149, 19, 66, 104, 23, 52};
+	LISTA *resultados = select(where(), "estacoes.bin");
 
-	criar_arquivo_binario("e.csv", "estacoes.bin");
+	lista_imprimir(resultados, (void * (*)(void *)) utils_imprimir_estacao_ln);
 
-	// printf("Nomes de estações lidos do CSV:\n");
-	// printf("Total de estações diferentes: %d\n", set_estacoes->tamanho);
-	// for(int i = 0; i < set_estacoes->tamanho; i++) {
-	// 	printf("%s\n", set_estacoes->nomes[i]);
-	// }
+	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
 
-	// for(int i = 0; i < *info_pares_estacoes->nroPares; i++) {
-	// 	printf("Par %d: Origem: %d, Destino: %d\n", i+1, info_pares_estacoes->pares[i].origem, info_pares_estacoes->pares[i].destino);
-	// }
+	// Estacao *ea = criar_estacao_para_busca(0, "Tatuape", 0, "", 0, 0, 0, 0);
 
-	// printf("Total de pares lidos: %d\n", *tam_pares);
-
-	// int nroRemovidos = 0;
-
-	Estacao *estacao_busca = criar_estacao_para_busca(0, "Luz", 0, "", 0, 0, 0, 0);
-	deletar_registro("estacoes.bin", estacao_busca, f);
-
-	Estacao *ea = criar_estacao_para_busca(0, "Jardim Romano", 0, "", 0, 0, 0, 0);
-
-	Estacao *eb = criar_estacao_para_busca(0, "Jardim Grego", 4, "Preta", 50, 2080, -1, -1);
-
-	atualizar_registro(ea, eb, f);
-
-	free(estacao_busca->nomeEstacao);
-	free(estacao_busca->nomeLinha);
-	free(estacao_busca);
-
-	liberar_estacao(ea);
-	free(ea);
-
-	liberar_estacao(eb);
-	free(eb);
-
-	// for(int i = 0; i < sizeof(codEstacoesRemocao)/sizeof(int); i++) {
-
-	// 	nroRemovidos++;
-
-	// 	Estacao *estacao_busca = criar_estacao_para_busca(codEstacoesRemocao[i], "", 0, "", 0, 0, 0, 0);
-	// 	deletar_registro("estacoes.bin", estacao_busca, f, info_pares_estacoes, set_estacoes);
-	// 	free(estacao_busca);
-	// }
-
-	// printf("\n\n%d estações removidas.\n", nroRemovidos);
-
-	// for(int i = 0; i < *tam_pares; i++) {
-	// 	printf("Par %d: Origem: %d, Destino: %d\n", i+1, pares[i].origem, pares[i].destino);
-	// }
-
-	// deletar_registro("estacoes.bin", ea, f, info_pares_estacoes, set_estacoes);
-
-	// BinarioNaTela("estacoes.bin");
+	// deletar_registro("estacoes.bin", ea);
 
 	// Header *header = ler_header_do_arquivo(f);
 

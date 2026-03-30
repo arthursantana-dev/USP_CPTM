@@ -9,6 +9,7 @@
 	#include "../CONSTS.h"
 	#include "../estacao/estacao.h"
 	#include "../Header/Header.h"
+	#include "../buffer/buffer.h"
 
 	void mostrar_erro();
 
@@ -16,11 +17,17 @@
 
 	void utils_imprimir_estacao(Estacao *estacao);
 
+	void utils_imprimir_estacao_ln(Estacao *estacao);
+
 	void utils_mostrar_bytes_do_arquivo(FILE *f, int num_bytes);
 
 	void utils_linha_para_estacao(Estacao *estacao, char *linha);
 
-	void utils_mostrar_pilha_remocao(FILE *f, Header *header);
+	int utils_mostrar_pilha_remocao(FILE *f, Header *header);
+
+	void BinarioNaTela(char *arquivo);
+	
+	void ScanQuoteString(char *str);
 
 #endif
 
