@@ -11,7 +11,7 @@
 #endif
 
 #ifndef MAX_ESTACOES
-#define MAX_ESTACOES 1000
+#define MAX_ESTACOES 300
 #endif
 
 #ifndef MAX_TOKENS

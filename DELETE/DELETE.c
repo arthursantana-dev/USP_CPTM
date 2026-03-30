@@ -2,12 +2,9 @@
 
 int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f)
 {
-
     char buffer[TAM_REGISTRO];
 
     int removeu_estacao = 0;
-
-    // FILE *f = fopen(nome_arquivo_binario, "rb+");
 
     if (f == NULL)
     {
@@ -17,8 +14,6 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
 
     Header *header = ler_header_do_arquivo(f);
 
-    header->status = 0;
-
     if (header == NULL)
     {
         mostrar_erro();
@@ -26,7 +21,12 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
         return EXIT_FAILURE;
     }
 
-    printf("n reg: %d\n", header->nroEstacoes);
+    SetNomesEstacoes *set_estacoes = criar_set_estacoes();
+
+    InfoParesEstacoes info_pares_estacoes;
+    inicializar_pares(&info_pares_estacoes);
+
+    header->status = '0';
 
     int nroEstacoes = header->nroEstacoes;
     int offset = 0;
@@ -36,61 +36,104 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
 
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    for (int i = 0; i < nroEstacoes; i++)
-    {
+    int rrn_atual = -1;
+    int pares_lidos = 0;
 
-        if (fread(buffer, TAM_REGISTRO, 1, f) != 1)
-        {
-            mostrar_erro();
-            free(header);
-            free(ea);
-            fclose(f);
-            return EXIT_FAILURE;
-        }
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    {
 
         escrever_buffer_na_estacao(buffer, ea);
 
-        if (!comparar_estacoes(estacao_busca, ea) || ea->removido == 1)
+        rrn_atual++;
+
+        if (ea->removido == '1')
         {
+            liberar_estacao(ea);
+            free(ea);
+            continue;
+        }
+
+        if (!comparar_estacoes(estacao_busca, ea) && ea->codProxEstacao != -1)
+        {
+            pares_lidos++;
+            inserir_par(&info_pares_estacoes, ea->codEstacao, ea->codProxEstacao);
+        }
+
+        if (!comparar_estacoes(estacao_busca, ea))
+        {
+            liberar_estacao(ea);
+            free(ea);
             continue;
         }
 
         removeu_estacao = 1;
 
-        offset = TAM_HEADER + TAM_REGISTRO * i;
+        offset = TAM_HEADER + TAM_REGISTRO * rrn_atual;
         RRNnovo = (offset - TAM_HEADER) / TAM_REGISTRO;
 
-        printf("Estação encontrada (RRN: %d)\n Estação já foi removida? %s\n", RRNnovo, ea->removido == 1 ? "SIM" : "NÃO");
+        // printf("Estação encontrada (RRN: %d, codEstacao: %d)\n Estação %s já foi removida? %s\n", RRNnovo, ea->codEstacao, ea->nomeEstacao, ea->removido == 1 ? "SIM" : "NÃO");
 
-        break;
+        ea->removido = '1';
+        ea->proximo = header->topo;
+
+        header->topo = RRNnovo;
+
+        escrever_estacao_no_buffer(ea, buffer);
+
+        fseek(f, TAM_HEADER + TAM_REGISTRO * RRNnovo, SEEK_SET);
+
+        escrever_buffer_no_arquivo(f, buffer);
+
+        liberar_estacao(ea);
+        free(ea);
+
+        fseek(f, 0, SEEK_CUR);
     }
+
+    printf("Total de pares lidos: %d\n", pares_lidos);
 
     if (!removeu_estacao)
     {
-        printf("n reg: %d\n", header->nroEstacoes);
-
+        free(header);
+        limpar_set_estacoes(set_estacoes);
+        destruir_pares(&info_pares_estacoes);
         mostrar_erro();
         return EXIT_FAILURE;
     }
 
-    ea->removido = 1;
-    ea->proximo = header->topo;
+    fseek(f, TAM_HEADER, SEEK_SET);
 
-    header->nroEstacoes--;
-    header->topo = RRNnovo;
-    header->status = 1;
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    {
+        escrever_buffer_na_estacao(buffer, ea);
 
-    printf("n reg: %d\n", header->nroEstacoes);
+        if (ea->removido == '1')
+        {
+            liberar_estacao(ea);
+            free(ea);
+            continue;
+        }
+
+        int i = 0;
+
+        incluir_estacao(set_estacoes, ea->nomeEstacao);
+        liberar_estacao(ea);
+        free(ea);
+    }
+
+    header->nroEstacoes = set_estacoes->tamanho;
+    header->nroParesEstacao = info_pares_estacoes.nroPares;
+
+    printf("Número de pares de estações restantes: %d\n", info_pares_estacoes.nroPares);
+    printf("Numero de nomes de estações: %d\n", set_estacoes->tamanho);
 
     escrever_header_no_arquivo(f, header);
 
-    escrever_estacao_no_buffer(ea, buffer);
+    limpar_set_estacoes(set_estacoes);
+    destruir_pares(&info_pares_estacoes);
 
-    fseek(f, TAM_HEADER + TAM_REGISTRO * RRNnovo, SEEK_SET);
-
-    escrever_buffer_no_arquivo(f, buffer);
-
-    printf("Estação %s removida.\n", ea->nomeEstacao);
+    free(header);
+    free(ea);
 
     return EXIT_SUCCESS;
 }

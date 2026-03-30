@@ -9,6 +9,8 @@ SRCS = programaTrab.c \
 	arquivo/arquivo.c \
 	ParEstacoes/ParEstacoes.c \
 	DELETE/DELETE.c \
+	UPDATE/UPDATE.c \
+	SetNomes/SetNomes.c
 
 
 OBJS = $(SRCS:.c=.o)

@@ -1,5 +1,5 @@
-#ifndef CREATE_H
-    #define CREATE_H
+#ifndef UPDATE_H
+    #define UPDATE_H
 
     #include <stdio.h>
     #include <stdlib.h>
@@ -8,10 +8,9 @@
     #include "../ParEstacoes/ParEstacoes.h"
     #include "../buffer/buffer.h"
     #include "../Header/Header.h"
-    #include "../SetNomes/SetNomes.h"
 
     #include "../arquivo/arquivo.h"
 
-    int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo_binario);
+    int atualizar_registro(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f);
 
 #endif

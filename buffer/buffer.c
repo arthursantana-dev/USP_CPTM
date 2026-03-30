@@ -9,6 +9,7 @@ char *criar_buffer()
 
 int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
 {
+    //escrever 
     int offset = 0;
 
     memset(buffer, CHAR_LIXO, TAM_REGISTRO);
@@ -85,9 +86,7 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
 
     estacao->nomeEstacao = (char *)malloc(sizeof(char) * (tamNomeEstacao + 1));
 
-    char nomeEstacao[tamNomeEstacao];
-
-    memcpy(nomeEstacao, buffer + offset, tamNomeEstacao);
+    memcpy(estacao->nomeEstacao, buffer + offset, tamNomeEstacao);
 
     // nomeEstacao[tamNomeEstacao] = '\0';
 
@@ -102,8 +101,6 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
 
     // nomeLinha[tamNomeLinha] = '\0';
 
-    estacao->nomeEstacao = (char*)malloc(tamNomeEstacao + 1);
-    memcpy(estacao->nomeEstacao, nomeEstacao, tamNomeEstacao);
     estacao->nomeEstacao[tamNomeEstacao] = '\0';
 
     estacao->nomeLinha = (char*)malloc(tamNomeLinha + 1);

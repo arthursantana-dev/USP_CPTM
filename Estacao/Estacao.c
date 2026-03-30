@@ -101,3 +101,49 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
 
     return 1;
 }
+
+void editar_estacao(Estacao *estacao, Estacao *novos_valores)
+{
+    if (novos_valores->codEstacao != 0)
+        estacao->codEstacao = novos_valores->codEstacao;
+
+    if (novos_valores->codLinha != 0)
+        estacao->codLinha = novos_valores->codLinha;
+
+    if (novos_valores->codProxEstacao != 0)
+        estacao->codProxEstacao = novos_valores->codProxEstacao;
+
+    if (novos_valores->distProxEstacao != 0)
+        estacao->distProxEstacao = novos_valores->distProxEstacao;
+
+    if (novos_valores->codLinhaIntegra != 0)
+        estacao->codLinhaIntegra = novos_valores->codLinhaIntegra;
+
+    if (novos_valores->codEstIntegra != 0)
+        estacao->codEstIntegra = novos_valores->codEstIntegra;
+
+    if (novos_valores->tamNomeEstacao != 0)
+    {
+        free(estacao->nomeEstacao);
+        estacao->tamNomeEstacao = novos_valores->tamNomeEstacao;
+        estacao->nomeEstacao = novos_valores->nomeEstacao;
+    }
+
+    if (novos_valores->tamNomeLinha != 0)
+    {
+        free(estacao->nomeLinha);
+        estacao->tamNomeLinha = novos_valores->tamNomeLinha;
+        estacao->nomeLinha = novos_valores->nomeLinha;
+    }
+
+}
+
+void liberar_estacao(Estacao *estacao)
+{
+    if (estacao != NULL)
+    {
+        free(estacao->nomeEstacao);
+        free(estacao->nomeLinha);
+        free(estacao);
+    }
+}

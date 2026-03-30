@@ -27,5 +27,8 @@
 
 	int comparar_estacoes(Estacao *ea, Estacao *eb);
 
+	void editar_estacao(Estacao *estacao, Estacao *novos_valores);
+
+	void liberar_estacao(Estacao *estacao);
 
 #endif
