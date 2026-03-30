@@ -52,7 +52,9 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	select("estacoes.bin");
+	LISTA *resultados = select(where(), "estacoes.bin");
+
+	lista_imprimir(resultados, (void * (*)(void *)) utils_imprimir_estacao_ln);
 
 	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
 

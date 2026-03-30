@@ -25,6 +25,10 @@
 
 	int utils_mostrar_pilha_remocao(FILE *f, Header *header);
 
+	void BinarioNaTela(char *arquivo);
+	
+	void ScanQuoteString(char *str);
+
 #endif
 
 
