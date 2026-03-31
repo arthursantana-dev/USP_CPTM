@@ -79,7 +79,7 @@ LISTA* where()
 }
 
 // O select em si, o goat
-LISTA* select(LISTA* where, char *nome_arquivo_binario)
+LISTA* SELECT(LISTA* where, char *nome_arquivo_binario)
 {
     LISTA* resultados = lista_criar();
     char buffer[TAM_REGISTRO];

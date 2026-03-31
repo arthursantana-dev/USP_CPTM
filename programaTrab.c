@@ -14,9 +14,6 @@
 #include "Header/Header.h"
 #include "SetNomes/SetNomes.h"
 
-#include "fornecidas.c"
-
-
 /*
 
 	1. CREATE - Santana
@@ -56,13 +53,17 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	LISTA *resultados = select(where(), "estacoes.bin");
+	criar_arquivo_binario("e.csv", "estacoes.bin");
+
+	LISTA *resultados = SELECT(where(), "estacoes.bin");
 
 	lista_imprimir(resultados, (void * (*)(void *)) utils_imprimir_estacao_ln);
 
-	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
+	// Estacao *ea = criar_estacao_para_busca(-1, "Tatuape", -1, "", -1, -1, -1, -1);
 
-	// Estacao *ea = criar_estacao_para_busca(0, "Tatuape", 0, "", 0, 0, 0, 0);
+	// utils_imprimir_estacao_ln(ea);
+
+	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
 
 	// deletar_registro("estacoes.bin", ea);
 

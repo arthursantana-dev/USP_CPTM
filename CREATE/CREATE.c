@@ -15,7 +15,7 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
         return EXIT_FAILURE;
     }
 
-    fseek(csv, 101, SEEK_SET); // Pula os primeiros 101 bytes do arquivo CSV
+    fseek(csv, 101, SEEK_SET);
 
     FILE *bin = fopen(nome_arquivo_binario, "wb+");
     if (bin == NULL)
@@ -91,8 +91,6 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
 
         contador_estacoes++;
 
-        // utils_imprimir_estacao(estacao);
-
         free(estacao->nomeEstacao);
         free(estacao->nomeLinha);
         free(estacao);
@@ -135,13 +133,6 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
             i++;
         }
 
-        // for (int i = 1; i < total_pares_lidos; i++)
-        // {
-        //     if (info_pares_estacoes->pares[i].origem != info_pares_estacoes->pares[i - 1].origem || info_pares_estacoes->pares[i].destino != info_pares_estacoes->pares[i - 1].destino)
-        //     {
-        //         nroParesEstacao++;
-        //     }
-        // }
     }
 
     fseek(bin, 0, SEEK_SET);
@@ -162,7 +153,6 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
     destruir_pares(&info_pares_estacoes);
 
     limpar_set_estacoes(set_estacoes);
-    free(set_estacoes);
 
     free(buffer);
 

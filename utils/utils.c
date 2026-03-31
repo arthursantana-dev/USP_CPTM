@@ -207,7 +207,7 @@ void utils_imprimir_estacao_ln(Estacao *estacao)
     else
         printf("NULO ");
     
-    if (estacao->nomeLinha != NULL)
+    if (estacao->nomeLinha != NULL && estacao->tamNomeLinha > 0)
         printf("%s ", estacao->nomeLinha);
     else
         printf("NULO ");
