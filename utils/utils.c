@@ -20,7 +20,7 @@ void utils_mostrar_buffer_como_bytes(char *buffer)
 
 void utils_imprimir_estacao(Estacao *estacao)
 {
-    printf("Removido? %s\n", estacao->removido ? "SIM" : "NÃO");
+    printf("Removido? %s\n", estacao->removido == '1' ? "SIM" : "NÃO");
     printf("RRN do próximo removido: %d\n", estacao->proximo);
     printf("Código da estação: %d\n", estacao->codEstacao);
     printf("Nome da estação: %s\n", estacao->nomeEstacao);
@@ -29,7 +29,7 @@ void utils_imprimir_estacao(Estacao *estacao)
     printf("Código da próxima estação: %d\n", estacao->codProxEstacao);
     printf("Distância para a próxima estação: %d\n", estacao->distProxEstacao);
     printf("Código da linha de integração: %d\n", estacao->codLinhaIntegra);
-    printf("Código da estação de integração: %d\n", estacao->codEstIntegra);
+    printf("Código da estação de integração: %d\n", estacao->codEstacaoIntegra);
 }
 
 void utils_mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
@@ -105,10 +105,17 @@ int utils_decompor_linha(char *linha, char *vetor[])
     return contador;
 }
 
+// nomeEstacao e nomeLinha alocados "na hora"
 void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
 {
+    int i = 0;
 
-    for (int i = 0; i < num_campos; i++)
+    if (isdigit(vetor[0][0]))
+    {
+        i++;
+    }
+
+    for (; i < num_campos; i++)
     {
         if (strcmp(vetor[i], "codEstacao") == 0)
         {
@@ -116,7 +123,10 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         }
         else if (strcmp(vetor[i], "nomeEstacao") == 0)
         {
-            estacao->nomeEstacao = vetor[i + 1];
+            estacao->tamNomeEstacao = strlen(vetor[i + 1]);
+            estacao->nomeEstacao = (char *)malloc((estacao->tamNomeEstacao + 1) * sizeof(char));
+
+            strcpy(estacao->nomeEstacao, vetor[i + 1]);
         }
         else if (strcmp(vetor[i], "codLinha") == 0)
         {
@@ -124,7 +134,9 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         }
         else if (strcmp(vetor[i], "nomeLinha") == 0)
         {
-            estacao->nomeLinha = vetor[i + 1];
+            estacao->tamNomeLinha = strlen(vetor[i + 1]);
+            estacao->nomeLinha = (char*) malloc((estacao->tamNomeLinha + 1) * sizeof(char));
+            strcpy(estacao->nomeLinha, vetor[i + 1]);
         }
         else if (strcmp(vetor[i], "codProxEstacao") == 0)
         {
@@ -140,9 +152,11 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         }
         else if (strcmp(vetor[i], "codEstIntegra") == 0)
         {
-            estacao->codEstIntegra = atoi(vetor[i + 1]);
+            estacao->codEstacaoIntegra = atoi(vetor[i + 1]);
         }
     }
+
+    
 }
 
 void utils_linha_para_estacao(Estacao *estacao, char *linha)
@@ -195,23 +209,29 @@ int utils_mostrar_pilha_remocao(FILE *f, Header *header)
 
         // j++;
     }
+
+    return EXIT_SUCCESS;
 }
 
 void utils_imprimir_estacao_ln(Estacao *estacao)
 {
     printf("%d ", estacao->codEstacao);
-    printf("%s ", estacao->nomeEstacao);
+    
+    if (estacao->nomeEstacao != NULL && estacao->tamNomeEstacao > 0)
+        printf("%s ", estacao->nomeEstacao);
+    else
+        printf("NULO ");
 
     if (estacao->codLinha != -1)
         printf("%d ", estacao->codLinha);
     else
         printf("NULO ");
-    
+
     if (estacao->nomeLinha != NULL && estacao->tamNomeLinha > 0)
         printf("%s ", estacao->nomeLinha);
     else
         printf("NULO ");
-    
+
     if (estacao->codProxEstacao != -1)
         printf("%d ", estacao->codProxEstacao);
     else
@@ -221,18 +241,43 @@ void utils_imprimir_estacao_ln(Estacao *estacao)
         printf("%d ", estacao->distProxEstacao);
     else
         printf("NULO ");
-    
+
     if (estacao->codLinhaIntegra != -1)
         printf("%d ", estacao->codLinhaIntegra);
     else
         printf("NULO ");
 
-    if (estacao->codEstIntegra != -1)
-        printf("%d ", estacao->codEstIntegra);
+    if (estacao->codEstacaoIntegra != -1)
+        printf("%d ", estacao->codEstacaoIntegra);
     else
         printf("NULO ");
-    
+
     printf("\n");
+}
+
+// formato: nCampos chave1 valor1 chave2 valor2 .. chaveN valorN
+void ler_input_para_estacao_de_busca(Estacao *estacao)
+{
+    int num_campos;
+    
+    if (scanf("%d", &num_campos) != 1) return;
+
+    char chaves[10][50];   
+    char valores[10][256];
+    
+    char *elementos[20];  
+    int qtd_elementos = 0;
+
+    for (int i = 0; i < num_campos; i++)
+    {
+        scanf("%s", chaves[i]);
+        elementos[qtd_elementos++] = chaves[i];
+
+        ScanQuoteString(valores[i]);
+        elementos[qtd_elementos++] = valores[i];
+    }
+
+    utils_vetor_para_estacao(estacao, elementos, qtd_elementos);
 }
 
 // Fornecidas.c
@@ -246,9 +291,11 @@ void utils_imprimir_estacao_ln(Estacao *estacao)
  * Ela vai abrir de novo para leitura e depois fechar
  * (você não vai perder pontos por isso se usar ela).
  */
-void BinarioNaTela(char *arquivo) {
+void BinarioNaTela(char *arquivo)
+{
     FILE *fs;
-    if (arquivo == NULL || !(fs = fopen(arquivo, "rb"))) {
+    if (arquivo == NULL || !(fs = fopen(arquivo, "rb")))
+    {
         fprintf(stderr,
                 "ERRO AO ESCREVER O BINARIO NA TELA (função binarioNaTela): "
                 "não foi possível abrir o arquivo que me passou para leitura. "
@@ -265,7 +312,8 @@ void BinarioNaTela(char *arquivo) {
     fread(mb, 1, fl, fs);
 
     unsigned long cs = 0;
-    for (unsigned long i = 0; i < fl; i++) {
+    for (unsigned long i = 0; i < fl; i++)
+    {
         cs += (unsigned long)mb[i];
     }
 
@@ -288,28 +336,37 @@ void BinarioNaTela(char *arquivo) {
  * (sem as aspas)
  *
  */
-void ScanQuoteString(char *str) {
+void ScanQuoteString(char *str)
+{
     char R;
 
     while ((R = getchar()) != EOF && isspace(R))
         ; // ignorar espaços, \r, \n...
 
-    if (R == 'N' || R == 'n') { // campo NULO
+    if (R == 'N' || R == 'n')
+    { // campo NULO
         getchar();
         getchar();
         getchar();       // ignorar o "ULO" de NULO.
         strcpy(str, ""); // copia string vazia
-    } else if (R == '\"') {
-        if (scanf("%[^\"]", str) != 1) { // ler até o fechamento das aspas
+    }
+    else if (R == '\"')
+    {
+        if (scanf("%[^\"]", str) != 1)
+        { // ler até o fechamento das aspas
             strcpy(str, "");
         }
-        getchar();         // ignorar aspas fechando
-    } else if (R != EOF) { // vc tá tentando ler uma string que não tá entre
-                           // aspas! Fazer leitura normal %s então, pois deve
-                           // ser algum inteiro ou algo assim...
+        getchar(); // ignorar aspas fechando
+    }
+    else if (R != EOF)
+    { // vc tá tentando ler uma string que não tá entre
+      // aspas! Fazer leitura normal %s então, pois deve
+      // ser algum inteiro ou algo assim...
         str[0] = R;
         scanf("%s", &str[1]);
-    } else { // EOF
+    }
+    else
+    { // EOF
         strcpy(str, "");
     }
 }

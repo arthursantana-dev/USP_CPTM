@@ -2,93 +2,107 @@
 
 // estacao_valores: valores == 0 -> ignorar e manter;
 // valores == -1 -> atualizar para NULO
-int atualizar_registro(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
+int UPDATE(char *nome_arquivo_binario, Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 {
 
     char buffer[TAM_REGISTRO];
 
-    if (f == NULL)
-    {
-        mostrar_erro();
-        return EXIT_FAILURE;
-    }
-
     Header *header = ler_header_do_arquivo(f);
-
-    header->status = 0;
 
     if (header == NULL)
     {
         free(header);
         mostrar_erro();
-        fclose(f);
+        // printf("%d\n", 2);
         return EXIT_FAILURE;
     }
 
-    int nroEstacoes = header->nroEstacoes;
-    int offset = 0;
-    int RRNnovo = 0;
+    header->status = '0';
+    escrever_header_no_arquivo(f, header);
 
-    int encontrou_estacao = 0;
+    SetNomesEstacoes *set_estacoes = criar_set_estacoes();
 
-    Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
+    InfoParesEstacoes info_pares_estacoes;
+    inicializar_pares(&info_pares_estacoes);
+
+    // int encontrou_estacao = 0;
 
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    for (int i = 0; i < nroEstacoes; i++)
+    int i = -1;
+
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-
-        if (fread(buffer, TAM_REGISTRO, 1, f) != 1)
-        {
-            mostrar_erro();
-            free(header);
-            liberar_estacao(ea);
-            fclose(f);
-            return EXIT_FAILURE;
-        }
-
+        i++;
+        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
         escrever_buffer_na_estacao(buffer, ea);
 
-        if (!comparar_estacoes(estacao_busca, ea) || ea->removido == 1)
+        if (ea->removido == '1')
         {
-            liberar_estacao(ea);
+            destruir_estacao(ea);
             continue;
         }
 
-        encontrou_estacao = 1;
+        // printf("%s\n", ea->nomeEstacao);
 
-        offset = TAM_HEADER + TAM_REGISTRO * i;
-        RRNnovo = (offset - TAM_HEADER) / TAM_REGISTRO;
+        // if (strcmp("Luz", ea->nomeEstacao) == 0)
+        // {
+        //     utils_imprimir_estacao(ea);
+        //     printf("-------------\n\n");
+        // }
 
-        printf("Estação encontrada (RRN: %d)\n Estação já foi removida? %s\n", RRNnovo, ea->removido == 1 ? "SIM" : "NÃO");
+        if (comparar_estacoes(estacao_busca, ea))
+        {
+            // encontrou_estacao = 1;
 
-        break;
+            editar_estacao(ea, estacao_valores);
+
+            // printf("ACHOU:\n");
+            // utils_imprimir_estacao(ea);
+            // printf("-------------\n\n");
+
+            escrever_estacao_no_buffer(ea, buffer);
+
+            fseek(f, -TAM_REGISTRO, SEEK_CUR);
+
+            escrever_buffer_no_arquivo(f, buffer);
+
+            fseek(f, 0, SEEK_CUR);
+        }
+
+        incluir_estacao(set_estacoes, ea->nomeEstacao);
+
+        if (ea->codProxEstacao != -1)
+        {
+            inserir_par(&info_pares_estacoes, ea->codEstacao, ea->codProxEstacao);
+        }
+
+        destruir_estacao(ea);
     }
 
-    if (!encontrou_estacao)
-    {
-        free(header);
-        liberar_estacao(ea);
-        free(ea);
-        mostrar_erro();
-        return EXIT_FAILURE;
-    }
+    // if (!encontrou_estacao)
+    // {
+    //     free(header);
+    //     destruir_set_estacoes(set_estacoes);
+    //     destruir_pares(&info_pares_estacoes);
+    //     fclose(f);
+    //     // printf("%d\n", 3);
 
-    editar_estacao(ea, estacao_valores);
+    //     mostrar_erro();
+    //     return EXIT_FAILURE;
+    // }
 
-    escrever_estacao_no_buffer(ea, buffer);
+    // printf("%d %d\n\n", set_estacoes->tamanho, info_pares_estacoes.nroPares);
 
-    fseek(f, offset, SEEK_SET);
+    header->status = '1';
+    // header->nroEstacoes = set_estacoes->tamanho;
+    // header->nroParesEstacao = info_pares_estacoes.nroPares;
 
-    escrever_buffer_no_arquivo(f, buffer);
+    fseek(f, 0, SEEK_SET);
 
-    printf("Estação atualizada com sucesso!\n");
-
-    utils_imprimir_estacao(ea);
+    escrever_header_no_arquivo(f, header);
 
     free(header);
-    liberar_estacao(ea);
-    free(ea);
 
     return EXIT_SUCCESS;
 }

@@ -1,7 +1,7 @@
-#include "estacao.h"
+#include "Estacao.h"
 
 /*cria estação normal: campos iniciados com 0 serão convertidos em -1 (nulos)*/
-Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstIntegra)
+Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
 {
     Estacao *estacao = (Estacao *)malloc(sizeof(Estacao));
 
@@ -17,7 +17,7 @@ Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *no
     estacao->codProxEstacao = codProxEstacao == 0 ? -1 : codProxEstacao;
     estacao->distProxEstacao = distProxEstacao == 0 ? -1 : distProxEstacao;
     estacao->codLinhaIntegra = codLinhaIntegra == 0 ? -1 : codLinhaIntegra;
-    estacao->codEstIntegra = codEstIntegra == 0 ? -1 : codEstIntegra;
+    estacao->codEstacaoIntegra = codEstacaoIntegra == 0 ? -1 : codEstacaoIntegra;
     estacao->tamNomeEstacao = strlen(nomeEstacao);
     estacao->nomeEstacao = nomeEstacao;
     estacao->tamNomeLinha = strlen(nomeLinha);
@@ -27,9 +27,9 @@ Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *no
 }
 
 /*cria estação com campos de busca definidos como nulos igual a -1, e 0 para campos que não devem ser considerados para a busca*/
-Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstIntegra)
+Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
 {
-    Estacao *estacao = (Estacao *)malloc(sizeof(Estacao));
+    Estacao *estacao = (Estacao *)calloc(1,sizeof(Estacao));
 
     if (estacao == NULL)
     {
@@ -43,7 +43,7 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     estacao->codProxEstacao = codProxEstacao;
     estacao->distProxEstacao = distProxEstacao;
     estacao->codLinhaIntegra = codLinhaIntegra;
-    estacao->codEstIntegra = codEstIntegra;
+    estacao->codEstacaoIntegra = codEstacaoIntegra;
     estacao->tamNomeEstacao = strlen(nomeEstacao);
     estacao->nomeEstacao = nomeEstacao;
     estacao->tamNomeLinha = strlen(nomeLinha);
@@ -74,11 +74,12 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
 
     if (ea->codLinhaIntegra != 0 && ea->codLinhaIntegra != eb->codLinhaIntegra)
         return 0;
-    // printf("codEstIntegra\n");
+    // printf("codEstacaoIntegra\n");
 
-    if (ea->codEstIntegra != 0 && ea->codEstIntegra != eb->codEstIntegra)
+    if (ea->codEstacaoIntegra != 0 && ea->codEstacaoIntegra != eb->codEstacaoIntegra)
         return 0;
     // printf("tamNomeEstacao\n");
+    // printf("%d (%s) %d (%s)\n", ea->tamNomeEstacao, ea->nomeEstacao, eb->tamNomeEstacao, eb->nomeEstacao);
 
     if (ea->tamNomeEstacao != 0 && ea->tamNomeEstacao != eb->tamNomeEstacao)
         return 0;
@@ -119,26 +120,32 @@ void editar_estacao(Estacao *estacao, Estacao *novos_valores)
     if (novos_valores->codLinhaIntegra != 0)
         estacao->codLinhaIntegra = novos_valores->codLinhaIntegra;
 
-    if (novos_valores->codEstIntegra != 0)
-        estacao->codEstIntegra = novos_valores->codEstIntegra;
+    if (novos_valores->codEstacaoIntegra != 0)
+        estacao->codEstacaoIntegra = novos_valores->codEstacaoIntegra;
 
     if (novos_valores->tamNomeEstacao != 0)
     {
         free(estacao->nomeEstacao);
         estacao->tamNomeEstacao = novos_valores->tamNomeEstacao;
-        estacao->nomeEstacao = novos_valores->nomeEstacao;
+
+        estacao->nomeEstacao = (char *)malloc((estacao->tamNomeEstacao + 1) * sizeof(char));
+
+        strcpy(estacao->nomeEstacao, novos_valores->nomeEstacao);
     }
 
     if (novos_valores->tamNomeLinha != 0)
     {
         free(estacao->nomeLinha);
         estacao->tamNomeLinha = novos_valores->tamNomeLinha;
-        estacao->nomeLinha = novos_valores->nomeLinha;
+
+        estacao->nomeLinha = (char *)malloc((estacao->tamNomeLinha + 1) * sizeof(char));
+
+        strcpy(estacao->nomeLinha, novos_valores->nomeLinha);
     }
 
 }
 
-void liberar_estacao(Estacao *estacao)
+void destruir_estacao(Estacao *estacao)
 {
     if (estacao != NULL)
     {

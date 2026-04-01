@@ -3,7 +3,7 @@
 #include "../ParEstacoes/ParEstacoes.h"
 #include "../SetNomes/SetNomes.h"
 
-int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo_binario)
+int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
 {
 
     char *buffer = criar_buffer();
@@ -49,7 +49,7 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
             free(buffer);
             destruir_pares(&info_pares_estacoes);
 
-            limpar_set_estacoes(set_estacoes);
+            destruir_set_estacoes(set_estacoes);
             free(set_estacoes);
 
             mostrar_erro();
@@ -67,7 +67,7 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
             free(buffer);
             destruir_pares(&info_pares_estacoes);
 
-            limpar_set_estacoes(set_estacoes);
+            destruir_set_estacoes(set_estacoes);
             free(set_estacoes);
             mostrar_erro();
             fclose(csv);
@@ -132,7 +132,6 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
             par_i = par_i->prox;
             i++;
         }
-
     }
 
     fseek(bin, 0, SEEK_SET);
@@ -140,23 +139,28 @@ int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo
     header.proxRRN = contador_estacoes;
     header.nroEstacoes = set_estacoes->tamanho;
 
-    printf("Número de pares de estações: %d\n", nroParesEstacao);
-    printf("Numero de registros de estação: %d\n", set_estacoes->tamanho);
+    // printf("Número de pares de estações: %d\n", nroParesEstacao);
+    // printf("Numero de registros de estação: %d\n", set_estacoes->tamanho);
 
     // printf("Número de estações: %d\n", header.nroEstacoes);
     // printf("Número de pares de estação: %d\n", header.nroParesEstacao);
 
+    // printf("%d %d\n\n", set_estacoes->tamanho, info_pares_estacoes.nroPares);
+
     escrever_header_no_arquivo(bin, &header);
 
-    utils_mostrar_bytes_do_arquivo(bin, 17);
+    // utils_mostrar_bytes_do_arquivo(bin, 17);
 
     destruir_pares(&info_pares_estacoes);
 
-    limpar_set_estacoes(set_estacoes);
+    destruir_set_estacoes(set_estacoes);
 
     free(buffer);
 
     fclose(csv);
     fclose(bin);
+
+    BinarioNaTela(nome_arquivo_binario);
+
     return EXIT_SUCCESS;
 }

@@ -8,9 +8,9 @@
     #include "../ParEstacoes/ParEstacoes.h"
     #include "../buffer/buffer.h"
     #include "../Header/Header.h"
+    #include "../SetNomes/SetNomes.h"
 
     #include "../arquivo/arquivo.h"
 
-    int atualizar_registro(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f);
-
+    int UPDATE(char *nome_arquivo_binario, Estacao *estacao_busca, Estacao *estacao_valores, FILE *f);
 #endif

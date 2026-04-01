@@ -7,7 +7,7 @@
 	#include <ctype.h>
 
 	#include "../CONSTS.h"
-	#include "../estacao/estacao.h"
+	#include "../Estacao/Estacao.h"
 	#include "../Header/Header.h"
 	#include "../buffer/buffer.h"
 
@@ -26,6 +26,8 @@
 	int utils_mostrar_pilha_remocao(FILE *f, Header *header);
 
 	void BinarioNaTela(char *arquivo);
+
+	void ler_input_para_estacao_de_busca(Estacao *estacao);
 	
 	void ScanQuoteString(char *str);
 

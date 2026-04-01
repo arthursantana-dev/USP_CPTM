@@ -13,9 +13,6 @@ typedef struct {
 // cria e inicializa um novo set de estações
 SetNomesEstacoes* criar_set_estacoes();
 
-// libera a memória alocada pelo set
-void liberar_set_estacoes(SetNomesEstacoes* set);
-
 // verifica se uma estação existe no set (retorna 1 se existir, 0 caso contrário)
 int existe_estacao(SetNomesEstacoes* set, const char* nome);
 
@@ -25,6 +22,6 @@ int incluir_estacao(SetNomesEstacoes* set, const char* nome);
 // Remove uma estação do set (retorna 1 se removido com sucesso, 0 se não existir ou erro)
 int remover_estacao(SetNomesEstacoes* set, const char* nome);
 
-int limpar_set_estacoes(SetNomesEstacoes* set);
+int destruir_set_estacoes(SetNomesEstacoes* set);
 
 #endif

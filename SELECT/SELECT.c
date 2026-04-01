@@ -200,9 +200,9 @@ LISTA* SELECT(LISTA* where, char *nome_arquivo_binario)
                 }
             }
 
-            else if(strcmp(query->chave, "codEstIntegra") == 0)
+            else if(strcmp(query->chave, "codEstacaoIntegra") == 0)
             {
-                if(ea->codEstIntegra != atoi(query->valor))
+                if(ea->codEstacaoIntegra != atoi(query->valor))
                 {
                     match = false;
                     break;

@@ -45,103 +45,119 @@ int main()
 
 	// TODO: status do arquivo (header)
 
-	FILE *f = fopen("estacoes.bin", "rb+");
+	// FILE *f = fopen("estacoes.bin", "rb+");
 
-	if (f == NULL)
-	{
-		perror("Erro ao abrir o arquivo");
-		return EXIT_FAILURE;
-	}
-
-	criar_arquivo_binario("e.csv", "estacoes.bin");
-
-	LISTA *resultados = SELECT(where(), "estacoes.bin");
-
-	lista_imprimir(resultados, (void * (*)(void *)) utils_imprimir_estacao_ln);
-
-	// Estacao *ea = criar_estacao_para_busca(-1, "Tatuape", -1, "", -1, -1, -1, -1);
-
-	// utils_imprimir_estacao_ln(ea);
-
-	// criar_arquivo_binario("estacoes.csv", "estacoes.bin");
-
-	// deletar_registro("estacoes.bin", ea);
-
-	// Header *header = ler_header_do_arquivo(f);
-
-	// utils_mostrar_pilha_remocao(f, header);
-
-	// printf("\n\n%d\n", header->nroEstacoes);
-
-	// Simulando o input do usuário (precisa ser um array modificável)
-
-	// char input[200];
-
-	// scanf("%[^\n]", input); // Lê a linha inteira, incluindo espaços
-
-	// char input[] = "2 nomeLinha \"Verde\" codProxEstacao 27";
-	// char *elementos[MAX_TOKENS];
-
-	// int qtd_elementos = utils_decompor_linha(input, elementos);
-
-	// // Exibindo o resultado
-	// // printf("Foram encontrados %d elementos:\n", qtd_elementos);
-	// for (int i = 0; i < qtd_elementos; i++) {
-	//     printf("Vetor[%d]: %s\n", i, elementos[i]);
+	// if (f == NULL)
+	// {
+	// 	perror("Erro ao abrir o arquivo");
+	// 	return EXIT_FAILURE;
 	// }
 
-	// Estacao *estacao = criar_estacao(0, "", 0, "", 0, 0, 0, 0);
+	int opcode;
 
-	// utils_linha_para_estacao(estacao, input);
+	char nome_arquivo_binario[MAX_TAM_NOME];
+	int n;
 
-	// utils_imprimir_estacao(estacao);
+	scanf("%d", &opcode);
 
-	// printf("Teste de leitura do header:\n");
+	FILE *f = NULL;
 
-	// Header *header = (Header*) malloc(sizeof(Header));
-	// header->status = '1';
-	// header->topo = -1;
-	// header->proxRRN = 0;
-	// header->nroEstacoes = 0;
-	// header->nroParesEstacao = 0;
+	// BinarioNaTela("gabarito1.bin");
 
-	// Estacao *estacao = (Estacao*) malloc(sizeof(Estacao));
-	// estacao->removido = '0';
-	// estacao->proximo = -1;
-	// estacao->codEstacao = 123;
-	// estacao->codLinha = 456;
-	// estacao->codProxEstacao = 789;
-	// estacao->distProxEstacao = 10;
-	// estacao->codLinhaIntegra = 0;
-	// estacao->codEstIntegra = 0;
-	// estacao->tamNomeEstacao = strlen("Estacao A");
-	// estacao->nomeEstacao = "Estacao A";
-	// estacao->tamNomeLinha = strlen("Linha 1");
-	// estacao->nomeLinha = "Linha 1";
+	switch (opcode)
+	{
+	// CREATE
+	// exemplo:
+	// 1 e.csv estacoes.bin
+	case 1:
+		char nome_arquivo_csv[MAX_TAM_NOME];
+		scanf("%s", nome_arquivo_csv);
+		scanf("%s", nome_arquivo_binario);
+		CREATE(nome_arquivo_csv, nome_arquivo_binario);
+		break;
+	// SELECT FROM
+	case 2:
+		break;
+	// SELECT WHERE
+	case 3:
+		break;
 
-	// int offset = 0;
+		// DELETE
+		// exemplo:
+		/*
+	4 estacoes.bin 2
+	1 codEstacao 11
+	1 nomeEstacao "Luz"
+		*/
 
-	// printf("Tamanho nome estação: %d\n", estacao->tamNomeEstacao);
-	// printf("Tamanho nome linha: %d\n", estacao->tamNomeLinha);
+	case 4:
+		// char nome_arquivo_binario[MAX_TAM_NOME];
+		scanf("%s", nome_arquivo_binario);
+		scanf("%d", &n);
+		// printf("Número de estações a buscar: %d\n", n);
 
-	// escrever_header_no_arquivo(f, header);
+		f = fopen(nome_arquivo_binario, "rb+");
 
-	// utils_mostrar_bytes_do_arquivo(f, 100);
+		for (int i = 0; i < n; i++)
+		{
+			Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+			ler_input_para_estacao_de_busca(estacao);
+			DELETE(nome_arquivo_binario, estacao, f);
+			// utils_imprimir_estacao_ln(estacao);
+			// printf("--------------\n");
+		}
 
-	// escrever_estacao_no_buffer(estacao);
+		break;
+	// INSERT INTO
+	case 5:
+		break;
+	// UPDATE
+	case 6:
 
-	// utils_mostrar_buffer_como_bytes(buffer);
+		// char nome_arquivo_binario[MAX_TAM_NOME];
+		scanf("%s", nome_arquivo_binario);
+		scanf("%d", &n);
+		// printf("Número de estações a buscar: %d\n", n);
 
-	// --------------------------------------------------------------------
-	// |                    TESTE DE LEITURA DO HEADER                    |
-	// --------------------------------------------------------------------
+		f = fopen(nome_arquivo_binario, "rb+");
 
-	// Header *header_lido = ler_header_do_arquivo(f);
-	// printf("Status: %c\n", header_lido->status);
-	// printf("Topo: %d\n", header_lido->topo);
-	// printf("Próximo RRN: %d\n", header_lido->proxRRN);
-	// printf("Número de estações: %d\n", header_lido->nroEstacoes);
-	// printf("Número de pares de estação: %d\n", header_lido->nroParesEstacao);
+		if (f == NULL)
+		{
+			// printf("%d\n", 1);
+			mostrar_erro();
+			return EXIT_FAILURE;
+		}
+
+		for (int i = 0; i < n; i++)
+		{
+			// valores a serem buscados
+			Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+			// valores a serem substituidos
+			Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+			ler_input_para_estacao_de_busca(estacao_busca);
+			ler_input_para_estacao_de_busca(estacao_valores);
+
+			UPDATE(nome_arquivo_binario, estacao_busca, estacao_valores, f);
+
+			// utils_imprimir_estacao_ln(estacao_busca);
+			// printf("--------------\n");
+		}
+
+		// printf("Conseguido:");
+		// BinarioNaTela(nome_arquivo_binario);
+
+		// printf("\n\nEsperado:");
+		// printf("11503.670000");
+
+		break;
+	}
+
+	if(opcode != 1){
+		fclose(f);
+		BinarioNaTela(nome_arquivo_binario);
+	}
 
 	return 0;
 }

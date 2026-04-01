@@ -17,3 +17,7 @@
 #ifndef MAX_TOKENS
 #define MAX_TOKENS 10
 #endif
+
+#ifndef MAX_TAM_NOME
+#define MAX_TAM_NOME 50
+#endif

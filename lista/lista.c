@@ -177,6 +177,7 @@ bool lista_vazia(LISTA *lista)
 
 bool lista_cheia(LISTA *lista)
 {
+    if(lista == NULL) return false;
 
     NO *no = no_criar(NULL, NULL);
     if (no == NULL)

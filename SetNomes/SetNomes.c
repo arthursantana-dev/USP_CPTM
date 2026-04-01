@@ -24,21 +24,6 @@ SetNomesEstacoes *criar_set_estacoes()
     return set;
 }
 
-void liberar_set_estacoes(SetNomesEstacoes *set)
-{
-    if (set != NULL)
-    {
-        // Libera cada string individualmente
-        for (int i = 0; i < set->tamanho; i++)
-        {
-            free(set->nomes[i]);
-        }
-        // Libera o array de ponteiros e a estrutura
-        free(set->nomes);
-        free(set);
-    }
-}
-
 int existe_estacao(SetNomesEstacoes *set, const char *nome)
 {
     if (set == NULL || nome == NULL)
@@ -121,7 +106,7 @@ int remover_estacao(SetNomesEstacoes *set, const char *nome)
     return 0; // Estação não foi encontrada
 }
 
-int limpar_set_estacoes(SetNomesEstacoes *set)
+int destruir_set_estacoes(SetNomesEstacoes *set)
 {
     if (set == NULL)
         return 0;

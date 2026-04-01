@@ -12,6 +12,6 @@
 
     #include "../arquivo/arquivo.h"
 
-    int criar_arquivo_binario(const char *nome_arquivo_csv, const char *nome_arquivo_binario);
+    int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario);
 
 #endif

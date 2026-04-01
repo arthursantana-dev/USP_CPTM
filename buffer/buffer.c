@@ -28,8 +28,8 @@ int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
     offset += sizeof(estacao->distProxEstacao);
     memcpy(buffer + offset, &estacao->codLinhaIntegra, sizeof(estacao->codLinhaIntegra));
     offset += sizeof(estacao->codLinhaIntegra);
-    memcpy(buffer + offset, &estacao->codEstIntegra, sizeof(estacao->codEstIntegra));
-    offset += sizeof(estacao->codEstIntegra);
+    memcpy(buffer + offset, &estacao->codEstacaoIntegra, sizeof(estacao->codEstacaoIntegra));
+    offset += sizeof(estacao->codEstacaoIntegra);
     memcpy(buffer + offset, &estacao->tamNomeEstacao, sizeof(estacao->tamNomeEstacao));
     offset += sizeof(estacao->tamNomeEstacao);
     memcpy(buffer + offset, estacao->nomeEstacao, estacao->tamNomeEstacao);
@@ -53,7 +53,7 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     int codProxEstacao;
     int distProxEstacao;
     int codLinhaIntegra;
-    int codEstIntegra;
+    int codEstacaoIntegra;
     int tamNomeEstacao;
     int tamNomeLinha;
 
@@ -78,8 +78,8 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     memcpy(&codLinhaIntegra, buffer + offset, sizeof(codLinhaIntegra));
     offset += sizeof(codLinhaIntegra);
 
-    memcpy(&codEstIntegra, buffer + offset, sizeof(codEstIntegra));
-    offset += sizeof(codEstIntegra);
+    memcpy(&codEstacaoIntegra, buffer + offset, sizeof(codEstacaoIntegra));
+    offset += sizeof(codEstacaoIntegra);
 
     memcpy(&tamNomeEstacao, buffer + offset, sizeof(tamNomeEstacao));
     offset += sizeof(tamNomeEstacao);
@@ -114,7 +114,7 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     estacao->codProxEstacao = codProxEstacao;
     estacao->distProxEstacao = distProxEstacao;
     estacao->codLinhaIntegra = codLinhaIntegra;
-    estacao->codEstIntegra = codEstIntegra;
+    estacao->codEstacaoIntegra = codEstacaoIntegra;
     estacao->tamNomeEstacao = tamNomeEstacao;
     estacao->tamNomeLinha = tamNomeLinha;
 

@@ -119,7 +119,7 @@ int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
     token = obter_proximo_campo(&ponteiro_linha);
     if (token == NULL)
         return -1;
-    estacao->codEstIntegra = atoi(token) == 0 ? -1 : atoi(token);
+    estacao->codEstacaoIntegra = atoi(token) == 0 ? -1 : atoi(token);
 
     return 0;
 }

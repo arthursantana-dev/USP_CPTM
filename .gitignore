@@ -1,5 +1,8 @@
 *.bin
 *.o
+*.zip
+*.in
+*.out
 *.csv
 programaTrab
 testes

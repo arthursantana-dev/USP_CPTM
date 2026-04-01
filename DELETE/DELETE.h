@@ -10,5 +10,5 @@
     #include "../ParEstacoes/ParEstacoes.h"
     #include "../SetNomes/SetNomes.h"
 
-    int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f);
+    int DELETE(char *nome_arquivo_binario, Estacao *estacao_busca, FILE* f);
 #endif

@@ -14,7 +14,7 @@ SRCS = programaTrab.c \
 	SELECT/SELECT.c \
 	lista/lista.c \
 	Header/Header.c \
-	no/no.c
+	no/no.c 
 
 OBJS = $(SRCS:.c=.o)
 
@@ -28,7 +28,7 @@ $(EXEC): $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-run: all programaTrab
+run: programaTrab
 	./programaTrab
 
 truncate: clean
@@ -39,3 +39,11 @@ v:
 
 clean:
 	rm -f $(OBJS) $(EXEC)
+c:
+	./programaTrab < create.in
+
+d:
+	./programaTrab < delete.in
+
+u:
+	./programaTrab < update.in

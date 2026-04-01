@@ -14,21 +14,21 @@
 		int codProxEstacao;	 // Código da próxima estação na mesma linha
 		int distProxEstacao; // Distância para a próxima estação na mesma linha
 		int codLinhaIntegra; // Código da linha de integração (-1 se não houver integração)
-		int codEstIntegra;	 // Código da estação de integração (-1 se não houver integração)
+		int codEstacaoIntegra;	 // Código da estação de integração (-1 se não houver integração)
 		int tamNomeEstacao;	 // Tamanho do nome da estação
 		char *nomeEstacao;	 // Nome da estação (string de tamanho variável) (Não aceita valor nulo)
 		int tamNomeLinha;	 // Tamanho do nome da linha
 		char *nomeLinha;	 // Nome da linha (string de tamanho variável)
 	} Estacao;
 
-	Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstIntegra);
+	Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra);
 
-	Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstIntegra);
+	Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra);
 
 	int comparar_estacoes(Estacao *ea, Estacao *eb);
 
 	void editar_estacao(Estacao *estacao, Estacao *novos_valores);
 
-	void liberar_estacao(Estacao *estacao);
+	void destruir_estacao(Estacao *estacao);
 
 #endif

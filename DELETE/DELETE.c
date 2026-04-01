@@ -1,10 +1,7 @@
 #include "DELETE.h"
 
-int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f)
+int DELETE(char *nome_arquivo_binario, Estacao *estacao_busca, FILE* f)
 {
-    char buffer[TAM_REGISTRO];
-
-    int removeu_estacao = 0;
 
     if (f == NULL)
     {
@@ -21,18 +18,20 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
         return EXIT_FAILURE;
     }
 
+    char buffer[TAM_REGISTRO];
+
+    int removeu_estacao = 0;
+
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
 
     InfoParesEstacoes info_pares_estacoes;
     inicializar_pares(&info_pares_estacoes);
 
     header->status = '0';
+    escrever_header_no_arquivo(f, header);
 
-    int nroEstacoes = header->nroEstacoes;
     int offset = 0;
     int RRNnovo = 0;
-
-    Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
 
     fseek(f, TAM_HEADER, SEEK_SET);
 
@@ -41,6 +40,7 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
+        Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
 
         escrever_buffer_na_estacao(buffer, ea);
 
@@ -48,8 +48,7 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
 
         if (ea->removido == '1')
         {
-            liberar_estacao(ea);
-            free(ea);
+            destruir_estacao(ea);
             continue;
         }
 
@@ -61,8 +60,7 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
 
         if (!comparar_estacoes(estacao_busca, ea))
         {
-            liberar_estacao(ea);
-            free(ea);
+            destruir_estacao(ea);
             continue;
         }
 
@@ -84,18 +82,17 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
 
         escrever_buffer_no_arquivo(f, buffer);
 
-        liberar_estacao(ea);
-        free(ea);
+        destruir_estacao(ea);
 
         fseek(f, 0, SEEK_CUR);
     }
 
-    printf("Total de pares lidos: %d\n", pares_lidos);
+    // printf("Total de pares lidos: %d\n", pares_lidos);
 
     if (!removeu_estacao)
     {
         free(header);
-        limpar_set_estacoes(set_estacoes);
+        destruir_set_estacoes(set_estacoes);
         destruir_pares(&info_pares_estacoes);
         mostrar_erro();
         return EXIT_FAILURE;
@@ -105,35 +102,32 @@ int deletar_registro(char *nome_arquivo_binario, Estacao *estacao_busca, FILE *f
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
+        Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
+
         escrever_buffer_na_estacao(buffer, ea);
 
         if (ea->removido == '1')
         {
-            liberar_estacao(ea);
-            free(ea);
+            destruir_estacao(ea);
             continue;
         }
 
-        int i = 0;
-
         incluir_estacao(set_estacoes, ea->nomeEstacao);
-        liberar_estacao(ea);
-        free(ea);
+        destruir_estacao(ea);
     }
 
     header->nroEstacoes = set_estacoes->tamanho;
     header->nroParesEstacao = info_pares_estacoes.nroPares;
 
-    printf("Número de pares de estações restantes: %d\n", info_pares_estacoes.nroPares);
-    printf("Numero de nomes de estações: %d\n", set_estacoes->tamanho);
+    // printf("Número de pares de estações restantes: %d\n", info_pares_estacoes.nroPares);
+    // printf("Numero de nomes de estações: %d\n", set_estacoes->tamanho);
 
     escrever_header_no_arquivo(f, header);
 
-    limpar_set_estacoes(set_estacoes);
+    destruir_set_estacoes(set_estacoes);
     destruir_pares(&info_pares_estacoes);
 
     free(header);
-    free(ea);
 
     return EXIT_SUCCESS;
 }

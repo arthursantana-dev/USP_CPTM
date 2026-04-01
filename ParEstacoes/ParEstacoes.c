@@ -15,7 +15,7 @@ int comparar_pares(const void *a, const void *b)
     return p1->destino - p2->destino;
 }
 
-void limpar_pares_estacoes(InfoParesEstacoes *info_pares_estacoes, int codEstacaoRemovida)
+void destruir_pares_estacoes(InfoParesEstacoes *info_pares_estacoes, int codEstacaoRemovida)
 {
     ParEstacoes *atual = info_pares_estacoes->inicio;
     ParEstacoes *anterior = NULL;
@@ -61,6 +61,12 @@ void inicializar_pares(InfoParesEstacoes *info)
 
 void inserir_par(InfoParesEstacoes *info, int origem, int destino)
 {
+
+    if (existe_par(info, origem, destino) || destino == -1)
+    {
+        return;
+    }
+
     ParEstacoes *novo = (ParEstacoes *)malloc(sizeof(ParEstacoes));
     if (novo == NULL)
     {
@@ -136,4 +142,22 @@ void iniciar_iterador(InfoParesEstacoes *info, ParEstacoes **par_externo)
     }
 
     *par_externo = info->inicio;
+}
+
+int existe_par(InfoParesEstacoes *info, int origem, int destino)
+{
+    if (info == NULL) return 0;
+
+    ParEstacoes *atual = info->inicio;
+
+    while (atual != NULL)
+    {
+        if (atual->origem == origem && atual->destino == destino)
+        {
+            return 1; // O par já existe
+        }
+        atual = atual->prox;
+    }
+
+    return 0; // O par não existe
 }
