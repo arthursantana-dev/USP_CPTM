@@ -29,7 +29,7 @@
 
 	void ler_input_para_estacao_de_busca(Estacao *estacao);
 	
-	void ScanQuoteString(char *str);
+	void ScanQuoteString(char *str, int converted);
 
 #endif
 

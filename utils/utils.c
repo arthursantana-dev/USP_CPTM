@@ -273,7 +273,7 @@ void ler_input_para_estacao_de_busca(Estacao *estacao)
         scanf("%s", chaves[i]);
         elementos[qtd_elementos++] = chaves[i];
 
-        ScanQuoteString(valores[i]);
+        ScanQuoteString(valores[i], 0);
         elementos[qtd_elementos++] = valores[i];
     }
 
@@ -336,7 +336,7 @@ void BinarioNaTela(char *arquivo)
  * (sem as aspas)
  *
  */
-void ScanQuoteString(char *str)
+void ScanQuoteString(char *str, int converted)
 {
     char R;
 
@@ -348,7 +348,12 @@ void ScanQuoteString(char *str)
         getchar();
         getchar();
         getchar();       // ignorar o "ULO" de NULO.
-        strcpy(str, ""); // copia string vazia
+        if (converted == 0)
+            strcpy(str, ""); // copia string vazia
+        else if (converted == 1)
+            strcpy(str, "-1"); // copia -1 string
+        else if (converted == 2)
+            strcpy(str, -1); // copia -1 int
     }
     else if (R == '\"')
     {

@@ -12,8 +12,9 @@
 #include "../lista/lista.h"
 
 typedef struct _query QUERY;
-void select_all(char *nome_arquivo_binario);
+void select_all(FILE *f);
 LISTA *where();
-LISTA *SELECT(LISTA *where, char *nome_arquivo_binario);
+LISTA *SELECT(LISTA *where, FILE *f);
+LISTA* where_interno(int mn, char** chaves, char** valores);
 
 #endif
