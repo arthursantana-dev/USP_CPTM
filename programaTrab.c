@@ -105,6 +105,7 @@ int main()
 			DELETE(nome_arquivo_binario, estacao, f);
 			// utils_imprimir_estacao_ln(estacao);
 			// printf("--------------\n");
+			destruir_estacao(estacao);
 		}
 
 		break;
@@ -140,6 +141,8 @@ int main()
 			ler_input_para_estacao_de_busca(estacao_valores);
 
 			UPDATE(nome_arquivo_binario, estacao_busca, estacao_valores, f);
+			destruir_estacao(estacao_busca);
+			destruir_estacao(estacao_valores);
 
 			// utils_imprimir_estacao_ln(estacao_busca);
 			// printf("--------------\n");

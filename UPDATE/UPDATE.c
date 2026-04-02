@@ -20,10 +20,10 @@ int UPDATE(char *nome_arquivo_binario, Estacao *estacao_busca, Estacao *estacao_
     header->status = '0';
     escrever_header_no_arquivo(f, header);
 
-    SetNomesEstacoes *set_estacoes = criar_set_estacoes();
+    // SetNomesEstacoes *set_estacoes = criar_set_estacoes();
 
-    InfoParesEstacoes info_pares_estacoes;
-    inicializar_pares(&info_pares_estacoes);
+    // InfoParesEstacoes info_pares_estacoes;
+    // inicializar_pares(&info_pares_estacoes);
 
     // int encontrou_estacao = 0;
 
@@ -70,12 +70,12 @@ int UPDATE(char *nome_arquivo_binario, Estacao *estacao_busca, Estacao *estacao_
             fseek(f, 0, SEEK_CUR);
         }
 
-        incluir_estacao(set_estacoes, ea->nomeEstacao);
+        // incluir_estacao(set_estacoes, ea->nomeEstacao);
 
-        if (ea->codProxEstacao != -1)
-        {
-            inserir_par(&info_pares_estacoes, ea->codEstacao, ea->codProxEstacao);
-        }
+        // if (ea->codProxEstacao != -1)
+        // {
+        //     inserir_par(&info_pares_estacoes, ea->codEstacao, ea->codProxEstacao);
+        // }
 
         destruir_estacao(ea);
     }

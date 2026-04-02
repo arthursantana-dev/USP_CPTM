@@ -116,6 +116,7 @@ int DELETE(char *nome_arquivo_binario, Estacao *estacao_busca, FILE* f)
         destruir_estacao(ea);
     }
 
+    header->status = '1';
     header->nroEstacoes = set_estacoes->tamanho;
     header->nroParesEstacao = info_pares_estacoes.nroPares;
 

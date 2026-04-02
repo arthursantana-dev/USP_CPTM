@@ -82,7 +82,7 @@ int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
     if (token == NULL)
         return -1;
 
-    normalizar_utf8(token);
+    // normalizar_utf8(token);
 
     estacao->tamNomeEstacao = strlen(token);
     estacao->nomeEstacao = strdup(token);
@@ -91,7 +91,7 @@ int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
     if (token == NULL)
         return -1;
 
-    normalizar_utf8(token);
+    // normalizar_utf8(token);
 
     estacao->codLinha = atoi(token) == 0 ? -1 : atoi(token);
 
