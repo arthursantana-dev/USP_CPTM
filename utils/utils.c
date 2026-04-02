@@ -273,7 +273,7 @@ void ler_input_para_estacao_de_busca(Estacao *estacao)
         scanf("%s", chaves[i]);
         elementos[qtd_elementos++] = chaves[i];
 
-        ScanQuoteString(valores[i], 0);
+        ScanQuoteString(valores[i]);
         elementos[qtd_elementos++] = valores[i];
     }
 
@@ -336,7 +336,7 @@ void BinarioNaTela(char *arquivo)
  * (sem as aspas)
  *
  */
-void ScanQuoteString(char *str, int converted)
+void ScanQuoteString(char *str)
 {
     char R;
 
@@ -348,12 +348,7 @@ void ScanQuoteString(char *str, int converted)
         getchar();
         getchar();
         getchar();       // ignorar o "ULO" de NULO.
-        if (converted == 0)
-            strcpy(str, ""); // copia string vazia
-        else if (converted == 1)
-            strcpy(str, "-1"); // copia -1 string
-        else if (converted == 2)
-            strcpy(str, -1); // copia -1 int
+        strcpy(str, ""); // copia string vazia
     }
     else if (R == '\"')
     {
@@ -373,5 +368,67 @@ void ScanQuoteString(char *str, int converted)
     else
     { // EOF
         strcpy(str, "");
+    }
+}
+
+void nullOrInt(int *n)
+{
+    char R;
+
+    while ((R = getchar()) != EOF && isspace(R))
+        ; // ignorar espaços, \r, \n...
+    
+    if (R == 'N' || R == 'n')
+    { // campo NULO
+        getchar();
+        getchar();
+        getchar();       // ignorar o "ULO" de NULO.
+        *n = -1;
+    }
+    else if (R != EOF)
+    { // vc tá tentando ler uma string que não tá entre
+      // aspas! Fazer leitura normal %s então, pois deve
+      // ser algum inteiro ou algo assim...
+        ungetc(R, stdin);
+        scanf("%d", n);
+    }
+    else
+    { // EOF
+        *n = -1;
+    }
+}
+
+void nullOrString(char *str)
+{
+    char R;
+
+    while ((R = getchar()) != EOF && isspace(R))
+        ; // ignorar espaços, \r, \n...
+
+    if (R == 'N' || R == 'n')
+    { // campo NULO
+        getchar();
+        getchar();
+        getchar();       // ignorar o "ULO" de NULO.
+        strcpy(str, "-1"); // copia string vazia
+    }
+    else if (R == '\"')
+    {
+        if (scanf("%[^\"]", str) != 1)
+        { // ler até o fechamento das aspas
+            strcpy(str, "-1");
+        }
+        getchar(); // ignorar aspas fechando
+    }
+    else if (R != EOF)
+    { // vc tá tentando ler uma string que não tá entre
+      // aspas! Fazer leitura normal %s então, pois deve
+      // ser algum inteiro ou algo assim...
+        str[0] = R;
+        scanf("%s", &str[1]);
+    }
+    else
+    { // EOF
+        strcpy(str, "-1");
     }
 }

@@ -25,4 +25,6 @@ int remover_estacao(SetNomesEstacoes* set, const char* nome);
 
 int destruir_set_estacoes(SetNomesEstacoes* set);
 
+SetNomesEstacoes* criar_set_estacoes_populado(FILE* f);
+
 #endif

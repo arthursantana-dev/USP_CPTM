@@ -14,7 +14,8 @@ SRCS = programaTrab.c \
 	SELECT/SELECT.c \
 	lista/lista.c \
 	Header/Header.c \
-	no/no.c 
+	no/no.c \
+	INSERT/INSERT.c
 
 OBJS = $(SRCS:.c=.o)
 

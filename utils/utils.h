@@ -29,7 +29,13 @@
 
 	void ler_input_para_estacao_de_busca(Estacao *estacao);
 	
-	void ScanQuoteString(char *str, int converted);
+	void ScanQuoteString(char *str);
+
+	void nullOrString(char *str);
+
+	void nullOrInt(int *n);
+
+	void utils_vetor_para_estacao(Estacao *estacao, char *elementos[], int qtd_elementos);
 
 #endif
 

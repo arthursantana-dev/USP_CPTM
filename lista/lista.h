@@ -10,7 +10,7 @@ typedef struct lista_ LISTA;
 LISTA *lista_criar();
 bool lista_inserir(LISTA *lista, void *valor);
 void *lista_remover(LISTA *lista, void *chave, void *(*get_valor)(void *), void (*remover)(void *));
-bool lista_apagar(LISTA **lista, void (*remover)(void **));
+bool lista_apagar(LISTA **lista, void (*remover)(void *));
 void *lista_busca(LISTA *lista, int chave, int (*get_valor)(void *));
 int lista_tamanho(LISTA *lista);
 bool lista_vazia(LISTA *lista);

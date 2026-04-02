@@ -8,6 +8,7 @@
 #include "DELETE/DELETE.h"
 #include "UPDATE/UPDATE.h"
 #include "SELECT/SELECT.h"
+#include "INSERT/INSERT.h"
 
 #include "utils/utils.h"
 #include "buffer/buffer.h"
@@ -77,9 +78,21 @@ int main()
 		break;
 	// SELECT FROM
 	case 2:
+		scanf("%s", nome_arquivo_binario);
+		f = fopen(nome_arquivo_binario, "rb");
+		select_all(f);
 		break;
 	// SELECT WHERE
 	case 3:
+		scanf("%s", nome_arquivo_binario);
+		f = fopen(nome_arquivo_binario, "rb");
+		int n;
+		scanf("%d", &n);
+		for(int i=0;i<n;i++){
+			LISTA* resultados = SELECT(where(), f);
+			lista_imprimir(resultados, (void * (*)(void *)) utils_imprimir_estacao_ln);
+			lista_apagar(&resultados, (void (*)(void *)) destruir_estacao);
+		}
 		break;
 
 		// DELETE
@@ -102,7 +115,7 @@ int main()
 		{
 			Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
 			ler_input_para_estacao_de_busca(estacao);
-			DELETE(nome_arquivo_binario, estacao, f);
+			DELETE(estacao, f);
 			// utils_imprimir_estacao_ln(estacao);
 			// printf("--------------\n");
 			destruir_estacao(estacao);
@@ -111,6 +124,9 @@ int main()
 		break;
 	// INSERT INTO
 	case 5:
+		scanf("%s", nome_arquivo_binario);
+		f = fopen(nome_arquivo_binario, "rb+");
+		INSERT(f);
 		break;
 	// UPDATE
 	case 6:

@@ -2,7 +2,8 @@
 
 // Façamos o C do CRUD, o celect
 
-struct _query{
+struct _query
+{
     char chave[50];
     char valor[MAX_TAM_NOME];
 };
@@ -60,26 +61,27 @@ void select_all(FILE *f)
 
 // Pra ficar bonitinho com select(where()) vou retornar uma lista de wheres
 // Lê o mn e itera sobre ele pra fazer a lista de queries
-LISTA* where()
+LISTA *where()
 {
     int mn;
     scanf("%d", &mn);
-    LISTA* wheres = lista_criar();
-    for(int i = 0; i < mn; i++)
+    LISTA *wheres = lista_criar();
+    for (int i = 0; i < mn; i++)
     {
-        QUERY *query = (QUERY*) malloc(sizeof(QUERY));
+        QUERY *query = (QUERY *)malloc(sizeof(QUERY));
         scanf("%s", query->chave);
-        ScanQuoteString(query->valor, 1);
+        nullOrString(query->valor);
         lista_inserir(wheres, query);
     }
     return wheres;
 }
 
-LISTA* where_interno(int mn, char** chaves, char** valores){
-    LISTA* wheres = lista_criar();
-    for(int i = 0; i < mn; i++)
+LISTA *where_interno(int mn, char **chaves, char **valores)
+{
+    LISTA *wheres = lista_criar();
+    for (int i = 0; i < mn; i++)
     {
-        QUERY *query = (QUERY*) malloc(sizeof(QUERY));
+        QUERY *query = (QUERY *)malloc(sizeof(QUERY));
         strcpy(query->chave, chaves[i]);
         strcpy(query->valor, valores[i]);
         lista_inserir(wheres, query);
@@ -88,7 +90,7 @@ LISTA* where_interno(int mn, char** chaves, char** valores){
 }
 
 // O select em si, o goat
-LISTA* SELECT(LISTA* where, FILE* f)
+LISTA *SELECT(LISTA *where, FILE *f)
 {
     if (f == NULL)
     {
@@ -96,7 +98,7 @@ LISTA* SELECT(LISTA* where, FILE* f)
         return NULL;
     }
     fseek(f, TAM_HEADER, SEEK_SET);
-    LISTA* resultados = lista_criar();
+    LISTA *resultados = lista_criar();
     char *buffer = criar_buffer();
     Header *header = ler_header_do_arquivo(f);
     if (header == NULL)
@@ -116,7 +118,8 @@ LISTA* SELECT(LISTA* where, FILE* f)
     Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1){
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    {
         escrever_buffer_na_estacao(buffer, ea);
         if (ea->removido == 1)
         {
@@ -124,83 +127,83 @@ LISTA* SELECT(LISTA* where, FILE* f)
         }
         // Como é um AND, um bom jeito de saber se passou por todas as verificações é dar 0 (false) caso falhe em alguma
         bool match = true;
-        NO* atual = lista_get_no_head(where);
+        NO *atual = lista_get_no_head(where);
         if (atual != NULL)
             atual = no_get_anterior(atual); // pula o dummy head
         // Iterando sobre todas as queries
         // atual = query
-        while(atual != NULL)
+        while (atual != NULL)
         {
-            QUERY* query = (QUERY*) no_get_valor(atual);
+            QUERY *query = (QUERY *)no_get_valor(atual);
 
             // Checando qual chave estamos procurando
             // Não sei se tem um jeito melhor de fazer isso
-            if(strcmp(query->chave, "codEstacao") == 0)
+            if (strcmp(query->chave, "codEstacao") == 0)
             {
-                if(ea->codEstacao != atoi(query->valor))
-                {
-                    match = false;
-                    break;
-                }
-            }
-            
-            else if(strcmp(query->chave, "nomeEstacao") == 0)
-            {
-                if(strcmp(ea->nomeEstacao, query->valor) != 0)
+                if (ea->codEstacao != atoi(query->valor))
                 {
                     match = false;
                     break;
                 }
             }
 
-            else if(strcmp(query->chave, "codLinha") == 0)
+            else if (strcmp(query->chave, "nomeEstacao") == 0)
             {
-                if(ea->codLinha != atoi(query->valor))
+                if (strcmp(ea->nomeEstacao, query->valor) != 0)
                 {
                     match = false;
                     break;
                 }
             }
 
-            else if(strcmp(query->chave, "nomeLinha") == 0)
+            else if (strcmp(query->chave, "codLinha") == 0)
             {
-                if(strcmp(ea->nomeLinha, query->valor) != 0)
+                if (ea->codLinha != atoi(query->valor))
                 {
                     match = false;
                     break;
                 }
             }
 
-            else if(strcmp(query->chave, "codProxEstacao") == 0)
+            else if (strcmp(query->chave, "nomeLinha") == 0)
             {
-                if(ea->codProxEstacao != atoi(query->valor))
+                if (strcmp(ea->nomeLinha, query->valor) != 0)
                 {
                     match = false;
                     break;
                 }
             }
 
-            else if(strcmp(query->chave, "distProxEstacao") == 0)
+            else if (strcmp(query->chave, "codProxEstacao") == 0)
             {
-                if(ea->distProxEstacao != atoi(query->valor))
+                if (ea->codProxEstacao != atoi(query->valor))
                 {
                     match = false;
                     break;
                 }
             }
 
-            else if(strcmp(query->chave, "codLinhaIntegra") == 0)
+            else if (strcmp(query->chave, "distProxEstacao") == 0)
             {
-                if(ea->codLinhaIntegra != atoi(query->valor))
+                if (ea->distProxEstacao != atoi(query->valor))
                 {
                     match = false;
                     break;
                 }
             }
 
-            else if(strcmp(query->chave, "codEstacaoIntegra") == 0)
+            else if (strcmp(query->chave, "codLinhaIntegra") == 0)
             {
-                if(ea->codEstacaoIntegra != atoi(query->valor))
+                if (ea->codLinhaIntegra != atoi(query->valor))
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            else if (strcmp(query->chave, "codEstacaoIntegra") == 0)
+            {
+                if (ea->codEstacaoIntegra != atoi(query->valor))
                 {
                     match = false;
                     break;
@@ -209,17 +212,24 @@ LISTA* SELECT(LISTA* where, FILE* f)
 
             atual = no_get_anterior(atual);
         }
-        if(match)
+        if (match)
         {
-            Estacao* resultado = (Estacao*) malloc(sizeof(Estacao));
-            *resultado = *ea; // Copia os dados da estação para o resultado
+            Estacao *resultado = (Estacao *)malloc(sizeof(Estacao));
+            *resultado = *ea; // Copia os dados pra nn ter problema de ponteiro
+
+            // strdup pra fazer deep copy
+            if (ea->nomeEstacao != NULL)
+                resultado->nomeEstacao = strdup(ea->nomeEstacao);
+
+            if (ea->nomeLinha != NULL)
+                resultado->nomeLinha = strdup(ea->nomeLinha);
+
             lista_inserir(resultados, resultado);
         }
     }
 
     free(header);
     destruir_estacao(ea);
-    fclose(f);
     lista_apagar(&where, free);
     return resultados;
 }

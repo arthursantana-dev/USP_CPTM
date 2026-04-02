@@ -1,6 +1,6 @@
 #include "DELETE.h"
 
-int DELETE(char *nome_arquivo_binario, Estacao *estacao_busca, FILE* f)
+int DELETE(Estacao *estacao_busca, FILE* f)
 {
 
     if (f == NULL)

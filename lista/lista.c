@@ -114,7 +114,7 @@ void *lista_remover(LISTA *lista, void *chave, void *(*get_valor)(void *), void 
     return NULL;
 }
 
-bool lista_apagar(LISTA **lista, void (*remover)(void **))
+bool lista_apagar(LISTA **lista, void (*remover)(void *))
 {
     if (lista == NULL || *lista == NULL)
     {

@@ -11,6 +11,8 @@
 #include "../SetNomes/SetNomes.h"
 #include "../SELECT/SELECT.h"
 
-int INSERT(FILE *f, Estacao *estacao);
+int INSERT(FILE *f);
+
+int _insert(FILE *f, Estacao *estacao);
 
 #endif
