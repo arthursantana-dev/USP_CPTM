@@ -123,6 +123,9 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         }
         else if (strcmp(vetor[i], "nomeEstacao") == 0)
         {
+            if (estacao->nomeEstacao != NULL) {
+                free(estacao->nomeEstacao);
+            }
             estacao->tamNomeEstacao = strlen(vetor[i + 1]);
             estacao->nomeEstacao = (char *)malloc((estacao->tamNomeEstacao + 1) * sizeof(char));
 
@@ -134,6 +137,9 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         }
         else if (strcmp(vetor[i], "nomeLinha") == 0)
         {
+            if (estacao->nomeLinha != NULL) {
+                free(estacao->nomeLinha); // Libera o valor anterior ("")
+            }
             estacao->tamNomeLinha = strlen(vetor[i + 1]);
             estacao->nomeLinha = (char*) malloc((estacao->tamNomeLinha + 1) * sizeof(char));
             strcpy(estacao->nomeLinha, vetor[i + 1]);

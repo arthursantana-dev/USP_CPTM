@@ -45,9 +45,9 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     estacao->codLinhaIntegra = codLinhaIntegra;
     estacao->codEstacaoIntegra = codEstacaoIntegra;
     estacao->tamNomeEstacao = strlen(nomeEstacao);
-    estacao->nomeEstacao = nomeEstacao;
+    estacao->nomeEstacao = strdup(nomeEstacao);
     estacao->tamNomeLinha = strlen(nomeLinha);
-    estacao->nomeLinha = nomeLinha;
+    estacao->nomeLinha = strdup(nomeLinha);
 
     return estacao;
 }
