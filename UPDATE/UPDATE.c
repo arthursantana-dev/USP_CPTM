@@ -2,7 +2,7 @@
 
 // estacao_valores: valores == 0 -> ignorar e manter;
 // valores == -1 -> atualizar para NULO
-int UPDATE(char *nome_arquivo_binario, Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
+int UPDATE(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 {
 
     char buffer[TAM_REGISTRO];

@@ -86,11 +86,11 @@ int main()
 	case 3:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
-		int n;
 		scanf("%d", &n);
 		for(int i=0;i<n;i++){
 			LISTA* resultados = SELECT(where(), f);
-			lista_imprimir(resultados, (void * (*)(void *)) utils_imprimir_estacao_ln);
+			lista_imprimir(resultados, (void (*)(void *)) utils_imprimir_estacao_ln);
+			printf("\n");
 			lista_apagar(&resultados, (void (*)(void *)) destruir_estacao);
 		}
 		break;
@@ -156,7 +156,7 @@ int main()
 			ler_input_para_estacao_de_busca(estacao_busca);
 			ler_input_para_estacao_de_busca(estacao_valores);
 
-			UPDATE(nome_arquivo_binario, estacao_busca, estacao_valores, f);
+			UPDATE(estacao_busca, estacao_valores, f);
 			destruir_estacao(estacao_busca);
 			destruir_estacao(estacao_valores);
 
@@ -173,7 +173,7 @@ int main()
 		break;
 	}
 
-	if(opcode != 1){
+	if(opcode != 1 && opcode != 2 && opcode != 3){
 		fclose(f);
 		BinarioNaTela(nome_arquivo_binario);
 	}

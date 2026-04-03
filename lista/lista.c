@@ -137,11 +137,11 @@ bool lista_apagar(LISTA **lista, void (*remover)(void *))
     return true;
 }
 
-void lista_imprimir(LISTA *lista, void* (*imprimir_valor)(void *))
+void lista_imprimir(LISTA *lista, void (*imprimir_valor)(void *))
 {
     if (lista == NULL || lista->tamanho == 0)
     {
-        printf("Lista vazia ou nula\n");
+        printf("Registro inexistente.\n");
         return;
     }
 

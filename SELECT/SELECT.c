@@ -35,19 +35,21 @@ void select_all(FILE *f)
     Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    // Imprimir estação se não der erro
-    for (int i = 0; i < nroEstacoes; i++)
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        if (fread(buffer, TAM_REGISTRO, 1, f) != 1)
-        {
-            mostrar_erro();
-            free(header);
-            free(ea);
-            fclose(f);
-            return;
-        }
+        // int offset = 0;
+        // char removido;
+        // int proximo;
+        // int codEstacao;
+        // int codLinha;
+        // int codProxEstacao;
+        // int distProxEstacao;
+        // int codLinhaIntegra;
+        // int codEstacaoIntegra;
+        // int tamNomeEstacao;
+        // int tamNomeLinha;
         escrever_buffer_na_estacao(buffer, ea);
-        if (ea->removido == 1)
+        if (ea->removido == '1')
         {
             continue;
         }
@@ -121,7 +123,7 @@ LISTA *SELECT(LISTA *where, FILE *f)
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
         escrever_buffer_na_estacao(buffer, ea);
-        if (ea->removido == 1)
+        if (ea->removido == '1')
         {
             continue;
         }
@@ -201,7 +203,7 @@ LISTA *SELECT(LISTA *where, FILE *f)
                 }
             }
 
-            else if (strcmp(query->chave, "codEstacaoIntegra") == 0)
+            else if (strcmp(query->chave, "codEstIntegra") == 0)
             {
                 if (ea->codEstacaoIntegra != atoi(query->valor))
                 {

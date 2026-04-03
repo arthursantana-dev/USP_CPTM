@@ -25,6 +25,8 @@ int INSERT(FILE *f)
             mostrar_erro();
         }
     }
+
+    return 0;
 }
 
 int _insert(FILE *f, Estacao *estacao)
