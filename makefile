@@ -48,3 +48,9 @@ d:
 
 u:
 	./programaTrab < update.in
+
+i: 
+	./programaTrab < insert.in
+
+s: 
+	./programaTrab < select.in

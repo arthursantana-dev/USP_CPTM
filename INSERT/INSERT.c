@@ -24,8 +24,7 @@ int INSERT(FILE *f)
         if(_insert(f,estacao)){
             mostrar_erro();
         }
-        free(nomeEstacao);
-        free(nomeLinha);
+        destruir_estacao(estacao);
     }
 
     return 0;
@@ -90,7 +89,6 @@ int _insert(FILE *f, Estacao *estacao)
     free(valor);
     free(buffer);
     free(header);
-    destruir_estacao(estacao);
     destruir_set_estacoes(set_estacoes);
 
     return 0;
