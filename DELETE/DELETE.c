@@ -40,7 +40,7 @@ int DELETE(Estacao *estacao_busca, FILE* f)
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
+        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
         escrever_buffer_na_estacao(buffer, ea);
 
@@ -102,7 +102,7 @@ int DELETE(Estacao *estacao_busca, FILE* f)
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
+        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
         escrever_buffer_na_estacao(buffer, ea);
 

@@ -113,7 +113,7 @@ int main()
 
 		for (int i = 0; i < n; i++)
 		{
-			Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+			Estacao *estacao = criar_estacao_para_busca(0, NULL, 0, NULL, 0, 0, 0, 0);
 			ler_input_para_estacao_de_busca(estacao);
 			DELETE(estacao, f);
 			// utils_imprimir_estacao_ln(estacao);
@@ -148,10 +148,10 @@ int main()
 		for (int i = 0; i < n; i++)
 		{
 			// valores a serem buscados
-			Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+			Estacao *estacao_busca = criar_estacao_para_busca(0, NULL, 0, NULL, 0, 0, 0, 0);
 
 			// valores a serem substituidos
-			Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+			Estacao *estacao_valores = criar_estacao_para_busca(0, NULL, 0, NULL, 0, 0, 0, 0);
 
 			ler_input_para_estacao_de_busca(estacao_busca);
 			ler_input_para_estacao_de_busca(estacao_valores);
