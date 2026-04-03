@@ -24,6 +24,8 @@ int INSERT(FILE *f)
         if(_insert(f,estacao)){
             mostrar_erro();
         }
+        free(nomeEstacao);
+        free(nomeLinha);
     }
 
     return 0;
@@ -52,7 +54,7 @@ int _insert(FILE *f, Estacao *estacao)
         fseek(f, offset, SEEK_SET);
         fread(buffer, TAM_REGISTRO, 1, f);
         fseek(f, offset, SEEK_SET);
-        Estacao *estacao_removida = (Estacao *)malloc(sizeof(Estacao));
+        Estacao *estacao_removida = (Estacao *)calloc(1, sizeof(Estacao));
         escrever_buffer_na_estacao(buffer, estacao_removida);
         header->topo = estacao_removida->proximo;
         destruir_estacao(estacao_removida);
@@ -85,6 +87,7 @@ int _insert(FILE *f, Estacao *estacao)
     header->status = '1';
     escrever_header_no_arquivo(f, header);
 
+    free(valor);
     free(buffer);
     free(header);
     destruir_estacao(estacao);

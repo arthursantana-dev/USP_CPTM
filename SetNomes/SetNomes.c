@@ -147,5 +147,7 @@ SetNomesEstacoes *criar_set_estacoes_populado(FILE *f)
         destruir_estacao(ea);
     }
 
+    free(buffer);
+
     return set;
 }   

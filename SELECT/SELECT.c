@@ -32,11 +32,12 @@ void select_all(FILE *f)
         fclose(f);
         return;
     }
-    Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
+
     fseek(f, TAM_HEADER, SEEK_SET);
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
+        Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
         // int offset = 0;
         // char removido;
         // int proximo;
@@ -51,13 +52,15 @@ void select_all(FILE *f)
         escrever_buffer_na_estacao(buffer, ea);
         if (ea->removido == '1')
         {
+            destruir_estacao(ea);
             continue;
         }
         utils_imprimir_estacao_ln(ea);
+
+        destruir_estacao(ea);
     }
 
     free(header);
-    destruir_estacao(ea);
     fclose(f);
 }
 
@@ -228,8 +231,20 @@ LISTA *SELECT(LISTA *where, FILE *f)
 
             lista_inserir(resultados, resultado);
         }
-    }
 
+        if (ea->nomeEstacao != NULL)
+        {
+            free(ea->nomeEstacao);
+            ea->nomeEstacao = NULL;
+        }
+        if (ea->nomeLinha != NULL)
+        {
+            free(ea->nomeLinha);
+            ea->nomeLinha = NULL;
+        }
+        destruir_estacao(ea);
+    }
+    free(buffer);
     free(header);
     destruir_estacao(ea);
     lista_apagar(&where, free);
