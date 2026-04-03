@@ -44,10 +44,28 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     estacao->distProxEstacao = distProxEstacao;
     estacao->codLinhaIntegra = codLinhaIntegra;
     estacao->codEstacaoIntegra = codEstacaoIntegra;
-    estacao->tamNomeEstacao = strlen(nomeEstacao);
-    estacao->nomeEstacao = nomeEstacao;
-    estacao->tamNomeLinha = strlen(nomeLinha);
-    estacao->nomeLinha = nomeLinha;
+    // estacao->tamNomeEstacao = strlen(nomeEstacao);
+    // estacao->nomeEstacao = nomeEstacao;
+    // estacao->tamNomeLinha = strlen(nomeLinha);
+    // estacao->nomeLinha = nomeLinha;
+
+    if (nomeEstacao != NULL) {
+        estacao->tamNomeEstacao = strlen(nomeEstacao);
+        estacao->nomeEstacao = (char *)malloc((estacao->tamNomeEstacao + 1) * sizeof(char));
+        strcpy(estacao->nomeEstacao, nomeEstacao);
+    } else {
+        estacao->tamNomeEstacao = 0;
+        estacao->nomeEstacao = NULL;
+    }
+
+    if (nomeLinha != NULL) {
+        estacao->tamNomeLinha = strlen(nomeLinha);
+        estacao->nomeLinha = (char *)malloc((estacao->tamNomeLinha + 1) * sizeof(char));
+        strcpy(estacao->nomeLinha, nomeLinha);
+    } else {
+        estacao->tamNomeLinha = 0;
+        estacao->nomeLinha = NULL;
+    }
 
     return estacao;
 }

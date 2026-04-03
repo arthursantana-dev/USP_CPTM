@@ -135,6 +135,8 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
     }
 
     fseek(bin, 0, SEEK_SET);
+    
+    header.status = '1';
     header.nroParesEstacao = nroParesEstacao;
     header.proxRRN = contador_estacoes;
     header.nroEstacoes = set_estacoes->tamanho;
