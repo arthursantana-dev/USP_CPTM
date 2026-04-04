@@ -102,7 +102,7 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
         caso duas linhas consecutivas diferem de origem ou destino, contabiliza +1 pro número de pares.
     */
 
-    ordenar_pares(&info_pares_estacoes);
+    // ordenar_pares(&info_pares_estacoes);
 
     ParEstacoes *par_i;
 
