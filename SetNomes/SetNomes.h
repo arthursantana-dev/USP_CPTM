@@ -3,12 +3,16 @@
 
 #include "FrequenciaNomes.h"
 #include "../buffer/buffer.h"
+#include "../Estacao/Estacao.h"
 
+typedef struct no_set {
+    char *nome;
+    struct no_set *prox;
+} NoSet;
 
 typedef struct {
-    char** nomes;
+    NoSet *inicio;
     int tamanho;
-    int capacidade;
 } SetNomesEstacoes;
 
 // cria e inicializa um novo set de estações

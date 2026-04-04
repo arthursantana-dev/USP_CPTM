@@ -11,15 +11,8 @@ SetNomesEstacoes *criar_set_estacoes()
     if (set == NULL)
         return NULL;
 
+    set->inicio = NULL;
     set->tamanho = 0;
-    set->capacidade = MAX_ESTACOES;
-    set->nomes = (char **)malloc(set->capacidade * sizeof(char *));
-
-    if (set->nomes == NULL)
-    {
-        free(set);
-        return NULL;
-    }
 
     return set;
 }
@@ -29,14 +22,18 @@ int existe_estacao(SetNomesEstacoes *set, const char *nome)
     if (set == NULL || nome == NULL)
         return 0;
 
-    for (int i = 0; i < set->tamanho; i++)
+    NoSet *atual = set->inicio;
+    
+    while (atual != NULL)
     {
-        if (strcmp(set->nomes[i], nome) == 0)
+        if (strcmp(atual->nome, nome) == 0)
         {
-            return 1; // Encontrou
+            return 1;
         }
+        atual = atual->prox;
     }
-    return 0; // Não encontrou
+    
+    return 0;
 }
 
 int incluir_estacao(SetNomesEstacoes *set, const char *nome)
@@ -49,18 +46,22 @@ int incluir_estacao(SetNomesEstacoes *set, const char *nome)
         return 0;
     }
 
-    // if (set->tamanho == set->capacidade) {
-    //     set->capacidade *= 2;
-    //     char** novo_array = (char**)realloc(set->nomes, set->capacidade * sizeof(char*));
-    //     if (novo_array == NULL) return 0;
-    //     set->nomes = novo_array;
-    // }
-
-    set->nomes[set->tamanho] = (char *)malloc((strlen(nome) + 1) * sizeof(char));
-    if (set->nomes[set->tamanho] == NULL)
+    NoSet *novo_no = (NoSet *)malloc(sizeof(NoSet));
+    if (novo_no == NULL)
         return 0;
 
-    strcpy(set->nomes[set->tamanho], nome);
+    novo_no->nome = (char *)malloc((strlen(nome) + 1) * sizeof(char));
+    if (novo_no->nome == NULL)
+    {
+        free(novo_no);
+        return 0;
+    }
+
+    strcpy(novo_no->nome, nome);
+
+    novo_no->prox = set->inicio;
+    set->inicio = novo_no;
+    
     set->tamanho++;
 
     return 1;
@@ -78,32 +79,33 @@ int remover_estacao(SetNomesEstacoes *set, const char *nome)
     if (set == NULL || nome == NULL)
         return 0;
 
-    // Procura pela estação no array
-    for (int i = 0; i < set->tamanho; i++)
-    {
-        if (strcmp(set->nomes[i], nome) == 0)
-        {
-            // 1. Encontrou! Libera a memória da string que está sendo removida
-            free(set->nomes[i]);
+    NoSet *atual = set->inicio;
+    NoSet *anterior = NULL;
 
-            // 2. Se a estação removida não for a última do array,
-            // copiamos o ponteiro da última estação para a posição atual.
-            if (i < set->tamanho - 1)
+    while (atual != NULL)
+    {
+        if (strcmp(atual->nome, nome) == 0)
+        {
+            if (anterior == NULL)
             {
-                set->nomes[i] = set->nomes[set->tamanho - 1];
+                set->inicio = atual->prox;
+            }
+            else
+            {
+                anterior->prox = atual->prox;
             }
 
-            // 3. Reduzimos o tamanho do set
+            free(atual->nome);
+            free(atual);
             set->tamanho--;
 
-            // Opcional: limpa o ponteiro que sobrou no final por segurança
-            set->nomes[set->tamanho] = NULL;
-
-            return 1; // Sucesso na remoção
+            return 1;
         }
+        anterior = atual;
+        atual = atual->prox;
     }
 
-    return 0; // Estação não foi encontrada
+    return 0;
 }
 
 int destruir_set_estacoes(SetNomesEstacoes *set)
@@ -111,13 +113,17 @@ int destruir_set_estacoes(SetNomesEstacoes *set)
     if (set == NULL)
         return 0;
 
-    for (int i = 0; i < set->tamanho; i++)
+    NoSet *atual = set->inicio;
+    NoSet *proximo;
+
+    while (atual != NULL)
     {
-        free(set->nomes[i]);
-        set->nomes[i] = NULL;
+        proximo = atual->prox;
+        free(atual->nome);
+        free(atual);
+        atual = proximo;
     }
 
-    free(set->nomes);
     free(set);        
 
     return 0;
@@ -134,7 +140,7 @@ SetNomesEstacoes *criar_set_estacoes_populado(FILE *f)
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
+        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
         escrever_buffer_na_estacao(buffer, ea);
 
         if (ea->removido == '1')
@@ -150,4 +156,4 @@ SetNomesEstacoes *criar_set_estacoes_populado(FILE *f)
     free(buffer);
 
     return set;
-}   
+}
