@@ -44,16 +44,6 @@
 int main()
 {
 
-	// TODO: status do arquivo (header)
-
-	// FILE *f = fopen("estacoes.bin", "rb+");
-
-	// if (f == NULL)
-	// {
-	// 	perror("Erro ao abrir o arquivo");
-	// 	return EXIT_FAILURE;
-	// }
-
 	int opcode;
 
 	char nome_arquivo_binario[MAX_TAM_NOME];
@@ -63,13 +53,9 @@ int main()
 
 	FILE *f = NULL;
 
-	// BinarioNaTela("gabarito1.bin");
-
 	switch (opcode)
 	{
 	// CREATE
-	// exemplo:
-	// 1 e.csv estacoes.bin
 	case 1:
 		char nome_arquivo_csv[MAX_TAM_NOME];
 		scanf("%s", nome_arquivo_csv);
@@ -87,27 +73,19 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
 		scanf("%d", &n);
-		for(int i=0;i<n;i++){
-			LISTA* resultados = SELECT(where(), f);
-			lista_imprimir(resultados, (void (*)(void *)) utils_imprimir_estacao_ln);
+		for (int i = 0; i < n; i++)
+		{
+			LISTA *resultados = SELECT(where(), f);
+			lista_imprimir(resultados, (void (*)(void *))utils_imprimir_estacao_ln);
 			printf("\n");
-			lista_apagar(&resultados, (void (*)(void *)) destruir_estacao);
+			lista_apagar(&resultados, (void (*)(void *))destruir_estacao);
 		}
 		break;
 
-		// DELETE
-		// exemplo:
-		/*
-	4 estacoes.bin 2
-	1 codEstacao 11
-	1 nomeEstacao "Luz"
-		*/
-
+	// DELETE
 	case 4:
-		// char nome_arquivo_binario[MAX_TAM_NOME];
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
-		// printf("Número de estações a buscar: %d\n", n);
 
 		f = fopen(nome_arquivo_binario, "rb+");
 
@@ -116,8 +94,6 @@ int main()
 			Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
 			ler_input_para_estacao_de_busca(estacao);
 			DELETE(estacao, f);
-			// utils_imprimir_estacao_ln(estacao);
-			// printf("--------------\n");
 			destruir_estacao(estacao);
 		}
 
@@ -130,17 +106,13 @@ int main()
 		break;
 	// UPDATE
 	case 6:
-
-		// char nome_arquivo_binario[MAX_TAM_NOME];
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
-		// printf("Número de estações a buscar: %d\n", n);
 
 		f = fopen(nome_arquivo_binario, "rb+");
 
 		if (f == NULL)
 		{
-			// printf("%d\n", 1);
 			mostrar_erro();
 			return EXIT_FAILURE;
 		}
@@ -160,20 +132,12 @@ int main()
 			destruir_estacao(estacao_busca);
 			destruir_estacao(estacao_valores);
 
-			// utils_imprimir_estacao_ln(estacao_busca);
-			// printf("--------------\n");
 		}
-
-		// printf("Conseguido:");
-		// BinarioNaTela(nome_arquivo_binario);
-
-		// printf("\n\nEsperado:");
-		// printf("11503.670000");
-
 		break;
 	}
 
-	if(opcode != 1 && opcode != 2 && opcode != 3){
+	if (opcode != 1 && opcode != 2 && opcode != 3)
+	{
 		fclose(f);
 		BinarioNaTela(nome_arquivo_binario);
 	}

@@ -140,17 +140,7 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
     header.proxRRN = contador_estacoes;
     header.nroEstacoes = set_estacoes->tamanho;
 
-    // printf("Número de pares de estações: %d\n", nroParesEstacao);
-    // printf("Numero de registros de estação: %d\n", set_estacoes->tamanho);
-
-    // printf("Número de estações: %d\n", header.nroEstacoes);
-    // printf("Número de pares de estação: %d\n", header.nroParesEstacao);
-
-    // printf("%d %d\n\n", set_estacoes->tamanho, info_pares_estacoes.nroPares);
-
     escrever_header_no_arquivo(bin, &header);
-
-    // utils_mostrar_bytes_do_arquivo(bin, 17);
 
     destruir_pares(&info_pares_estacoes);
 

@@ -69,8 +69,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
         offset = TAM_HEADER + TAM_REGISTRO * rrn_atual;
         RRNnovo = (offset - TAM_HEADER) / TAM_REGISTRO;
 
-        // printf("Estação encontrada (RRN: %d, codEstacao: %d)\n Estação %s já foi removida? %s\n", RRNnovo, ea->codEstacao, ea->nomeEstacao, ea->removido == 1 ? "SIM" : "NÃO");
-
         ea->removido = '1';
         ea->proximo = header->topo;
 
@@ -86,8 +84,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
 
         fseek(f, 0, SEEK_CUR);
     }
-
-    // printf("Total de pares lidos: %d\n", pares_lidos);
 
     if (!removeu_estacao)
     {
@@ -119,9 +115,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
     header->status = '1';
     header->nroEstacoes = set_estacoes->tamanho;
     header->nroParesEstacao = info_pares_estacoes.nroPares;
-
-    // printf("Número de pares de estações restantes: %d\n", info_pares_estacoes.nroPares);
-    // printf("Numero de nomes de estações: %d\n", set_estacoes->tamanho);
 
     escrever_header_no_arquivo(f, header);
 
