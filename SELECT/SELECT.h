@@ -15,8 +15,9 @@ typedef struct _query QUERY;
 /**
  * @brief Recupera e exibe de forma sequencial os dados de todos os registros existentes no arquivo binário.
  * @param f Ponteiro para o arquivo binário aberto para leitura.
+ * @return retorna um inteiro indicando o sucesso (0) ou falha (1) da operação.
  */
-void select_all(FILE *f);
+int select_all(FILE *f);
 
 /**
  * @brief Lê a entrada padrão fornecida pelo usuário para construir dinamicamente uma lista de critérios de seleção.

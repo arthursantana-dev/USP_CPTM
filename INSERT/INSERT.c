@@ -22,7 +22,8 @@ int INSERT(FILE *f)
         nullOrInt(&codEstacaoIntegra);
         Estacao *estacao = criar_estacao(codEstacao, nomeEstacao, codLinha, nomeLinha, codProxEstacao, distProxEstacao, codLinhaIntegra, codEstacaoIntegra);
         if(_insert(f,estacao)){
-            mostrar_erro();
+            destruir_estacao(estacao);
+            return EXIT_FAILURE;
         }
         destruir_estacao(estacao);
     }

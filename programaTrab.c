@@ -68,20 +68,27 @@ int main()
 	case 2:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
-		select_all(f);
+		err = select_all(f);
+		fclose(f);
 		break;
 	// SELECT WHERE
 	case 3:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
 		scanf("%d", &n);
+		int encontrou_algum = 0;
 		for (int i = 0; i < n; i++)
 		{
 			LISTA *resultados = SELECT(where(), f);
+			if (resultados == NULL)
+				continue;
+			encontrou_algum = 1;
 			lista_imprimir(resultados, (void (*)(void *))utils_imprimir_estacao_ln);
 			printf("\n");
 			lista_apagar(&resultados, (void (*)(void *))destruir_estacao);
 		}
+		err = encontrou_algum == 0 ? 1 : 0;
+		fclose(f);
 		break;
 
 	// DELETE
@@ -96,7 +103,11 @@ int main()
 			Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
 			ler_input_para_estacao_de_busca(estacao);
 			err = DELETE(estacao, f);
-			if(err) break;
+			if (err)
+			{
+				destruir_estacao(estacao);
+				break;
+			}
 			destruir_estacao(estacao);
 		}
 
@@ -105,7 +116,7 @@ int main()
 	case 5:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb+");
-		INSERT(f);
+		err = INSERT(f);
 		break;
 	// UPDATE
 	case 6:
@@ -133,16 +144,21 @@ int main()
 
 			err = UPDATE(estacao_busca, estacao_valores, f);
 
-			if(err) break;
+			if (err)
+			{
+				destruir_estacao(estacao_busca);
+				destruir_estacao(estacao_valores);
+				break;
+			}
 
 			destruir_estacao(estacao_busca);
 			destruir_estacao(estacao_valores);
-
 		}
 		break;
 	}
 
-	if(err == 1){
+	if (err == 1)
+	{
 		mostrar_erro();
 		return 0;
 	}

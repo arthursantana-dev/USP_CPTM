@@ -8,29 +8,25 @@ struct _query
     char valor[MAX_TAM_NOME];
 };
 
-void select_all(FILE *f)
+int select_all(FILE *f)
 {
     // Abrindo arquivo binário, lendo header, verificações etc
     char buffer[TAM_REGISTRO];
     if (f == NULL)
     {
-        mostrar_erro();
-        return;
+        return EXIT_FAILURE;
     }
     Header *header = ler_header_do_arquivo(f);
     if (header == NULL)
     {
-        mostrar_erro();
-        fclose(f);
-        return;
+        return EXIT_FAILURE;
     }
     int nroEstacoes = header->nroEstacoes;
     if (nroEstacoes == 0)
     {
         printf("Registro inexistente.\n");
         free(header);
-        fclose(f);
-        return;
+        return 0; //erro tratado localmente, sem necessidade de flag
     }
 
     fseek(f, TAM_HEADER, SEEK_SET);
@@ -61,7 +57,6 @@ void select_all(FILE *f)
     }
 
     free(header);
-    fclose(f);
 }
 
 // Pra ficar bonitinho com select(where()) vou retornar uma lista de wheres
@@ -99,7 +94,6 @@ LISTA *SELECT(LISTA *where, FILE *f)
 {
     if (f == NULL)
     {
-        mostrar_erro();
         return NULL;
     }
     fseek(f, TAM_HEADER, SEEK_SET);
@@ -108,8 +102,6 @@ LISTA *SELECT(LISTA *where, FILE *f)
     Header *header = ler_header_do_arquivo(f);
     if (header == NULL)
     {
-        mostrar_erro();
-        fclose(f);
         return NULL;
     }
     int nroEstacoes = header->nroEstacoes;
@@ -117,7 +109,6 @@ LISTA *SELECT(LISTA *where, FILE *f)
     {
         printf("Registro inexistente.\n");
         free(header);
-        fclose(f);
         return NULL;
     }
     

@@ -151,6 +151,7 @@ Header *ler_header_do_arquivo(FILE *f)
     }
     
     if(header->status == '0'){
+        free(header);
         return NULL;
     }
 
