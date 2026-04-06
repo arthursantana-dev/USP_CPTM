@@ -15,7 +15,8 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
         return EXIT_FAILURE;
     }
 
-    fseek(csv, 101, SEEK_SET);
+    char cabecalho[256];
+    fgets(cabecalho, sizeof(cabecalho), csv);
 
     FILE *bin = fopen(nome_arquivo_binario, "wb+");
     if (bin == NULL)

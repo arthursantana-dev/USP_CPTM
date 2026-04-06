@@ -17,16 +17,14 @@
 
 /*
 
+	Arthur Santana - 16818912
+	Arthur Martins Pereira - 16855601
+
 	1. CREATE - Santana
-
 	2. SELECT FROM - Martins
-
 	3. SELECT WHERE - Martins
-
 	4. DELETE - Santana
-
 	5. INSERT INTO - Martins
-
 	6. UPDATE - Santana
 
 	Obs.:
