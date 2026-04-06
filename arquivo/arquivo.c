@@ -149,6 +149,11 @@ Header *ler_header_do_arquivo(FILE *f)
         mostrar_erro();
         return NULL;
     }
+    
+    if(header->status == '0'){
+        return NULL;
+    }
+
     if (fread(&header->topo, sizeof(header->topo), 1, f) != 1)
     {
         mostrar_erro();

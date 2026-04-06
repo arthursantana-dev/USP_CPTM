@@ -12,7 +12,6 @@ int UPDATE(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
     if (header == NULL)
     {
         free(header);
-        mostrar_erro();
         return EXIT_FAILURE;
     }
 

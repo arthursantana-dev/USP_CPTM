@@ -13,7 +13,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
 
     if (header == NULL)
     {
-        mostrar_erro();
         fclose(f);
         return EXIT_FAILURE;
     }

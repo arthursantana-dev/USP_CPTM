@@ -36,6 +36,7 @@ int _insert(FILE *f, Estacao *estacao)
     Header *header = ler_header_do_arquivo(f);
     if (header == NULL)
         return 1;
+
     header->status = '0';
     escrever_header_no_arquivo(f, header);
     int topo = header->topo;
@@ -65,31 +66,11 @@ int _insert(FILE *f, Estacao *estacao)
         // Se a estação tem uma próxima estação, então tem um par
         header->nroParesEstacao++;
 
-    // Select from estacoes where codProxEstacao = estacao->codEstacao
-    // Para verificar se tem alguma estação apontando pra essa (o que resultaria num novo par)
-    char *chave = "codProxEstacao";
-    char *valor = (char *)malloc(12 * sizeof(char));
-    sprintf(valor, "%d", estacao->codEstacao);
-    LISTA *estacoes_apontando = SELECT(where_interno(1, &chave, &valor), f);
-    header->nroParesEstacao += lista_tamanho(estacoes_apontando);
-    lista_apagar(&estacoes_apontando, (void (*)(void *))destruir_estacao);
-
-    // Verificar pra mudar no header o n de estações
-    SetNomesEstacoes *set_estacoes = criar_set_estacoes_populado(f);
-
-    // Se a estação já tá no set, então o n de estações continua igual
-    if (!existe_estacao(set_estacoes, estacao->nomeEstacao))
-    {
-        header->nroEstacoes++;
-    }
-    
     header->status = '1';
     escrever_header_no_arquivo(f, header);
 
-    free(valor);
     free(buffer);
     free(header);
-    destruir_set_estacoes(set_estacoes);
 
     return 0;
 }

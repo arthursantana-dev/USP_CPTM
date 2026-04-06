@@ -29,6 +29,8 @@
 
 	Obs.:
 
+	- mexer nos pares e nroEstacoes somente nos DELETES.
+	- garantir acesso ao vídeo explicando o projeto.
 	- evitar repetir fopen/fclose.
 	- evitar usar ftell(), principalmente em loops. regs de tamanho fixo -> rrn via operações.
 	- settar status como inconsistente no início de operação e consistenteao fim.
@@ -50,6 +52,8 @@ int main()
 	scanf("%d", &opcode);
 
 	FILE *f = NULL;
+
+	int err = 0;
 
 	switch (opcode)
 	{
@@ -91,7 +95,8 @@ int main()
 		{
 			Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
 			ler_input_para_estacao_de_busca(estacao);
-			DELETE(estacao, f);
+			err = DELETE(estacao, f);
+			if(err) break;
 			destruir_estacao(estacao);
 		}
 
@@ -126,12 +131,20 @@ int main()
 			ler_input_para_estacao_de_busca(estacao_busca);
 			ler_input_para_estacao_de_busca(estacao_valores);
 
-			UPDATE(estacao_busca, estacao_valores, f);
+			err = UPDATE(estacao_busca, estacao_valores, f);
+
+			if(err) break;
+
 			destruir_estacao(estacao_busca);
 			destruir_estacao(estacao_valores);
 
 		}
 		break;
+	}
+
+	if(err == 1){
+		mostrar_erro();
+		return 0;
 	}
 
 	if (opcode != 1 && opcode != 2 && opcode != 3)
