@@ -90,7 +90,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
         free(header);
         destruir_set_estacoes(set_estacoes);
         destruir_pares(&info_pares_estacoes);
-        mostrar_erro();
         return EXIT_FAILURE;
     }
 

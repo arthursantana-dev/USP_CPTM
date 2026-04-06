@@ -13,7 +13,6 @@ int UPDATE(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
     {
         free(header);
         mostrar_erro();
-        // printf("%d\n", 2);
         return EXIT_FAILURE;
     }
 

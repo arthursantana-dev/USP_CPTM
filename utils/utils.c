@@ -123,7 +123,8 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         }
         else if (strcmp(vetor[i], "nomeEstacao") == 0)
         {
-            if (estacao->nomeEstacao != NULL) {
+            if (estacao->nomeEstacao != NULL)
+            {
                 free(estacao->nomeEstacao);
             }
             estacao->tamNomeEstacao = strlen(vetor[i + 1]);
@@ -137,11 +138,12 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         }
         else if (strcmp(vetor[i], "nomeLinha") == 0)
         {
-            if (estacao->nomeLinha != NULL) {
+            if (estacao->nomeLinha != NULL)
+            {
                 free(estacao->nomeLinha); // Libera o valor anterior ("")
             }
             estacao->tamNomeLinha = strlen(vetor[i + 1]);
-            estacao->nomeLinha = (char*) malloc((estacao->tamNomeLinha + 1) * sizeof(char));
+            estacao->nomeLinha = (char *)malloc((estacao->tamNomeLinha + 1) * sizeof(char));
             strcpy(estacao->nomeLinha, vetor[i + 1]);
         }
         else if (strcmp(vetor[i], "codProxEstacao") == 0)
@@ -161,8 +163,6 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
             estacao->codEstacaoIntegra = atoi(vetor[i + 1]);
         }
     }
-
-    
 }
 
 void utils_linha_para_estacao(Estacao *estacao, char *linha)
@@ -222,7 +222,7 @@ int utils_mostrar_pilha_remocao(FILE *f, Header *header)
 void utils_imprimir_estacao_ln(Estacao *estacao)
 {
     printf("%d ", estacao->codEstacao);
-    
+
     if (estacao->nomeEstacao != NULL && estacao->tamNomeEstacao > 0)
         printf("%s ", estacao->nomeEstacao);
     else
@@ -265,13 +265,14 @@ void utils_imprimir_estacao_ln(Estacao *estacao)
 void ler_input_para_estacao_de_busca(Estacao *estacao)
 {
     int num_campos;
-    
-    if (scanf("%d", &num_campos) != 1) return;
 
-    char chaves[10][50];   
+    if (scanf("%d", &num_campos) != 1)
+        return;
+
+    char chaves[10][50];
     char valores[10][256];
-    
-    char *elementos[20];  
+
+    char *elementos[20];
     int qtd_elementos = 0;
 
     for (int i = 0; i < num_campos; i++)
@@ -280,6 +281,10 @@ void ler_input_para_estacao_de_busca(Estacao *estacao)
         elementos[qtd_elementos++] = chaves[i];
 
         ScanQuoteString(valores[i]);
+        if (strcmp("", valores[i]) == 0)
+        {
+            memcpy(valores[i], "-1", sizeof("-1"));
+        }
         elementos[qtd_elementos++] = valores[i];
     }
 
@@ -383,12 +388,12 @@ void nullOrInt(int *n)
 
     while ((R = getchar()) != EOF && isspace(R))
         ; // ignorar espaços, \r, \n...
-    
+
     if (R == 'N' || R == 'n')
     { // campo NULO
         getchar();
         getchar();
-        getchar();       // ignorar o "ULO" de NULO.
+        getchar(); // ignorar o "ULO" de NULO.
         *n = -1;
     }
     else if (R != EOF)
@@ -415,7 +420,7 @@ void nullOrString(char *str)
     { // campo NULO
         getchar();
         getchar();
-        getchar();       // ignorar o "ULO" de NULO.
+        getchar();         // ignorar o "ULO" de NULO.
         strcpy(str, "-1"); // copia string vazia
     }
     else if (R == '\"')

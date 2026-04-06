@@ -97,47 +97,9 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
         free(estacao);
     }
 
-    /*
-        pares[] registra todos os diferentes pares de estacao-proxEstacao.
-        para encontrar o número de diferentes pares, ordena-se o vetor e o percorre.
-        caso duas linhas consecutivas diferem de origem ou destino, contabiliza +1 pro número de pares.
-    */
-
-    // ordenar_pares(&info_pares_estacoes);
-
-    ParEstacoes *par_i;
-
-    iniciar_iterador(&info_pares_estacoes, &par_i);
-
-    int nroParesEstacao = 0;
-    if (total_pares_lidos > 0)
-    {
-        nroParesEstacao = 1;
-
-        int i = 0;
-
-        while (par_i != NULL)
-        {
-
-            if (par_i->prox == NULL)
-            {
-                break;
-            }
-
-            if (par_i->origem != par_i->prox->origem ||
-                par_i->destino != par_i->prox->destino)
-            {
-                nroParesEstacao++;
-            }
-
-            par_i = par_i->prox;
-            i++;
-        }
-    }
-
     fseek(bin, 0, SEEK_SET);
     header.status = '1';
-    header.nroParesEstacao = nroParesEstacao;
+    header.nroParesEstacao = info_pares_estacoes.nroPares;
     header.proxRRN = contador_estacoes;
     header.nroEstacoes = set_estacoes->tamanho;
 
