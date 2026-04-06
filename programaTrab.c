@@ -64,6 +64,7 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		CREATE(nome_arquivo_csv, nome_arquivo_binario);
 		break;
+
 	// SELECT FROM
 	case 2:
 		scanf("%s", nome_arquivo_binario);
@@ -71,6 +72,7 @@ int main()
 		err = select_all(f);
 		fclose(f);
 		break;
+
 	// SELECT WHERE
 	case 3:
 		scanf("%s", nome_arquivo_binario);
@@ -112,12 +114,14 @@ int main()
 		}
 
 		break;
+
 	// INSERT INTO
 	case 5:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb+");
 		err = INSERT(f);
 		break;
+		
 	// UPDATE
 	case 6:
 		scanf("%s", nome_arquivo_binario);
@@ -163,6 +167,9 @@ int main()
 		return 0;
 	}
 
+	//Operações que não "acessam" o arquivo para escrita:
+	//CREATE: cria o arquivo
+	//SELECT INTO/WHERE: leitura
 	if (opcode != 1 && opcode != 2 && opcode != 3)
 	{
 		fclose(f);
