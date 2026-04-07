@@ -35,7 +35,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
     fseek(f, TAM_HEADER, SEEK_SET);
 
     int rrn_atual = -1;
-    int pares_lidos = 0;
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
@@ -53,7 +52,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
 
         if (!comparar_estacoes(estacao_busca, ea) && ea->codProxEstacao != -1)
         {
-            pares_lidos++;
             inserir_par(&info_pares_estacoes, ea->codEstacao, ea->codProxEstacao);
         }
 
@@ -65,8 +63,7 @@ int DELETE(Estacao *estacao_busca, FILE* f)
 
         removeu_estacao = 1;
 
-        offset = TAM_HEADER + TAM_REGISTRO * rrn_atual;
-        RRNnovo = (offset - TAM_HEADER) / TAM_REGISTRO;
+        RRNnovo = rrn_atual;
 
         ea->removido = '1';
         ea->proximo = header->topo;

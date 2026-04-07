@@ -20,11 +20,8 @@ int UPDATE(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    int i = -1;
-
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        i++;
         Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
         escrever_buffer_na_estacao(buffer, ea);
 

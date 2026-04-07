@@ -40,7 +40,6 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
     char linha[256];
 
     int contador_estacoes = 0;
-    int total_pares_lidos = 0;
 
     while (fgets(linha, sizeof(linha), csv))
     {
@@ -87,7 +86,6 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
         if (estacao->codProxEstacao != -1)
         {
             inserir_par(&info_pares_estacoes, estacao->codEstacao, estacao->codProxEstacao);
-            total_pares_lidos++;
         }
 
         contador_estacoes++;
