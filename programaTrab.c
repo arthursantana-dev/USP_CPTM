@@ -78,18 +78,18 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
 		scanf("%d", &n);
-		int encontrou_algum = 0;
+
 		for (int i = 0; i < n; i++)
 		{
-			int failed = SELECT(where(), f);
-			if (failed){
-				mostrar_erro();
-				continue;
-			}
-			encontrou_algum = 1;
+			Estacao *estacao_selecao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+			ler_input_para_estacao_de_busca(estacao_selecao);
+			err = SELECT(estacao_selecao, f);
+			
+			destruir_estacao(estacao_selecao);
+			if(err) break;
 			printf("\n");
 		}
-		err = encontrou_algum == 0 ? 1 : 0;
+		
 		fclose(f);
 		break;
 

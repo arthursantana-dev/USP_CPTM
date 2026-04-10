@@ -26,7 +26,7 @@ int select_all(FILE *f)
     {
         printf("Registro inexistente.\n");
         free(header);
-        return 0; //erro tratado localmente, sem necessidade de flag
+        return 0; // erro tratado localmente, sem necessidade de flag
     }
 
     fseek(f, TAM_HEADER, SEEK_SET);
@@ -79,142 +79,57 @@ LISTA *where_interno(int mn, char **chaves, char **valores)
     return wheres;
 }
 
-// O select em si, o goat
-int SELECT(LISTA *where, FILE *f)
+int SELECT(Estacao *estacao_selecao, FILE *f)
 {
-    if (f == NULL)
-    {
-        return EXIT_FAILURE;
-    }
-    fseek(f, TAM_HEADER, SEEK_SET);
-    char *buffer = criar_buffer();
+
+    char buffer[TAM_REGISTRO];
+
     Header *header = ler_header_do_arquivo(f);
+
     if (header == NULL)
     {
+        free(header);
         return EXIT_FAILURE;
     }
+
     int nroEstacoes = header->nroEstacoes;
     if (nroEstacoes == 0)
     {
         printf("Registro inexistente.\n");
         free(header);
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
-    
+
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    int found = 0;
+    int achou = 0;
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
+        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
         escrever_buffer_na_estacao(buffer, ea);
+
         if (ea->removido == '1')
         {
+            destruir_estacao(ea);
             continue;
         }
-        // Como é um AND, um bom jeito de saber se passou por todas as verificações é dar 0 (false) caso falhe em alguma
-        bool match = true;
-        NO *atual = lista_get_no_head(where);
-        if (atual != NULL)
-            atual = no_get_anterior(atual); // pula o dummy head
-        // Iterando sobre todas as queries
-        // atual = query
-        while (atual != NULL)
+
+        if (comparar_estacoes(estacao_selecao, ea))
         {
-            QUERY *query = (QUERY *)no_get_valor(atual);
-
-            // Checando qual chave estamos procurando
-            // Não sei se tem um jeito melhor de fazer isso
-            if (strcmp(query->chave, "codEstacao") == 0)
-            {
-                if (ea->codEstacao != atoi(query->valor))
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            else if (strcmp(query->chave, "nomeEstacao") == 0)
-            {
-                if (strcmp(ea->nomeEstacao, query->valor) != 0)
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            else if (strcmp(query->chave, "codLinha") == 0)
-            {
-                if (ea->codLinha != atoi(query->valor))
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            else if (strcmp(query->chave, "nomeLinha") == 0)
-            {
-                if (strcmp(ea->nomeLinha, query->valor) != 0)
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            else if (strcmp(query->chave, "codProxEstacao") == 0)
-            {
-                if (ea->codProxEstacao != atoi(query->valor))
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            else if (strcmp(query->chave, "distProxEstacao") == 0)
-            {
-                if (ea->distProxEstacao != atoi(query->valor))
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            else if (strcmp(query->chave, "codLinhaIntegra") == 0)
-            {
-                if (ea->codLinhaIntegra != atoi(query->valor))
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            else if (strcmp(query->chave, "codEstIntegra") == 0)
-            {
-                if (ea->codEstacaoIntegra != atoi(query->valor))
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            atual = no_get_anterior(atual);
-        }
-        if (match)
-        {
-            found=1;
             utils_imprimir_estacao_ln(ea);
+            achou = 1; // Encontrou pelo menos um registro nessa consulta, então não mostramos a mensagem de inexistente.
         }
 
         destruir_estacao(ea);
     }
 
-    if(!found){
+    if (!achou)
+    {
         printf("Registro inexistente.\n");
     }
-    free(buffer);
+
     free(header);
-    lista_apagar(&where, free);
-    
-    return 0;
+
+    return EXIT_SUCCESS;
 }

@@ -1,6 +1,6 @@
 #include "DELETE.h"
 
-int DELETE(Estacao *estacao_busca, FILE* f)
+int DELETE(Estacao *estacao_busca, FILE *f)
 {
 
     if (f == NULL)
@@ -82,10 +82,12 @@ int DELETE(Estacao *estacao_busca, FILE* f)
 
     if (!removeu_estacao)
     {
+        header->status = '1';
+        escrever_header_no_arquivo(f, header);
         free(header);
         destruir_set_estacoes(set_estacoes);
         destruir_pares(&info_pares_estacoes);
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
 
     fseek(f, TAM_HEADER, SEEK_SET);

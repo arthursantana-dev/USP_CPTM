@@ -371,14 +371,21 @@ void ScanQuoteString(char *str)
     }
     else if (R != EOF)
     { // vc tá tentando ler uma string que não tá entre
-      // aspas! Fazer leitura normal %s então, pois deve
-      // ser algum inteiro ou algo assim...
+      // aspas! (ex: um número inteiro)
         str[0] = R;
-        scanf("%s", &str[1]);
-    }
-    else
-    { // EOF
-        strcpy(str, "");
+        int i = 1;
+        // lê os próximos caracteres até achar um espaço ou \n
+        while ((R = getchar()) != EOF && !isspace(R))
+        {
+            str[i++] = R;
+        }
+        str[i] = '\0'; // finaliza a string
+
+        // devolve o espaço ou \n para o buffer, para não quebrar a próxima leitura
+        if (R != EOF)
+        {
+            ungetc(R, stdin);
+        }
     }
 }
 
