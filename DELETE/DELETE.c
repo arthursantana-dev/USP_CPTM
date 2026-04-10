@@ -29,7 +29,6 @@ int DELETE(Estacao *estacao_busca, FILE* f)
     header->status = '0';
     escrever_header_no_arquivo(f, header);
 
-    int offset = 0;
     int RRNnovo = 0;
 
     fseek(f, TAM_HEADER, SEEK_SET);

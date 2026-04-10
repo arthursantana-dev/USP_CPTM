@@ -34,17 +34,6 @@ int select_all(FILE *f)
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
         Estacao *ea = (Estacao *)malloc(sizeof(Estacao));
-        // int offset = 0;
-        // char removido;
-        // int proximo;
-        // int codEstacao;
-        // int codLinha;
-        // int codProxEstacao;
-        // int distProxEstacao;
-        // int codLinhaIntegra;
-        // int codEstacaoIntegra;
-        // int tamNomeEstacao;
-        // int tamNomeLinha;
         escrever_buffer_na_estacao(buffer, ea);
         if (ea->removido == '1')
         {
@@ -57,6 +46,7 @@ int select_all(FILE *f)
     }
 
     free(header);
+    return 0;
 }
 
 // Pra ficar bonitinho com select(where()) vou retornar uma lista de wheres
@@ -90,29 +80,30 @@ LISTA *where_interno(int mn, char **chaves, char **valores)
 }
 
 // O select em si, o goat
-LISTA *SELECT(LISTA *where, FILE *f)
+int SELECT(LISTA *where, FILE *f)
 {
     if (f == NULL)
     {
-        return NULL;
+        return EXIT_FAILURE;
     }
     fseek(f, TAM_HEADER, SEEK_SET);
-    LISTA *resultados = lista_criar();
     char *buffer = criar_buffer();
     Header *header = ler_header_do_arquivo(f);
     if (header == NULL)
     {
-        return NULL;
+        return EXIT_FAILURE;
     }
     int nroEstacoes = header->nroEstacoes;
     if (nroEstacoes == 0)
     {
         printf("Registro inexistente.\n");
         free(header);
-        return NULL;
+        return EXIT_FAILURE;
     }
     
     fseek(f, TAM_HEADER, SEEK_SET);
+
+    int found = 0;
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
@@ -211,23 +202,19 @@ LISTA *SELECT(LISTA *where, FILE *f)
         }
         if (match)
         {
-            Estacao *resultado = (Estacao *)malloc(sizeof(Estacao));
-            *resultado = *ea; // Copia os dados pra nn ter problema de ponteiro
-
-            // strdup pra fazer deep copy
-            if (ea->nomeEstacao != NULL)
-                resultado->nomeEstacao = strdup(ea->nomeEstacao);
-
-            if (ea->nomeLinha != NULL)
-                resultado->nomeLinha = strdup(ea->nomeLinha);
-
-            lista_inserir(resultados, resultado);
+            found=1;
+            utils_imprimir_estacao_ln(ea);
         }
 
         destruir_estacao(ea);
     }
+
+    if(!found){
+        printf("Registro inexistente.\n");
+    }
     free(buffer);
     free(header);
     lista_apagar(&where, free);
-    return resultados;
+    
+    return 0;
 }

@@ -26,12 +26,12 @@ int select_all(FILE *f);
 LISTA *where();
 
 /**
- * @brief Realiza a busca sequencial de registros no arquivo binário que satisfaçam todos os critérios estabelecidos.
+ * @brief Realiza a busca sequencial e print de registros no arquivo binário que satisfaçam todos os critérios estabelecidos.
  * @param where Ponteiro para a lista contendo os critérios de busca (pares de chave e valor).
  * @param f Ponteiro para o arquivo binário aberto.
- * @return Retorna uma LISTA contendo cópias profundas dos registros (Estacao) que deram "match" na busca.
+ * @return Retorna um int informando se o select obteve sucesso.
  */
-LISTA *SELECT(LISTA *where, FILE *f);
+int SELECT(LISTA *where, FILE *f);
 
 /**
  * @brief Constrói internamente uma lista de critérios de busca (WHERE) a partir de vetores de chaves e valores passados via código.

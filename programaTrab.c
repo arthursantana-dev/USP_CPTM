@@ -81,13 +81,13 @@ int main()
 		int encontrou_algum = 0;
 		for (int i = 0; i < n; i++)
 		{
-			LISTA *resultados = SELECT(where(), f);
-			if (resultados == NULL)
+			int failed = SELECT(where(), f);
+			if (failed){
+				mostrar_erro();
 				continue;
+			}
 			encontrou_algum = 1;
-			lista_imprimir(resultados, (void (*)(void *))utils_imprimir_estacao_ln);
 			printf("\n");
-			lista_apagar(&resultados, (void (*)(void *))destruir_estacao);
 		}
 		err = encontrou_algum == 0 ? 1 : 0;
 		fclose(f);
