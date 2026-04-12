@@ -2,12 +2,6 @@
 
 // Façamos o C do CRUD, o celect
 
-struct _query
-{
-    char chave[50];
-    char valor[MAX_TAM_NOME];
-};
-
 int select_all(FILE *f)
 {
     // Abrindo arquivo binário, lendo header, verificações etc
@@ -47,36 +41,6 @@ int select_all(FILE *f)
 
     free(header);
     return 0;
-}
-
-// Pra ficar bonitinho com select(where()) vou retornar uma lista de wheres
-// Lê o mn e itera sobre ele pra fazer a lista de queries
-LISTA *where()
-{
-    int mn;
-    scanf("%d", &mn);
-    LISTA *wheres = lista_criar();
-    for (int i = 0; i < mn; i++)
-    {
-        QUERY *query = (QUERY *)malloc(sizeof(QUERY));
-        scanf("%s", query->chave);
-        nullOrString(query->valor);
-        lista_inserir(wheres, query);
-    }
-    return wheres;
-}
-
-LISTA *where_interno(int mn, char **chaves, char **valores)
-{
-    LISTA *wheres = lista_criar();
-    for (int i = 0; i < mn; i++)
-    {
-        QUERY *query = (QUERY *)malloc(sizeof(QUERY));
-        strcpy(query->chave, chaves[i]);
-        strcpy(query->valor, valores[i]);
-        lista_inserir(wheres, query);
-    }
-    return wheres;
 }
 
 int SELECT(Estacao *estacao_selecao, FILE *f)
