@@ -9,7 +9,7 @@
 	#include "../CONSTS.h"
 	#include "../Estacao/Estacao.h"
 	#include "../Header/Header.h"
-	#include "../buffer/buffer.h"
+	#include "../IO/IO.h"
 
 	void mostrar_erro();
 
@@ -34,8 +34,6 @@
 	void nullOrString(char *str);
 
 	void nullOrInt(int *n);
-
-	void utils_vetor_para_estacao(Estacao *estacao, char *elementos[], int qtd_elementos);
 
 #endif
 

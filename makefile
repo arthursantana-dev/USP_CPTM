@@ -2,18 +2,12 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2
 
 SRCS = programaTrab.c \
-	buffer/buffer.c \
-	CREATE/CREATE.c \
 	utils/utils.c \
 	Estacao/Estacao.c \
-	arquivo/arquivo.c \
 	ParEstacoes/ParEstacoes.c \
-	DELETE/DELETE.c \
-	UPDATE/UPDATE.c \
 	SetNomes/SetNomes.c \
-	SELECT/SELECT.c \
-	Header/Header.c \
-	INSERT/INSERT.c
+	IO/IO.c \
+	CRUD/CRUD.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -39,16 +33,19 @@ v:
 clean:
 	rm -f $(OBJS) $(EXEC)
 c:
-	./programaTrab < create.in
+	./programaTrab < testes/create.in
 
 d:
-	./programaTrab < delete.in
+	./programaTrab < testes/delete.in
 
 u:
-	./programaTrab < update.in
+	./programaTrab < testes/update.in
 
 i: 
-	./programaTrab < insert.in
+	./programaTrab < testes/insert.in
 
 s: 
-	./programaTrab < select.in
+	./programaTrab < testes/select.in
+
+zip:
+	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" 

@@ -4,16 +4,10 @@
 
 #include "CONSTS.h"
 
-#include "CREATE/CREATE.h"
-#include "DELETE/DELETE.h"
-#include "UPDATE/UPDATE.h"
-#include "SELECT/SELECT.h"
-#include "INSERT/INSERT.h"
-
 #include "utils/utils.h"
-#include "buffer/buffer.h"
 #include "Header/Header.h"
-#include "SetNomes/SetNomes.h"
+
+#include "CRUD/CRUD.h"
 
 /*
 

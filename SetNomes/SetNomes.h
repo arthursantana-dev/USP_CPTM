@@ -1,8 +1,8 @@
 #ifndef SET_NOMES_ESTACOES_H
 #define SET_NOMES_ESTACOES_H
 
-#include "../buffer/buffer.h"
 #include "../Estacao/Estacao.h"
+#include "../IO/IO.h"
 
 typedef struct no_set {
     char *nome;
