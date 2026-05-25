@@ -1,6 +1,15 @@
 #include "../ParEstacoes/ParEstacoes.h"
 #include "../SetNomes/SetNomes.h"
 
+#include "_select.c"
+#include "_delete.c"
+#include "_insert.c"
+#include "_update.c"
+
+/* =========================================================
+ * CREATE
+ * ========================================================= */
+
 int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
 {
 
@@ -114,172 +123,41 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
     return EXIT_SUCCESS;
 }
 
-int DELETE(Estacao *estacao_busca, FILE *f)
+/* =========================================================
+ * DELETE
+ * ========================================================= */
+
+
+int DELETE(int n, FILE *f)
 {
 
-    if (f == NULL)
+    int err = 0;
+
+    Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+    for (int i = 0; i < n; i++)
     {
-        mostrar_erro();
-        return EXIT_FAILURE;
+
+        set_valores_estacao_para_busca(estacao);
+
+        ler_input_para_estacao_de_busca(estacao);
+        err = _delete(estacao, f);
+
+        limpar_estacao(estacao);
+
+        if (err)
+            break;
     }
 
-    Header *header = ler_header_do_arquivo(f);
+    destruir_estacao(estacao);
 
-    if (header == NULL)
-    {
-        fclose(f);
-        return EXIT_FAILURE;
-    }
-
-    char buffer[TAM_REGISTRO];
-
-    int removeu_estacao = 0;
-
-    SetNomesEstacoes *set_estacoes = criar_set_estacoes();
-
-    InfoParesEstacoes info_pares_estacoes;
-    inicializar_pares(&info_pares_estacoes);
-
-    header->status = '0';
-    escrever_header_no_arquivo(f, header);
-
-    int RRNnovo = 0;
-
-    fseek(f, TAM_HEADER, SEEK_SET);
-
-    int rrn_atual = -1;
-
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
-    {
-        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-
-        escrever_buffer_na_estacao(buffer, ea);
-
-        rrn_atual++;
-
-        if (ea->removido == '1')
-        {
-            destruir_estacao(ea);
-            continue;
-        }
-
-        if (!comparar_estacoes(estacao_busca, ea) && ea->codProxEstacao != -1)
-        {
-            inserir_par(&info_pares_estacoes, ea->codEstacao, ea->codProxEstacao);
-        }
-
-        if (!comparar_estacoes(estacao_busca, ea))
-        {
-            destruir_estacao(ea);
-            continue;
-        }
-
-        removeu_estacao = 1;
-
-        RRNnovo = rrn_atual;
-
-        ea->removido = '1';
-        ea->proximo = header->topo;
-
-        header->topo = RRNnovo;
-
-        escrever_estacao_no_buffer(ea, buffer);
-
-        fseek(f, TAM_HEADER + TAM_REGISTRO * RRNnovo, SEEK_SET);
-
-        escrever_buffer_no_arquivo(f, buffer);
-
-        destruir_estacao(ea);
-
-        fseek(f, 0, SEEK_CUR);
-    }
-
-    if (!removeu_estacao)
-    {
-        header->status = '1';
-        escrever_header_no_arquivo(f, header);
-        free(header);
-        destruir_set_estacoes(set_estacoes);
-        destruir_pares(&info_pares_estacoes);
-        return EXIT_SUCCESS;
-    }
-
-    fseek(f, TAM_HEADER, SEEK_SET);
-
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
-    {
-        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-
-        escrever_buffer_na_estacao(buffer, ea);
-
-        if (ea->removido == '1')
-        {
-            destruir_estacao(ea);
-            continue;
-        }
-
-        incluir_estacao(set_estacoes, ea->nomeEstacao);
-        destruir_estacao(ea);
-    }
-
-    header->status = '1';
-    header->nroEstacoes = set_estacoes->tamanho;
-    header->nroParesEstacao = info_pares_estacoes.nroPares;
-
-    escrever_header_no_arquivo(f, header);
-
-    destruir_set_estacoes(set_estacoes);
-    destruir_pares(&info_pares_estacoes);
-
-    free(header);
-
-    return EXIT_SUCCESS;
+    return err;
 }
 
-int _insert(FILE *f, Estacao *estacao)
-{
-    // Algoritmo da professora
-    Header *header = ler_header_do_arquivo(f);
-    if (header == NULL)
-        return 1;
 
-    header->status = '0';
-    escrever_header_no_arquivo(f, header);
-    int topo = header->topo;
-    int proxRRN = header->proxRRN;
-    char *buffer = criar_buffer();
-    if (topo == -1)
-    {
-        int offset = proxRRN * TAM_REGISTRO + TAM_HEADER;
-        fseek(f, offset, SEEK_SET);
-        header->proxRRN++;
-    }
-    else
-    {
-        int offset = topo * TAM_REGISTRO + TAM_HEADER;
-        fseek(f, offset, SEEK_SET);
-        fread(buffer, TAM_REGISTRO, 1, f);
-        fseek(f, offset, SEEK_SET);
-        Estacao *estacao_removida = (Estacao *)calloc(1, sizeof(Estacao));
-        escrever_buffer_na_estacao(buffer, estacao_removida);
-        header->topo = estacao_removida->proximo;
-        destruir_estacao(estacao_removida);
-    }
-    escrever_estacao_no_buffer(estacao, buffer);
-    escrever_buffer_no_arquivo(f, buffer);
-
-    if (estacao->codProxEstacao != -1)
-        // Se a estação tem uma próxima estação, então tem um par
-        header->nroParesEstacao++;
-
-    header->status = '1';
-    escrever_header_no_arquivo(f, header);
-
-    free(buffer);
-    free(header);
-
-    return 0;
-}
+/* =========================================================
+ * INSERT
+ * ========================================================= */
 
 
 int INSERT(FILE *f)
@@ -314,10 +192,11 @@ int INSERT(FILE *f)
     return 0;
 }
 
+/* =========================================================
+ * SELECT
+ * ========================================================= */
 
-// Façamos o C do CRUD, o celect
-
-int select_all(FILE *f)
+int SELECT_ALL(FILE *f)
 {
     // Abrindo arquivo binário, lendo header, verificações etc
     char buffer[TAM_REGISTRO];
@@ -358,113 +237,68 @@ int select_all(FILE *f)
     return 0;
 }
 
-int SELECT(Estacao *estacao_selecao, FILE *f)
+int SELECT(int n, FILE *f)
 {
+    int err = 0;
 
-    char buffer[TAM_REGISTRO];
+    Estacao *estacao_selecao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
 
-    Header *header = ler_header_do_arquivo(f);
-
-    if (header == NULL)
+    for (int i = 0; i < n; i++)
     {
-        free(header);
-        return EXIT_FAILURE;
+
+        set_valores_estacao_para_busca(estacao_selecao);
+
+        ler_input_para_estacao_de_busca(estacao_selecao);
+        err = _select(estacao_selecao, f);
+
+        limpar_estacao(estacao_selecao);
+
+        if (err)
+            break;
+
+        printf("\n");
     }
 
-    int nroEstacoes = header->nroEstacoes;
-    if (nroEstacoes == 0)
-    {
-        printf("Registro inexistente.\n");
-        free(header);
-        return EXIT_SUCCESS;
-    }
+    destruir_estacao(estacao_selecao);
 
-    fseek(f, TAM_HEADER, SEEK_SET);
-
-    int achou = 0;
-
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
-    {
-        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-        escrever_buffer_na_estacao(buffer, ea);
-
-        if (ea->removido == '1')
-        {
-            destruir_estacao(ea);
-            continue;
-        }
-
-        if (comparar_estacoes(estacao_selecao, ea))
-        {
-            utils_imprimir_estacao_ln(ea);
-            achou = 1; // Encontrou pelo menos um registro nessa consulta, então não mostramos a mensagem de inexistente.
-        }
-
-        destruir_estacao(ea);
-    }
-
-    if (!achou)
-    {
-        printf("Registro inexistente.\n");
-    }
-
-    free(header);
-
-    return EXIT_SUCCESS;
+    return err;
 }
 
-// estacao_valores: valores == 0 -> ignorar e manter;
-// valores == -1 -> atualizar para NULO
-int UPDATE(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
+/* =========================================================
+ * UPDATE
+ * ========================================================= */
+
+int UPDATE(int n, FILE *f)
 {
+    int err = 0;
 
-    char buffer[TAM_REGISTRO];
+    Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
 
-    Header *header = ler_header_do_arquivo(f);
+    Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
 
-    if (header == NULL)
+    for (int i = 0; i < n; i++)
     {
-        return EXIT_FAILURE;
+
+        set_valores_estacao_para_busca(estacao_busca);
+        set_valores_estacao_para_busca(estacao_valores);
+
+        ler_input_para_estacao_de_busca(estacao_busca);
+        ler_input_para_estacao_de_busca(estacao_valores);
+
+        err = _update(estacao_busca, estacao_valores, f);
+
+        limpar_estacao(estacao_busca);
+        limpar_estacao(estacao_valores);
+
+        if (err)
+            break;
+
+        printf("\n");
     }
 
-    header->status = '0';
-    escrever_header_no_arquivo(f, header);
+    destruir_estacao(estacao_busca);
+    destruir_estacao(estacao_valores);
 
-    fseek(f, TAM_HEADER, SEEK_SET);
+    return err;
 
-    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
-    {
-        
-        escrever_buffer_na_estacao(buffer, ea);
-
-        if (ea->removido == '1')
-        {
-            limpar_estacao(ea);
-            continue;
-        }
-
-        if (comparar_estacoes(estacao_busca, ea))
-        {
-            editar_estacao(ea, estacao_valores);
-            escrever_estacao_no_buffer(ea, buffer);
-            fseek(f, -TAM_REGISTRO, SEEK_CUR);
-            escrever_buffer_no_arquivo(f, buffer);
-        }
-
-        limpar_estacao(ea);
-    }
-
-    header->status = '1';
-    
-    fseek(f, 0, SEEK_SET);
-
-    escrever_header_no_arquivo(f, header);
-
-    free(header);
-
-    destruir_estacao(ea);
-
-    return EXIT_SUCCESS;
 }

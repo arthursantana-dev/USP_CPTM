@@ -62,6 +62,12 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     memcpy(&removido, buffer + offset, sizeof(removido));
     offset += sizeof(removido);
 
+    if(removido == '1')
+    {
+        estacao->removido = '1';
+        return 1; // Registro removido, não preenchemos a estacao, apenas retornamos.
+    }
+
     memcpy(&proximo, buffer + offset, sizeof(proximo));
     offset += sizeof(proximo);
 

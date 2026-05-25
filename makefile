@@ -33,19 +33,19 @@ v:
 clean:
 	rm -f $(OBJS) $(EXEC)
 c:
-	./programaTrab < testes/create.in
+	./programaTrab < create.in
 
 d:
-	./programaTrab < testes/delete.in
+	./programaTrab < delete.in
 
 u:
-	./programaTrab < testes/update.in
+	./programaTrab < update.in
 
 i: 
-	./programaTrab < testes/insert.in
+	./programaTrab < insert.in
 
 s: 
-	./programaTrab < testes/select.in
+	./programaTrab < select.in
 
 zip:
 	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" 

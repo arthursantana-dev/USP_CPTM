@@ -15,15 +15,15 @@
 	Arthur Martins Pereira - 16855601
 
 	1. CREATE - Santana
-	2. SELECT FROM - Martins
-	3. SELECT WHERE - Martins
-	4. DELETE - Santana
+	2. select FROM - Martins
+	3. select WHERE - Martins
+	4. delete - Santana
 	5. INSERT INTO - Martins
-	6. UPDATE - Santana
+	6. update - Santana
 
 	Obs.:
 
-	- mexer nos pares e nroEstacoes somente nos DELETES.
+	- mexer nos pares e nroEstacoes somente nos deleteS.
 	- garantir acesso ao vídeo explicando o projeto.
 	- evitar repetir fopen/fclose.
 	- evitar usar ftell(), principalmente em loops. regs de tamanho fixo -> rrn via operações.
@@ -63,7 +63,7 @@ int main()
 	case 2:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
-		err = select_all(f);
+		err = SELECT_ALL(f);
 		break;
 
 	// SELECT WHERE
@@ -71,53 +71,15 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
 		scanf("%d", &n);
-
-		Estacao *estacao_selecao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
-
-		for (int i = 0; i < n; i++)
-		{
-
-			set_valores_estacao_para_busca(estacao_selecao);
-			
-			ler_input_para_estacao_de_busca(estacao_selecao);
-			err = SELECT(estacao_selecao, f);
-			
-			limpar_estacao(estacao_selecao);
-
-			if(err) break;
-
-			printf("\n");
-		}
-
-		destruir_estacao(estacao_selecao);
-		
+		SELECT(n, f);
 		break;
 
 	// DELETE
 	case 4:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
-
 		f = fopen(nome_arquivo_binario, "rb+");
-
-		Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
-
-		for (int i = 0; i < n; i++)
-		{
-
-			set_valores_estacao_para_busca(estacao);
-			
-			ler_input_para_estacao_de_busca(estacao);
-			err = DELETE(estacao, f);
-
-			limpar_estacao(estacao);
-
-			if (err) break;
-			
-		}
-
-		destruir_estacao(estacao);
-
+		err = DELETE(n, f);
 		break;
 
 	// INSERT INTO
@@ -133,36 +95,14 @@ int main()
 		scanf("%d", &n);
 
 		f = fopen(nome_arquivo_binario, "rb+");
-
+		
 		if (f == NULL)
 		{
 			mostrar_erro();
 			return EXIT_FAILURE;
 		}
 
-		// valores a serem buscados
-		Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
-
-		// valores a serem substituidos
-		Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
-
-		for (int i = 0; i < n; i++)
-		{
-			ler_input_para_estacao_de_busca(estacao_busca);
-			ler_input_para_estacao_de_busca(estacao_valores);
-
-			err = UPDATE(estacao_busca, estacao_valores, f);
-
-			limpar_estacao(estacao_busca);
-			limpar_estacao(estacao_valores);
-
-			if (err) break;
-			
-		}
-
-		destruir_estacao(estacao_busca);
-		destruir_estacao(estacao_valores);
-
+		err = UPDATE(n, f);
 		break;
 	}
 
