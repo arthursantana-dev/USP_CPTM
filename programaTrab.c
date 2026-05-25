@@ -70,7 +70,6 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
 		err = select_all(f);
-		fclose(f);
 		break;
 
 	// SELECT WHERE
@@ -79,18 +78,25 @@ int main()
 		f = fopen(nome_arquivo_binario, "rb");
 		scanf("%d", &n);
 
+		Estacao *estacao_selecao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
 		for (int i = 0; i < n; i++)
 		{
-			Estacao *estacao_selecao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+			set_valores_estacao_para_busca(estacao_selecao);
+			
 			ler_input_para_estacao_de_busca(estacao_selecao);
 			err = SELECT(estacao_selecao, f);
 			
-			destruir_estacao(estacao_selecao);
+			limpar_estacao(estacao_selecao);
+
 			if(err) break;
+
 			printf("\n");
 		}
+
+		destruir_estacao(estacao_selecao);
 		
-		fclose(f);
 		break;
 
 	// DELETE
@@ -100,18 +106,23 @@ int main()
 
 		f = fopen(nome_arquivo_binario, "rb+");
 
+		Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
 		for (int i = 0; i < n; i++)
 		{
-			Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+			set_valores_estacao_para_busca(estacao);
+			
 			ler_input_para_estacao_de_busca(estacao);
 			err = DELETE(estacao, f);
-			if (err)
-			{
-				destruir_estacao(estacao);
-				break;
-			}
-			destruir_estacao(estacao);
+
+			limpar_estacao(estacao);
+
+			if (err) break;
+			
 		}
+
+		destruir_estacao(estacao);
 
 		break;
 
@@ -135,31 +146,34 @@ int main()
 			return EXIT_FAILURE;
 		}
 
+		// valores a serem buscados
+		Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+		// valores a serem substituidos
+		Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
 		for (int i = 0; i < n; i++)
 		{
-			// valores a serem buscados
-			Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
-
-			// valores a serem substituidos
-			Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
-
 			ler_input_para_estacao_de_busca(estacao_busca);
 			ler_input_para_estacao_de_busca(estacao_valores);
 
 			err = UPDATE(estacao_busca, estacao_valores, f);
 
-			if (err)
-			{
-				destruir_estacao(estacao_busca);
-				destruir_estacao(estacao_valores);
-				break;
-			}
+			limpar_estacao(estacao_busca);
+			limpar_estacao(estacao_valores);
 
-			destruir_estacao(estacao_busca);
-			destruir_estacao(estacao_valores);
+			if (err) break;
+			
 		}
+
+		destruir_estacao(estacao_busca);
+		destruir_estacao(estacao_valores);
+
 		break;
 	}
+
+	if(f != NULL)
+		fclose(f);
 
 	if (err == 1)
 	{
@@ -167,12 +181,8 @@ int main()
 		return 0;
 	}
 
-	//Operações que não "acessam" o arquivo para escrita:
-	//CREATE: cria o arquivo
-	//SELECT INTO/WHERE: leitura
 	if (opcode != 1 && opcode != 2 && opcode != 3)
 	{
-		fclose(f);
 		BinarioNaTela(nome_arquivo_binario);
 	}
 

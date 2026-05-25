@@ -149,8 +149,43 @@ void destruir_estacao(Estacao *estacao)
 {
     if (estacao != NULL)
     {
-        free(estacao->nomeEstacao);
-        free(estacao->nomeLinha);
+        limpar_estacao(estacao);
         free(estacao);
+    }
+}
+
+
+//Diferentemente do destruir_estacao, não libera a struct
+void limpar_estacao(Estacao *estacao){
+    if (estacao != NULL)
+    {
+        if(estacao->nomeEstacao != NULL) {
+            free(estacao->nomeEstacao);
+            estacao->nomeEstacao = NULL;
+        }
+        
+        if(estacao->nomeLinha != NULL) {
+            free(estacao->nomeLinha);
+            estacao->nomeLinha = NULL;
+        }
+    }
+}
+
+void set_valores_estacao_para_busca(Estacao *estacao){
+    estacao->codEstacao = 0;
+    estacao->codLinha = 0;
+    estacao->codProxEstacao = 0;
+    estacao->distProxEstacao = 0;
+    estacao->codLinhaIntegra = 0;
+    estacao->codEstacaoIntegra = 0;
+    estacao->tamNomeEstacao = 0;
+    if(estacao->nomeEstacao != NULL) {
+        free(estacao->nomeEstacao);
+        estacao->nomeEstacao = NULL;
+    }
+    estacao->tamNomeLinha = 0;
+    if(estacao->nomeLinha != NULL) {
+        free(estacao->nomeLinha);
+        estacao->nomeLinha = NULL;
     }
 }

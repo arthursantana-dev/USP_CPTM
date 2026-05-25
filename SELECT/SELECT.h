@@ -9,7 +9,6 @@
 #include "../buffer/buffer.h"
 #include "../Header/Header.h"
 #include "../arquivo/arquivo.h"
-#include "../lista/lista.h"
 
 /**
  * @brief Recupera e exibe de forma sequencial os dados de todos os registros existentes no arquivo binário.

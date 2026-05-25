@@ -69,4 +69,8 @@
 	 * @param estacao Ponteiro para a estrutura Estacao a ser totalmente liberada e destruída.
 	 */
 	void destruir_estacao(Estacao *estacao);
+
+	void limpar_estacao(Estacao *estacao);
+
+	void set_valores_estacao_para_busca(Estacao *estacao);
 #endif

@@ -1,7 +1,6 @@
 #ifndef SET_NOMES_ESTACOES_H
 #define SET_NOMES_ESTACOES_H
 
-#include "FrequenciaNomes.h"
 #include "../buffer/buffer.h"
 #include "../Estacao/Estacao.h"
 

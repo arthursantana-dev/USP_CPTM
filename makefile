@@ -12,9 +12,7 @@ SRCS = programaTrab.c \
 	UPDATE/UPDATE.c \
 	SetNomes/SetNomes.c \
 	SELECT/SELECT.c \
-	lista/lista.c \
 	Header/Header.c \
-	no/no.c \
 	INSERT/INSERT.c
 
 OBJS = $(SRCS:.c=.o)

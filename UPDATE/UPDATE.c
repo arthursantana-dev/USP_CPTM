@@ -11,7 +11,6 @@ int UPDATE(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
     if (header == NULL)
     {
-        free(header);
         return EXIT_FAILURE;
     }
 
@@ -20,41 +19,39 @@ int UPDATE(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
     fseek(f, TAM_HEADER, SEEK_SET);
 
+    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+        
         escrever_buffer_na_estacao(buffer, ea);
 
         if (ea->removido == '1')
         {
-            destruir_estacao(ea);
+            limpar_estacao(ea);
             continue;
         }
 
         if (comparar_estacoes(estacao_busca, ea))
         {
-
             editar_estacao(ea, estacao_valores);
-
             escrever_estacao_no_buffer(ea, buffer);
-
             fseek(f, -TAM_REGISTRO, SEEK_CUR);
-
             escrever_buffer_no_arquivo(f, buffer);
-
-            fseek(f, 0, SEEK_CUR);
         }
 
-        destruir_estacao(ea);
+        limpar_estacao(ea);
     }
 
     header->status = '1';
-
+    
     fseek(f, 0, SEEK_SET);
 
     escrever_header_no_arquivo(f, header);
 
     free(header);
+
+    destruir_estacao(ea);
 
     return EXIT_SUCCESS;
 }
