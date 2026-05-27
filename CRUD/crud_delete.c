@@ -1,7 +1,6 @@
-#include "../ParEstacoes/ParEstacoes.h"
-#include "../SetNomes/SetNomes.h"
+#include "CRUD.h"
 
-int _delete(Estacao *estacao_busca, FILE *f)
+int crud_delete(Estacao *estacao_busca, FILE *f)
 {
 
     if (f == NULL)
@@ -15,6 +14,7 @@ int _delete(Estacao *estacao_busca, FILE *f)
     if (header == NULL)
     {
         fclose(f);
+        mostrar_erro();
         return EXIT_FAILURE;
     }
 
@@ -122,3 +122,31 @@ int _delete(Estacao *estacao_busca, FILE *f)
 
     return EXIT_SUCCESS;
 }
+
+int DELETE(int n, FILE *f)
+{
+
+    int err = 0;
+
+    Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+    for (int i = 0; i < n; i++)
+    {
+
+        set_valores_estacao_para_busca(estacao);
+
+        ler_input_para_estacao_de_busca(estacao);
+        err = crud_delete(estacao, f);
+
+        limpar_estacao(estacao);
+
+        if (err)
+            break;
+    }
+
+    destruir_estacao(estacao);
+
+    return err;
+}
+
+

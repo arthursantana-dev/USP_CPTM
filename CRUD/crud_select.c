@@ -1,0 +1,141 @@
+#include "CRUD.h"
+
+int crud_select(Estacao *estacao_selecao, FILE *f)
+{
+
+    char buffer[TAM_REGISTRO];
+
+    Header *header = ler_header_do_arquivo(f);
+
+    if (header == NULL)
+    {
+        free(header);
+        return EXIT_FAILURE;
+    }
+
+    int nroEstacoes = header->nroEstacoes;
+    if (nroEstacoes == 0)
+    {
+        printf("Registro inexistente.\n");
+        free(header);
+        return EXIT_SUCCESS;
+    }
+
+    fseek(f, TAM_HEADER, SEEK_SET);
+
+    int achou = 0;
+
+    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    {
+
+        //Tecnicamente, ea foi lido
+        escrever_buffer_na_estacao(buffer, ea);
+
+        if (ea->removido == '1')
+        {
+            limpar_estacao(ea);
+            continue;
+        }
+
+        if (comparar_estacoes(estacao_selecao, ea))
+        {
+            imprimir_estacao(ea);
+            achou = 1; // Encontrou pelo menos um registro nessa consulta, então não mostramos a mensagem de inexistente.
+        }
+
+        limpar_estacao(ea);
+    }
+
+    destruir_estacao(ea);
+
+    if (!achou)
+    {
+        printf("Registro inexistente.\n");
+    }
+
+    free(header);
+
+    return EXIT_SUCCESS;
+}
+
+int SELECT_ALL(FILE *f)
+{
+    // Abrindo arquivo binário, lendo header, verificações etc
+    char buffer[TAM_REGISTRO];
+    if (f == NULL)
+    {
+        return EXIT_FAILURE;
+    }
+    Header *header = ler_header_do_arquivo(f);
+    if (header == NULL)
+    {
+        mostrar_erro();
+        return EXIT_FAILURE;
+    }
+    int nroEstacoes = header->nroEstacoes;
+    if (nroEstacoes == 0)
+    {
+        printf("Registro inexistente.\n");
+        free(header);
+        return 0; // erro tratado localmente, sem necessidade de flag
+    }
+
+    fseek(f, TAM_HEADER, SEEK_SET);
+
+    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    {
+        
+        escrever_buffer_na_estacao(buffer, ea);
+        if (ea->removido == '1')
+        {
+            limpar_estacao(ea);
+            continue;
+        }
+        imprimir_estacao(ea);
+
+        limpar_estacao(ea);
+    }
+
+    destruir_estacao(ea);
+
+    free(header);
+    return 0;
+}
+
+int SELECT(int n, FILE *f)
+{
+    int err = 0;
+
+    Estacao *estacao_selecao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+    if (f == NULL)
+    {
+        return EXIT_FAILURE;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+
+        set_valores_estacao_para_busca(estacao_selecao);
+
+        ler_input_para_estacao_de_busca(estacao_selecao);
+        err = crud_select(estacao_selecao, f);
+
+        limpar_estacao(estacao_selecao);
+
+        if (err)
+            break;
+
+        printf("\n");
+    }
+
+    destruir_estacao(estacao_selecao);
+
+    return err;
+}
+
+

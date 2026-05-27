@@ -2,12 +2,18 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2
 
 SRCS = programaTrab.c \
-	utils/utils.c \
 	Estacao/Estacao.c \
 	ParEstacoes/ParEstacoes.c \
 	SetNomes/SetNomes.c \
-	IO/IO.c \
-	CRUD/CRUD.c
+	IO/io_buffer.c \
+	IO/io_console.c \
+	IO/io_disco.c \
+	IO/io_parser.c \
+	CRUD/crud_create.c \
+	CRUD/crud_delete.c \
+	CRUD/crud_insert.c \
+	CRUD/crud_update.c \
+	CRUD/crud_select.c \
 
 OBJS = $(SRCS:.c=.o)
 

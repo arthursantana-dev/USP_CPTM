@@ -4,8 +4,9 @@
 
 #include "CONSTS.h"
 
-#include "utils/utils.h"
 #include "Header/Header.h"
+
+#include "IO/IO.h"
 
 #include "CRUD/CRUD.h"
 
@@ -56,7 +57,7 @@ int main()
 		char nome_arquivo_csv[MAX_TAM_NOME];
 		scanf("%s", nome_arquivo_csv);
 		scanf("%s", nome_arquivo_binario);
-		CREATE(nome_arquivo_csv, nome_arquivo_binario);
+		err = CREATE(nome_arquivo_csv, nome_arquivo_binario);
 		break;
 
 	// SELECT FROM
@@ -71,7 +72,7 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
 		scanf("%d", &n);
-		SELECT(n, f);
+		err = SELECT(n, f);
 		break;
 
 	// DELETE
@@ -95,13 +96,6 @@ int main()
 		scanf("%d", &n);
 
 		f = fopen(nome_arquivo_binario, "rb+");
-		
-		if (f == NULL)
-		{
-			mostrar_erro();
-			return EXIT_FAILURE;
-		}
-
 		err = UPDATE(n, f);
 		break;
 	}

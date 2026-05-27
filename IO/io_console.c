@@ -1,60 +1,12 @@
-#include "utils.h"
+#include "IO.h"
 
 void mostrar_erro()
 {
     printf("Falha no processamento do arquivo.\n");
 }
 
-void utils_mostrar_buffer_como_bytes(char *buffer)
-{
-    for (int i = 0; i < TAM_REGISTRO; i++)
-    {
-        printf("%02X ", (unsigned char)buffer[i]);
-        if ((i + 1) % 4 == 0)
-        {
-            printf("\n");
-        }
-    }
-    printf("\n");
-}
-
-void utils_imprimir_estacao(Estacao *estacao)
-{
-    printf("Removido? %s\n", estacao->removido == '1' ? "SIM" : "NÃO");
-    printf("RRN do próximo removido: %d\n", estacao->proximo);
-    printf("Código da estação: %d\n", estacao->codEstacao);
-    printf("Nome da estação: %s\n", estacao->nomeEstacao);
-    printf("Código da linha: %d\n", estacao->codLinha);
-    printf("Nome da linha: %s\n", estacao->nomeLinha);
-    printf("Código da próxima estação: %d\n", estacao->codProxEstacao);
-    printf("Distância para a próxima estação: %d\n", estacao->distProxEstacao);
-    printf("Código da linha de integração: %d\n", estacao->codLinhaIntegra);
-    printf("Código da estação de integração: %d\n", estacao->codEstacaoIntegra);
-}
-
-void utils_mostrar_bytes_do_arquivo(FILE *f, int num_bytes)
-{
-    fseek(f, 0, SEEK_SET);
-    unsigned char byte;
-    for (int i = 0; i < num_bytes; i++)
-    {
-        if (fread(&byte, sizeof(byte), 1, f) != 1)
-        {
-            mostrar_erro();
-            return;
-        }
-
-        printf("%02X ", byte);
-        if ((i + 1) % 4 == 0)
-        {
-            printf("\n");
-        }
-    }
-    printf("\n");
-}
-
 // quebra a linha em um vetor de strings
-int utils_decompor_linha(char *linha, char *vetor[])
+int decompor_linha(char *linha, char *vetor[])
 {
     int contador = 0;
     char *ptr = linha;
@@ -106,7 +58,7 @@ int utils_decompor_linha(char *linha, char *vetor[])
 }
 
 // nomeEstacao e nomeLinha alocados "na hora"
-void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
+void vetor_char_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
 {
     int i = 0;
 
@@ -165,61 +117,45 @@ void utils_vetor_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
     }
 }
 
-void utils_linha_para_estacao(Estacao *estacao, char *linha)
+void input_para_estacao(Estacao *estacao, char *linha)
 {
     char *elementos[MAX_TOKENS];
 
-    int qtd_elementos = utils_decompor_linha(linha, elementos);
+    int qtd_elementos = decompor_linha(linha, elementos);
 
-    utils_vetor_para_estacao(estacao, elementos, qtd_elementos);
+    vetor_char_para_estacao(estacao, elementos, qtd_elementos);
 }
 
-int utils_mostrar_pilha_remocao(FILE *f, Header *header)
+void ler_input_para_estacao_de_busca(Estacao *estacao)
 {
-    int rrn = header->topo;
+    int num_campos;
 
-    char buffer[TAM_REGISTRO];
+    if (scanf("%d", &num_campos) != 1)
+        return;
 
-    while (rrn != -1)
+    char chaves[10][50];
+    char valores[10][256];
+
+    char *elementos[20];
+    int qtd_elementos = 0;
+
+    for (int i = 0; i < num_campos; i++)
     {
-        printf("rrn: %d\n", rrn);
-        printf("TAM_HEADER + TAM_REGISTRO * rrn: %d\n", TAM_HEADER + TAM_REGISTRO * rrn);
+        scanf("%s", chaves[i]);
+        elementos[qtd_elementos++] = chaves[i];
 
-        Estacao *eb = (Estacao *)malloc(sizeof(Estacao));
-
-        fseek(f, TAM_HEADER + TAM_REGISTRO * rrn, SEEK_SET);
-
-        if (fread(buffer, TAM_REGISTRO, 1, f) != 1)
+        ScanQuoteString(valores[i]);
+        if (strcmp("", valores[i]) == 0)
         {
-            mostrar_erro();
-            free(header);
-            free(eb->nomeEstacao);
-            free(eb->nomeLinha);
-            free(eb);
-            return EXIT_FAILURE;
+            memcpy(valores[i], "-1", sizeof("-1"));
         }
-
-        escrever_buffer_na_estacao(buffer, eb);
-
-        utils_imprimir_estacao(eb);
-
-        printf("--------------\n");
-
-        rrn = eb->proximo;
-
-        free(eb->nomeEstacao);
-        free(eb->nomeLinha);
-        free(eb);
-
-        // if(j > 3) break;
-
-        // j++;
+        elementos[qtd_elementos++] = valores[i];
     }
 
-    return EXIT_SUCCESS;
+    vetor_char_para_estacao(estacao, elementos, qtd_elementos);
 }
 
-void utils_imprimir_estacao_ln(Estacao *estacao)
+void imprimir_estacao(Estacao *estacao)
 {
     printf("%d ", estacao->codEstacao);
 
@@ -261,47 +197,6 @@ void utils_imprimir_estacao_ln(Estacao *estacao)
     printf("\n");
 }
 
-// formato: nCampos chave1 valor1 chave2 valor2 .. chaveN valorN
-void ler_input_para_estacao_de_busca(Estacao *estacao)
-{
-    int num_campos;
-
-    if (scanf("%d", &num_campos) != 1)
-        return;
-
-    char chaves[10][50];
-    char valores[10][256];
-
-    char *elementos[20];
-    int qtd_elementos = 0;
-
-    for (int i = 0; i < num_campos; i++)
-    {
-        scanf("%s", chaves[i]);
-        elementos[qtd_elementos++] = chaves[i];
-
-        ScanQuoteString(valores[i]);
-        if (strcmp("", valores[i]) == 0)
-        {
-            memcpy(valores[i], "-1", sizeof("-1"));
-        }
-        elementos[qtd_elementos++] = valores[i];
-    }
-
-    utils_vetor_para_estacao(estacao, elementos, qtd_elementos);
-}
-
-// Fornecidas.c
-
-/*
- * Você não precisa entender o código dessa função.
- *
- * Use essa função para comparação no run.codes.
- * Lembre-se de ter fechado (fclose) o arquivo anteriormente.
- *
- * Ela vai abrir de novo para leitura e depois fechar
- * (você não vai perder pontos por isso se usar ela).
- */
 void BinarioNaTela(char *arquivo)
 {
     FILE *fs;
@@ -416,8 +311,16 @@ void nullOrInt(int *n)
     }
 }
 
-void nullOrString(char *str)
-{
+/*
+ * Você não precisa entender o código dessa função.
+ *
+ * Use essa função para comparação no run.codes.
+ * Lembre-se de ter fechado (fclose) o arquivo anteriormente.
+ *
+ * Ela vai abrir de novo para leitura e depois fechar
+ * (você não vai perder pontos por isso se usar ela).
+ */
+void nullOrString(char *str){
     char R;
 
     while ((R = getchar()) != EOF && isspace(R))

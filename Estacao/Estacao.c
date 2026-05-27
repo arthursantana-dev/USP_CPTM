@@ -103,7 +103,7 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
     return 1;
 }
 
-void editar_estacao(Estacao *estacao, Estacao *novos_valores)
+void copiar_estacao(Estacao *estacao, Estacao *novos_valores)
 {
     if (novos_valores->codEstacao != 0)
         estacao->codEstacao = novos_valores->codEstacao;
@@ -187,5 +187,37 @@ void set_valores_estacao_para_busca(Estacao *estacao){
     if(estacao->nomeLinha != NULL) {
         free(estacao->nomeLinha);
         estacao->nomeLinha = NULL;
+    }
+}
+
+void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra){
+    
+    estacao->codEstacao = codEstacao == 0 ? -1 : codEstacao;
+    estacao->codLinha = codLinha == 0 ? -1 : codLinha;
+    estacao->codProxEstacao = codProxEstacao == 0 ? -1 : codProxEstacao;
+    estacao->distProxEstacao = distProxEstacao == 0 ? -1 : distProxEstacao;
+    estacao->codLinhaIntegra = codLinhaIntegra == 0 ? -1 : codLinhaIntegra;
+    estacao->codEstacaoIntegra = codEstacaoIntegra == 0 ? -1 : codEstacaoIntegra;
+
+    if(estacao->nomeEstacao != NULL) {
+        free(estacao->nomeEstacao);
+        estacao->nomeEstacao = NULL;
+    }
+    if(nomeEstacao != NULL) {
+        estacao->tamNomeEstacao = strlen(nomeEstacao);
+        estacao->nomeEstacao = strdup(nomeEstacao);
+    } else {
+        estacao->tamNomeEstacao = 0;
+    }
+
+    if(estacao->nomeLinha != NULL) {
+        free(estacao->nomeLinha);
+        estacao->nomeLinha = NULL;
+    }
+    if(nomeLinha != NULL) {
+        estacao->tamNomeLinha = strlen(nomeLinha);
+        estacao->nomeLinha = strdup(nomeLinha);
+    } else {
+        estacao->tamNomeLinha = 0;
     }
 }

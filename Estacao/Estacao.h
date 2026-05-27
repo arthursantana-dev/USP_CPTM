@@ -62,7 +62,9 @@
 	 * @param estacao Ponteiro para a estação original que terá seus dados editados.
 	 * @param novos_valores Ponteiro para a estação contendo os campos de substituição (campos com 0 são ignorados).
 	 */
-	void editar_estacao(Estacao *estacao, Estacao *novos_valores);
+	void copiar_estacao(Estacao *estacao, Estacao *novos_valores);
+
+	void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra);
 
 	/**
 	 * @brief Libera de forma segura toda a memória dinâmica (strings alocadas e struct) atrelada à estação.
@@ -73,4 +75,7 @@
 	void limpar_estacao(Estacao *estacao);
 
 	void set_valores_estacao_para_busca(Estacao *estacao);
+
+	void imprimir_estacao(Estacao *estacao);
+
 #endif

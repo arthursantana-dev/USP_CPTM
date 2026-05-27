@@ -1,9 +1,8 @@
-#include "../ParEstacoes/ParEstacoes.h"
-#include "../SetNomes/SetNomes.h"
+#include "CRUD.h"
 
 // estacao_valores: valores == 0 -> ignorar e manter;
 // valores == -1 -> atualizar para NULO
-int _update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
+int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 {
 
     char buffer[TAM_REGISTRO];
@@ -12,6 +11,7 @@ int _update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
     if (header == NULL)
     {
+        mostrar_erro();
         return EXIT_FAILURE;
     }
 
@@ -35,7 +35,7 @@ int _update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
         if (comparar_estacoes(estacao_busca, ea))
         {
-            editar_estacao(ea, estacao_valores);
+            copiar_estacao(ea, estacao_valores);
             escrever_estacao_no_buffer(ea, buffer);
             fseek(f, -TAM_REGISTRO, SEEK_CUR);
             escrever_buffer_no_arquivo(f, buffer);
@@ -56,3 +56,45 @@ int _update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
     return EXIT_SUCCESS;
 }
+
+int UPDATE(int n, FILE *f)
+{
+    int err = 0;
+
+    if (f == NULL)
+    {
+        mostrar_erro();
+        return EXIT_FAILURE;
+    }
+
+    Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+    Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+    for (int i = 0; i < n; i++)
+    {
+
+        set_valores_estacao_para_busca(estacao_busca);
+        set_valores_estacao_para_busca(estacao_valores);
+
+        ler_input_para_estacao_de_busca(estacao_busca);
+        ler_input_para_estacao_de_busca(estacao_valores);
+
+        err = crud_update(estacao_busca, estacao_valores, f);
+
+        limpar_estacao(estacao_busca);
+        limpar_estacao(estacao_valores);
+
+        if (err)
+            break;
+
+        if(i < n-1) printf("\n");
+    }
+
+    destruir_estacao(estacao_busca);
+    destruir_estacao(estacao_valores);
+
+    return err;
+
+}
+

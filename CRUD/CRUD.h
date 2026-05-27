@@ -4,9 +4,6 @@
     #include <stdio.h>
     #include <stdlib.h>
 
-    #include "../IO/IO.h"
-
-    #include "../utils/utils.h"
     #include "../ParEstacoes/ParEstacoes.h"
     #include "../Header/Header.h"
     #include "../SetNomes/SetNomes.h"
