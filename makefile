@@ -3,12 +3,11 @@ CFLAGS = -Wall -Wextra -O2
 
 SRCS = programaTrab.c \
 	Estacao/Estacao.c \
-	ParEstacoes/ParEstacoes.c \
-	SetNomes/SetNomes.c \
-	IO/io_buffer.c \
-	IO/io_console.c \
-	IO/io_disco.c \
-	IO/io_parser.c \
+	EstruturasAuxiliares/ParEstacoes.c \
+	EstruturasAuxiliares/SetNomes.c \
+	IO/IO.c \
+	IO/misc.c \
+	IO/parser.c \
 	CRUD/crud_create.c \
 	CRUD/crud_delete.c \
 	CRUD/crud_insert.c \

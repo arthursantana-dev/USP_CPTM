@@ -5,6 +5,9 @@
 	#include <stdlib.h>
 	#include <string.h>
 
+	#include "../CONSTS.h"
+	#include "../Header/Header.h"
+
 	typedef struct
 	{
 		char removido;		 // '0' para registro existente, '1' para registro removido
@@ -76,6 +79,13 @@
 
 	void set_valores_estacao_para_busca(Estacao *estacao);
 
-	void imprimir_estacao(Estacao *estacao);
+	/*Buffer de Estação*/
+
+	char *criar_buffer();
+
+	int escrever_buffer_na_estacao(char *buffer, Estacao *estacao);
+
+	int escrever_estacao_no_buffer(Estacao *estacao, char *buffer);
+
 
 #endif

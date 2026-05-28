@@ -4,9 +4,9 @@
     #include <stdio.h>
     #include <stdlib.h>
 
-    #include "../ParEstacoes/ParEstacoes.h"
+    #include "../EstruturasAuxiliares/ParEstacoes.h"
     #include "../Header/Header.h"
-    #include "../SetNomes/SetNomes.h"
+    #include "../EstruturasAuxiliares/SetNomes.h"
 
     int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario);
 
