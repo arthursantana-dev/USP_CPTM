@@ -20,4 +20,6 @@
 
     int UPDATE(int n, FILE *f);
 
+    int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b);
+
 #endif

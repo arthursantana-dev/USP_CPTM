@@ -16,11 +16,18 @@
 	Arthur Martins Pereira - 16855601
 
 	1. CREATE - Santana
-	2. select FROM - Martins
-	3. select WHERE - Martins
-	4. delete - Santana
+	2. SELECT FROM - Martins
+	3. SELECT WHERE - Martins
+	4. DELETE - Santana
 	5. INSERT INTO - Martins
-	6. update - Santana
+	6. UPDATE - Santana
+
+	Usando índice (arvore b):
+
+	7. CREATE INDEX - Santana
+	8. SELECT WHERE
+	9. DELETE  - Santana
+	10.INSERT INTO
 
 	Obs.:
 
@@ -42,6 +49,8 @@ int main()
 	int opcode;
 
 	char nome_arquivo_binario[MAX_TAM_NOME];
+	char nome_arquivo_arvore_b[MAX_TAM_NOME];
+
 	int n;
 
 	scanf("%d", &opcode);
@@ -83,14 +92,14 @@ int main()
 		err = DELETE(n, f);
 		break;
 
-	// INSERT INTO
+	// DELETE
 	case 5:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb+");
 		err = INSERT(f);
 		break;
 		
-	// UPDATE
+	// INSERT INTO
 	case 6:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
@@ -98,6 +107,14 @@ int main()
 		f = fopen(nome_arquivo_binario, "rb+");
 		err = UPDATE(n, f);
 		break;
+
+	case 7:
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", nome_arquivo_arvore_b);
+
+		// printf("%s %s\n", nome_arquivo_binario, nome_arquivo_arvore_b);
+
+		err = CREATE_INDEX(nome_arquivo_binario, nome_arquivo_arvore_b);
 	}
 
 	if(f != NULL)
@@ -109,7 +126,7 @@ int main()
 		return 0;
 	}
 
-	if (opcode != 1 && opcode != 2 && opcode != 3)
+	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7)
 	{
 		BinarioNaTela(nome_arquivo_binario);
 	}

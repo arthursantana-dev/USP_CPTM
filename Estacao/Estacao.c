@@ -29,7 +29,7 @@ Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *no
 /*cria estação com campos de busca definidos como nulos igual a -1, e 0 para campos que não devem ser considerados para a busca*/
 Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
 {
-    Estacao *estacao = (Estacao *)calloc(1,sizeof(Estacao));
+    Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
 
     if (estacao == NULL)
     {
@@ -142,7 +142,6 @@ void copiar_estacao(Estacao *estacao, Estacao *novos_valores)
 
         strcpy(estacao->nomeLinha, novos_valores->nomeLinha);
     }
-
 }
 
 void destruir_estacao(Estacao *estacao)
@@ -154,24 +153,27 @@ void destruir_estacao(Estacao *estacao)
     }
 }
 
-
-//Diferentemente do destruir_estacao, não libera a struct
-void limpar_estacao(Estacao *estacao){
+// Diferentemente do destruir_estacao, não libera a struct
+void limpar_estacao(Estacao *estacao)
+{
     if (estacao != NULL)
     {
-        if(estacao->nomeEstacao != NULL) {
+        if (estacao->nomeEstacao != NULL)
+        {
             free(estacao->nomeEstacao);
             estacao->nomeEstacao = NULL;
         }
-        
-        if(estacao->nomeLinha != NULL) {
+
+        if (estacao->nomeLinha != NULL)
+        {
             free(estacao->nomeLinha);
             estacao->nomeLinha = NULL;
         }
     }
 }
 
-void set_valores_estacao_para_busca(Estacao *estacao){
+void set_valores_estacao_para_busca(Estacao *estacao)
+{
     estacao->codEstacao = 0;
     estacao->codLinha = 0;
     estacao->codProxEstacao = 0;
@@ -179,19 +181,22 @@ void set_valores_estacao_para_busca(Estacao *estacao){
     estacao->codLinhaIntegra = 0;
     estacao->codEstacaoIntegra = 0;
     estacao->tamNomeEstacao = 0;
-    if(estacao->nomeEstacao != NULL) {
+    if (estacao->nomeEstacao != NULL)
+    {
         free(estacao->nomeEstacao);
         estacao->nomeEstacao = NULL;
     }
     estacao->tamNomeLinha = 0;
-    if(estacao->nomeLinha != NULL) {
+    if (estacao->nomeLinha != NULL)
+    {
         free(estacao->nomeLinha);
         estacao->nomeLinha = NULL;
     }
 }
 
-void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra){
-    
+void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
+{
+
     estacao->codEstacao = codEstacao == 0 ? -1 : codEstacao;
     estacao->codLinha = codLinha == 0 ? -1 : codLinha;
     estacao->codProxEstacao = codProxEstacao == 0 ? -1 : codProxEstacao;
@@ -199,25 +204,33 @@ void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLin
     estacao->codLinhaIntegra = codLinhaIntegra == 0 ? -1 : codLinhaIntegra;
     estacao->codEstacaoIntegra = codEstacaoIntegra == 0 ? -1 : codEstacaoIntegra;
 
-    if(estacao->nomeEstacao != NULL) {
+    if (estacao->nomeEstacao != NULL)
+    {
         free(estacao->nomeEstacao);
         estacao->nomeEstacao = NULL;
     }
-    if(nomeEstacao != NULL) {
+    if (nomeEstacao != NULL)
+    {
         estacao->tamNomeEstacao = strlen(nomeEstacao);
         estacao->nomeEstacao = strdup(nomeEstacao);
-    } else {
+    }
+    else
+    {
         estacao->tamNomeEstacao = 0;
     }
 
-    if(estacao->nomeLinha != NULL) {
+    if (estacao->nomeLinha != NULL)
+    {
         free(estacao->nomeLinha);
         estacao->nomeLinha = NULL;
     }
-    if(nomeLinha != NULL) {
+    if (nomeLinha != NULL)
+    {
         estacao->tamNomeLinha = strlen(nomeLinha);
         estacao->nomeLinha = strdup(nomeLinha);
-    } else {
+    }
+    else
+    {
         estacao->tamNomeLinha = 0;
     }
 }
@@ -288,6 +301,7 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     memcpy(&proximo, buffer + offset, sizeof(proximo));
     offset += sizeof(proximo);
 
+    // importante para a lógica de limpeza
     estacao->proximo = proximo;
 
     if (removido == '1')
@@ -348,8 +362,5 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     estacao->tamNomeEstacao = tamNomeEstacao;
     estacao->tamNomeLinha = tamNomeLinha;
 
-    return 1;
+    return 0;
 }
-
-
-

@@ -21,3 +21,19 @@
 #ifndef MAX_TAM_NOME
 #define MAX_TAM_NOME 50
 #endif
+
+#ifndef ORDEM
+#define ORDEM 4
+#endif
+
+#ifndef MAX_CHAVES
+#define MAX_CHAVES (ORDEM - 1)
+#endif
+
+#ifndef TAM_CABECALHO
+#define TAM_CABECALHO 17
+#endif
+
+#ifndef TAM_NO
+#define TAM_NO 53
+#endif

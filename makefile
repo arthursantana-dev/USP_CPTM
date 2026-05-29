@@ -5,6 +5,7 @@ SRCS = programaTrab.c \
 	Estacao/Estacao.c \
 	EstruturasAuxiliares/ParEstacoes.c \
 	EstruturasAuxiliares/SetNomes.c \
+	ArvoreB/ArvoreB.c \
 	IO/IO.c \
 	IO/misc.c \
 	IO/parser.c \
@@ -51,6 +52,9 @@ i:
 
 s: 
 	./programaTrab < select.in
+
+ci:
+	./programaTrab < create_index.in
 
 zip:
 	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" 

@@ -34,19 +34,20 @@ int crud_delete(Estacao *estacao_busca, FILE *f)
 
     fseek(f, TAM_HEADER, SEEK_SET);
 
-    int rrn_atual = -1;
+    int RRN_atual = -1;
+
+    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
         escrever_buffer_na_estacao(buffer, ea);
 
-        rrn_atual++;
+        RRN_atual++;
 
         if (ea->removido == '1')
         {
-            destruir_estacao(ea);
+            limpar_estacao(ea);
             continue;
         }
 
@@ -57,13 +58,13 @@ int crud_delete(Estacao *estacao_busca, FILE *f)
 
         if (!comparar_estacoes(estacao_busca, ea))
         {
-            destruir_estacao(ea);
+            limpar_estacao(ea);
             continue;
         }
 
         removeu_estacao = 1;
 
-        RRNnovo = rrn_atual;
+        RRNnovo = RRN_atual;
 
         ea->removido = '1';
         ea->proximo = header->topo;
@@ -76,10 +77,12 @@ int crud_delete(Estacao *estacao_busca, FILE *f)
 
         escrever_buffer_no_arquivo(f, buffer);
 
-        destruir_estacao(ea);
+        limpar_estacao(ea);
 
         fseek(f, 0, SEEK_CUR);
     }
+
+    limpar_estacao(ea);
 
     if (!removeu_estacao)
     {
@@ -88,6 +91,7 @@ int crud_delete(Estacao *estacao_busca, FILE *f)
         free(header);
         destruir_set_estacoes(set_estacoes);
         destruir_pares(&info_pares_estacoes);
+        destruir_estacao(ea);
         return EXIT_SUCCESS;
     }
 
@@ -95,19 +99,20 @@ int crud_delete(Estacao *estacao_busca, FILE *f)
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-
+    
         escrever_buffer_na_estacao(buffer, ea);
 
         if (ea->removido == '1')
         {
-            destruir_estacao(ea);
+            limpar_estacao(ea);
             continue;
         }
 
         incluir_estacao(set_estacoes, ea->nomeEstacao);
-        destruir_estacao(ea);
+        limpar_estacao(ea);
     }
+
+    destruir_estacao(ea);
 
     header->status = '1';
     header->nroEstacoes = set_estacoes->tamanho;

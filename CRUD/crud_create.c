@@ -1,4 +1,5 @@
 #include "CRUD.h"
+#include "../ArvoreB/ArvoreB.h"
 
 int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
 {
@@ -107,6 +108,74 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
     fclose(bin);
 
     BinarioNaTela(nome_arquivo_binario);
+
+    return EXIT_SUCCESS;
+}
+
+
+int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
+    FILE* bin = fopen(nome_arquivo_binario, "rb");
+
+    if(bin == NULL){
+        return EXIT_FAILURE;
+    }
+
+    FILE* arquivo_arvore_b = arvore_b_abrir_escrita(nome_arquivo_arvore_b);
+
+    if(arquivo_arvore_b == NULL){
+        fclose(bin);
+        return EXIT_FAILURE;
+    }
+
+    header_arvore_b header_b = arvore_b_ler_cabecalho(arquivo_arvore_b);
+
+    header_b.status = '0';
+    arvore_b_atualizar_cabecalho(arquivo_arvore_b, &header_b);
+
+    char* buffer = criar_buffer();
+
+    Estacao* estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+
+    int RRN = 0;
+
+    int removido = 0;
+
+    fseek(bin, TAM_HEADER, SEEK_SET);
+
+    while (fread(buffer, TAM_REGISTRO, 1, bin) == 1){
+
+        removido = escrever_buffer_na_estacao(buffer, estacao);
+
+        if(removido == 1){
+            limpar_estacao(estacao);
+            removido = 0;
+            RRN++;
+            continue;
+        }
+
+        imprimir_estacao(estacao);
+
+        int byteoffset = TAM_HEADER + (RRN * TAM_REGISTRO);
+
+        arvore_b_inserir(arquivo_arvore_b, &header_b, estacao->codEstacao, byteoffset);
+
+        limpar_estacao(estacao);
+
+        RRN++;
+    }
+
+    header_b.status = '1';
+    arvore_b_atualizar_cabecalho(arquivo_arvore_b, &header_b);
+
+    arvore_b_fechar(arquivo_arvore_b, &header_b);
+
+    fclose(bin);
+
+    destruir_estacao(estacao);
+
+    free(buffer);
+
+    BinarioNaTela(nome_arquivo_arvore_b);
 
     return EXIT_SUCCESS;
 }
