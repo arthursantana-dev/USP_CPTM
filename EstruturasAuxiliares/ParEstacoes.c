@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ParEstacoes.h"
+#include "EstruturasAuxiliares.h"
 
 int comparar_pares(const void *a, const void *b)
 {

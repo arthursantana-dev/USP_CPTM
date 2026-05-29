@@ -235,6 +235,8 @@ void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLin
     }
 }
 
+/* Buffer */
+
 char *criar_buffer()
 {
     char *buffer = (char *)malloc(sizeof(char) * TAM_REGISTRO);
@@ -363,4 +365,9 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     estacao->tamNomeLinha = tamNomeLinha;
 
     return 0;
+}
+
+void escrever_buffer_no_arquivo(FILE *f, char *buffer)
+{
+    fwrite(buffer, sizeof(char), TAM_REGISTRO, f);
 }

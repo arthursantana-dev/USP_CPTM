@@ -43,16 +43,12 @@ int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
     if (token == NULL)
         return -1;
 
-    // normalizar_utf8(token);
-
     estacao->tamNomeEstacao = strlen(token);
     estacao->nomeEstacao = strdup(token);
 
     token = obter_proximo_campo_csv(&ponteiro_linha);
     if (token == NULL)
         return -1;
-
-    // normalizar_utf8(token);
 
     estacao->codLinha = atoi(token) == 0 ? -1 : atoi(token);
 
@@ -85,6 +81,8 @@ int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
     return 0;
 }
 
+
+/*comentar*/
 void input_para_estacao(Estacao *estacao, char *linha)
 {
     char *elementos[MAX_TOKENS];

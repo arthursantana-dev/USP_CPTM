@@ -106,6 +106,7 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
     free(buffer);
 
     fclose(bin);
+    fclose(csv);
 
     BinarioNaTela(nome_arquivo_binario);
 

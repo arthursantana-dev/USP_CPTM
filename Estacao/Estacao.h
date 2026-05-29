@@ -87,5 +87,6 @@
 
 	int escrever_estacao_no_buffer(Estacao *estacao, char *buffer);
 
+	void escrever_buffer_no_arquivo(FILE *f, char *buffer);
 
 #endif

@@ -3,8 +3,9 @@ CFLAGS = -Wall -Wextra -O2
 
 SRCS = programaTrab.c \
 	Estacao/Estacao.c \
-	EstruturasAuxiliares/ParEstacoes.c \
+	Header/Header.c \
 	EstruturasAuxiliares/SetNomes.c \
+	EstruturasAuxiliares/ParEstacoes.c \
 	ArvoreB/ArvoreB.c \
 	IO/IO.c \
 	IO/misc.c \

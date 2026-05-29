@@ -11,12 +11,6 @@
 
     #include "../Header/Header.h"
 
-    /*Escrita - Arquivo*/
-    
-    int escrever_header_no_arquivo(FILE *f, Header *header);
-
-    void escrever_buffer_no_arquivo(FILE *f, char *buffer);
-
     /*Escrita - Console*/
 
     void imprimir_estacao(Estacao *estacao);
@@ -26,8 +20,6 @@
     void BinarioNaTela(char *arquivo);
 
     /*Leitura - Arquivo*/
-
-    Header *ler_header_do_arquivo(FILE *f);
 
     int decompor_linha(char *linha, char *vetor[]);
 
@@ -44,8 +36,6 @@
     void input_para_estacao(Estacao *estacao, char *linha);
 
     /*Miscellaneous - Fornecidas + Multiproposito*/
-
-    void normalizar_utf8(char *str);
 
     void ScanQuoteString(char *str);
 

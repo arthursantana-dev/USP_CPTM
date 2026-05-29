@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "SetNomes.h"
+#include "EstruturasAuxiliares.h"
 
 #include "../CONSTS.h"
 
