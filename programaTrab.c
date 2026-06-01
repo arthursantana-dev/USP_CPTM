@@ -25,9 +25,9 @@
 	Usando índice (arvore b):
 
 	7. CREATE INDEX - Santana
-	8. SELECT WHERE
+	8. SELECT WHERE - Martins
 	9. DELETE  - Santana
-	10.INSERT INTO
+	10.INSERT INTO - Martins
 
 	Obs.:
 
