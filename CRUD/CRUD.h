@@ -6,11 +6,11 @@
 
     #include "../EstruturasAuxiliares/EstruturasAuxiliares.h"
     #include "../Header/Header.h"
-    #include "../EstruturasAuxiliares/EstruturasAuxiliares.h"
+    #include "../ArvoreB/ArvoreB.h"
 
     int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario);
 
-    int DELETE(int n, FILE *f);
+    int DELETE(int n, FILE *f, FILE* fab);
 
     int INSERT(FILE *f);
 

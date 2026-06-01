@@ -57,5 +57,8 @@ s:
 ci:
 	./programaTrab < create_index.in
 
+di:
+	./programaTrab < delete_i.in
+
 zip:
 	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" 

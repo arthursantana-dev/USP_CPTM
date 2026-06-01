@@ -13,11 +13,6 @@
 
 #include "../Header/Header.h"
 
-/*Escrita*/
-
-/*Leitura*/
-
-
 // quebra a linha em um vetor de strings
 int decompor_linha(char *linha, char *vetor[])
 {
@@ -96,6 +91,7 @@ void vetor_char_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
             estacao->nomeEstacao = (char *)malloc((estacao->tamNomeEstacao + 1) * sizeof(char));
 
             strcpy(estacao->nomeEstacao, vetor[i + 1]);
+            // printf("nome: %s\n", estacao->nomeEstacao);
         }
         else if (strcmp(vetor[i], "codLinha") == 0)
         {

@@ -81,8 +81,6 @@ int linha_csv_para_estacao(char *linha_csv, Estacao *estacao)
     return 0;
 }
 
-
-/*comentar*/
 void input_para_estacao(Estacao *estacao, char *linha)
 {
     char *elementos[MAX_TOKENS];
@@ -92,6 +90,10 @@ void input_para_estacao(Estacao *estacao, char *linha)
     vetor_char_para_estacao(estacao, elementos, qtd_elementos);
 }
 
+/*
+    Diferente da estação normal, a estação de busca tem campos com valor 0 para campos a serem ignorados na busca
+    e -1 para campos explicitamente definidos como nulos 
+*/
 void ler_input_para_estacao_de_busca(Estacao *estacao)
 {
     int num_campos;
