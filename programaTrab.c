@@ -56,6 +56,7 @@ int main()
 	scanf("%d", &opcode);
 
 	FILE *f = NULL;
+	FILE *fab = NULL;
 
 	int err = 0;
 
@@ -89,7 +90,7 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
 		f = fopen(nome_arquivo_binario, "rb+");
-		err = DELETE(n, f);
+		err = DELETE(n, f, NULL);
 		break;
 
 	// DELETE
@@ -115,10 +116,32 @@ int main()
 		// printf("%s %s\n", nome_arquivo_binario, nome_arquivo_arvore_b);
 
 		err = CREATE_INDEX(nome_arquivo_binario, nome_arquivo_arvore_b);
+		break;
+
+	case 9: // A deleção usando a estrutura de índices e cuidada internamente (crud_delete)
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", nome_arquivo_arvore_b);
+
+		scanf("%d", &n);
+		f = fopen(nome_arquivo_binario, "rb+");
+		fab = fopen(nome_arquivo_arvore_b, "rb+");
+
+		if(fab == NULL){
+			err = EXIT_FAILURE;
+			mostrar_erro();
+			break;
+		}
+		
+		err = DELETE(n, f, fab);
+		break;
+
 	}
 
 	if(f != NULL)
 		fclose(f);
+
+	if(fab != NULL)
+		fclose(fab);
 
 	if (err == 1)
 	{
@@ -129,6 +152,7 @@ int main()
 	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7)
 	{
 		BinarioNaTela(nome_arquivo_binario);
+		BinarioNaTela(nome_arquivo_arvore_b);
 	}
 
 	return 0;
