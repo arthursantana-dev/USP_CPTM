@@ -98,6 +98,18 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
 
     // printf("ea: \n");
 
+    if(ea->tamNomeLinha != 0){
+        printf("-----------------------------\n");
+        printf("codEstacao: %d\n", ea->codEstacao);
+        printf("nomeEstacao: %s\n", ea->nomeEstacao);
+        printf("codLinha: %d\n", ea->codLinha);
+        printf("nomeLinha: %s\n", ea->nomeLinha);
+        printf("codProxEstacao: %d\n", ea->codProxEstacao);
+        printf("distProxEstacao: %d\n", ea->distProxEstacao);
+        printf("codLinhaIntegra: %d\n", ea->codLinhaIntegra);
+        printf("codEstacaoIntegra: %d\n", ea->codEstacaoIntegra);
+    }
+
     // printf("Encontrou\n");
 
     return 1;

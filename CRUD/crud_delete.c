@@ -13,9 +13,12 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Es
 
     Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
 
+    int i = 0;
+
+    fseek(arquivo_dados, TAM_HEADER, SEEK_SET);
+
     while (fread(buffer, TAM_REGISTRO, 1, arquivo_dados) == 1)
     {
-        printf("%d\n", RRN_atual);
 
         escrever_buffer_na_estacao(buffer, estacao);
 
@@ -44,15 +47,13 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Es
 
         escrever_estacao_no_buffer(estacao, buffer);
 
-        arvore_b_remover(fab, &header_b, estacao->codEstacao);
-
         fseek(arquivo_dados, TAM_HEADER + TAM_REGISTRO * RRNnovo, SEEK_SET);
 
         escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
-        limpar_estacao(estacao);
+        arvore_b_remover(fab, &header_b, estacao->codEstacao);
 
-        fseek(arquivo_dados, 0, SEEK_CUR);
+        limpar_estacao(estacao);
     }
 
     destruir_estacao(estacao);
@@ -122,7 +123,8 @@ int crud_delete(Estacao *estacao_busca, FILE *f, FILE *fab, Header *header)
     {
         erro = busca_sequencial_e_delete(f, fab, header, estacao_busca);
     }
-    if(erro){
+    if (erro)
+    {
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
