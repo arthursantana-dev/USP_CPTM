@@ -59,9 +59,9 @@ FILE *arvore_b_abrir_escrita(const char *nome_arquivo)
         exit(EXIT_FAILURE);
     }
 
-    // Inicializa o cabeçalho com valores padrão
+    // inicializa o cabeçalho com valores padrão
     header_arvore_b cabecalho = {
-        .status = '0', // Inconsistente até que seja fechado corretamente
+        .status = '0', // inconsistente até que seja fechado corretamente
         .no_raiz = -1,
         .topo = -1,
         .prox_RRN = 0,
@@ -92,7 +92,7 @@ no_arvore_b arvore_b_ler_no(FILE *arquivo, int rrn)
 {
     no_arvore_b no;
 
-    // Posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
+    // posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
     fseek(arquivo, TAM_CABECALHO + (rrn * TAM_NO), SEEK_SET);
 
     fread(&no.removido, sizeof(char), 1, arquivo);
@@ -100,14 +100,14 @@ no_arvore_b arvore_b_ler_no(FILE *arquivo, int rrn)
     fread(&no.tipo_no, sizeof(int), 1, arquivo);
     fread(&no.numero_chaves, sizeof(int), 1, arquivo);
 
-    // Chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
+    // chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
     for (int i = 0; i < MAX_CHAVES; i++)
     {
         fread(&no.chaves[i], sizeof(int), 1, arquivo);
         fread(&no.dados_byte_offsets[i], sizeof(int), 1, arquivo);
     }
 
-    // Ponteiros das Subarvores (P1, P2, P3, P4)
+    // ponteiros das Subarvores (P1, P2, P3, P4)
     for (int i = 0; i < ORDEM; i++)
     {
         fread(&no.filhos[i], sizeof(int), 1, arquivo);
@@ -131,7 +131,7 @@ void arvore_b_atualizar_cabecalho(FILE *arquivo, header_arvore_b *cabecalho)
 
 void arvore_b_escrever_no(FILE *arquivo, int rrn, no_arvore_b *no)
 {
-    // Posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
+    // posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
     fseek(arquivo, TAM_CABECALHO + (rrn * TAM_NO), SEEK_SET);
 
     // Escrita campo a campo obrigatoria conforme as restricoes
@@ -140,14 +140,14 @@ void arvore_b_escrever_no(FILE *arquivo, int rrn, no_arvore_b *no)
     fwrite(&no->tipo_no, sizeof(int), 1, arquivo);
     fwrite(&no->numero_chaves, sizeof(int), 1, arquivo);
 
-    // Chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
+    // chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
     for (int i = 0; i < MAX_CHAVES; i++)
     {
         fwrite(&no->chaves[i], sizeof(int), 1, arquivo);
         fwrite(&no->dados_byte_offsets[i], sizeof(int), 1, arquivo);
     }
 
-    // Ponteiros das Subarvores (P1, P2, P3, P4)
+    // ponteiros das Subarvores (P1, P2, P3, P4)
     for (int i = 0; i < ORDEM; i++)
     {
         fwrite(&no->filhos[i], sizeof(int), 1, arquivo);
@@ -159,10 +159,10 @@ void arvore_b_fechar(FILE *arquivo, header_arvore_b *cabecalho)
     if (arquivo == NULL)
         return;
 
-    // Atualiza status para consistente
+    // atualiza status para consistente
     cabecalho->status = '1';
 
-    // Reescreve o cabecalho
+    // reescreve o cabecalho
     fseek(arquivo, 0, SEEK_SET);
     fwrite(&cabecalho->status, sizeof(char), 1, arquivo);
     fwrite(&cabecalho->no_raiz, sizeof(int), 1, arquivo);
@@ -182,35 +182,35 @@ void arvore_b_fechar(FILE *arquivo, header_arvore_b *cabecalho)
  */
 int arvore_b_buscar_recursivo(FILE *arquivo, int RRN_atual, int chave_busca)
 {
-    // Caso base: se o RRN for -1, atingiu uma subárvore inexistente (chave não encontrada)
+    // caso base: se o RRN for -1, atingiu uma subárvore inexistente (chave não encontrada)
     if (RRN_atual == -1)
     {
         return -1;
     }
 
-    // Realiza a leitura física do nó atual a partir do disco
+    // realiza a leitura física do nó atual a partir do disco
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
     int i = 0;
-    // Percorre as chaves do nó enquanto a chave procurada for maior que as chaves locais
+    // percorre as chaves do nó enquanto a chave procurada for maior que as chaves locais
     while (i < no.numero_chaves && chave_busca > no.chaves[i])
     {
         i++;
     }
 
-    // Caso 1: A chave foi encontrada no nó atual
+    // caso 1: A chave foi encontrada no nó atual
     if (i < no.numero_chaves && chave_busca == no.chaves[i])
     {
-        return no.dados_byte_offsets[i]; // Retorna o PR (ponteiro para o arquivo de dados)
+        return no.dados_byte_offsets[i]; // retorna o PR (ponteiro para o arquivo de dados)
     }
 
-    // Caso 2: A chave não está neste nó e ele é um nó folha (tipo_no == -1)
+    // caso 2: A chave não está neste nó e ele é um nó folha (tipo_no == -1)
     if (no.tipo_no == -1)
     {
         return -1; // Não há mais subárvores para descer
     }
 
-    // Caso 3: Intermediário/Raiz. Continua a busca descendo para a subárvore correspondente
+    // caso 3: Intermediário/Raiz. Continua a busca descendo para a subárvore correspondente
     return arvore_b_buscar_recursivo(arquivo, no.filhos[i], chave_busca);
 }
 
@@ -241,21 +241,21 @@ int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
 {
     int rrn;
 
-    // Se há registros removidos na pilha, reaproveita o topo
+    // se há registros removidos na pilha, reaproveita o topo
     if (cabecalho->topo != -1)
     {
         rrn = cabecalho->topo;
         no_arvore_b no_removido = arvore_b_ler_no(arquivo, rrn);
-        cabecalho->topo = no_removido.proximo; // Atualiza o topo para o próximo removido
+        cabecalho->topo = no_removido.proximo; // atualiza o topo para o próximo removido
     }
     else
     {
-        // Se não há removidos, pega o RRN do fim do arquivo e incrementa
+        // se não há removidos, pega o RRN do fim do arquivo e incrementa
         rrn = cabecalho->prox_RRN;
         cabecalho->prox_RRN++;
     }
 
-    cabecalho->nro_nos++; // Incrementa o número de nós para a nova raiz
+    cabecalho->nro_nos++; // incrementa o número de nós para a nova raiz
 
     return rrn;
 }
@@ -269,7 +269,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 
     // printf("Descendo para RRN: %d\n", RRN_atual);
 
-    // Caso Base: Chegou em um ponteiro nulo, a chave deve ser inserida na folha pai
+    // caso Base: Chegou em um ponteiro nulo, a chave deve ser inserida na folha pai
     if (RRN_atual == -1)
     {
         ret.houve_split = true;
@@ -288,7 +288,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         i++;
     }
 
-    // Se a chave já existir, a inserção é ignorada
+    // se a chave já existir, a inserção é ignorada
     if (i < no.numero_chaves && chave == no.chaves[i])
     {
         return ret;
@@ -301,7 +301,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         Volta da recursão
     */
 
-    // Se o filho não splitou, a estrutura de baixo já resolveu a inserção
+    // se o filho não splitou, a estrutura de baixo já resolveu a inserção
     if (!ret.houve_split)
     {
         return ret;
@@ -309,10 +309,10 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 
     // --- Filho splitou, tenta alocar a chave promovida no NÓ ATUAL ---
 
-    // Caso 1: Nó atual tem espaço
+    // caso 1: Nó atual tem espaço
     if (no.numero_chaves < MAX_CHAVES)
     {
-        // Faz o "shift" para abrir espaço para a nova chave
+        // faz o "shift" para abrir espaço para a nova chave
         for (int j = no.numero_chaves; j > i; j--)
         {
             no.chaves[j] = no.chaves[j - 1];
@@ -332,11 +332,11 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     }
 
     // --- Caso 2: Nó atual não tem espaço (SPLIT) ---
-    // A redistribuição não deve ser implementada na inserção, forçando um particionamento direto.
+    // a redistribuição não deve ser implementada na inserção, forçando um particionamento direto.
 
     // Nó pai: vindo de um filho que houve promoção.
 
-    // Arrays temporários para organizar as chaves em ordem
+    // arrays temporários para organizar as chaves em ordem
     int temp_chaves[MAX_CHAVES + 1];
     int temp_dados_byte_offsets[MAX_CHAVES + 1];
     int temp_filhos[MAX_CHAVES + 2];
@@ -344,7 +344,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     for (int j = 0, idx = 0; j < MAX_CHAVES; j++, idx++)
     {
         if (idx == i)
-            idx++; // Pula o índice onde a chave promovida vai entrar
+            idx++; // pula o índice onde a chave promovida vai entrar
         temp_chaves[idx] = no.chaves[j];
         temp_dados_byte_offsets[idx] = no.dados_byte_offsets[j];
     }
@@ -354,12 +354,12 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     for (int j = 0, idx = 0; j < MAX_CHAVES + 1; j++, idx++)
     {
         if (idx == i + 1)
-            idx++; // Pula o ponteiro do novo filho
+            idx++; // pula o ponteiro do novo filho
         temp_filhos[idx] = no.filhos[j];
     }
     temp_filhos[i + 1] = ret.RRN_filho_direito;
 
-    // Reseta o nó original (Nó da Esquerda)
+    // reseta o nó original (Nó da Esquerda)
     for (int j = 0; j < MAX_CHAVES; j++)
     {
         no.chaves[j] = -1;
@@ -368,7 +368,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     }
     no.filhos[MAX_CHAVES] = -1;
 
-    // A distribuição deve ser a mais uniforme possível, com o nó esquerdo contendo 2 chaves e o direito 1 chave.
+    // a distribuição deve ser a mais uniforme possível, com o nó esquerdo contendo 2 chaves e o direito 1 chave.
     no.numero_chaves = 2;
     no.chaves[0] = temp_chaves[0];
     no.dados_byte_offsets[0] = temp_dados_byte_offsets[0];
@@ -382,24 +382,24 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     if (no.tipo_no == 0)
         no.tipo_no = 1;
 
-    // Cria o Novo Nó (Nó da Direita)
+    // cria o Novo Nó (Nó da Direita)
     int rrn_novo_no = _obter_rrn_livre(arquivo, cabecalho);
     no_arvore_b novo_no = arvore_b_criar_no_vazio();
 
-    novo_no.tipo_no = no.tipo_no; // Copia a tipagem do irmão recém rebaixado
+    novo_no.tipo_no = no.tipo_no; // copia a tipagem do irmão recém rebaixado
     novo_no.numero_chaves = 1;
     novo_no.chaves[0] = temp_chaves[3];
     novo_no.dados_byte_offsets[0] = temp_dados_byte_offsets[3];
     novo_no.filhos[0] = temp_filhos[3];
     novo_no.filhos[1] = temp_filhos[4];
 
-    // A chave promovida passa a ser a primeira do nó resultante do particionamento (índice 2 do array temporário).
+    // a chave promovida passa a ser a primeira do nó resultante do particionamento (índice 2 do array temporário).
     ret.houve_split = true;
     ret.chave_promovida = temp_chaves[2];
     ret.RRN_dado_promovido = temp_dados_byte_offsets[2];
     ret.RRN_filho_direito = rrn_novo_no;
 
-    // Salva ambos no disco
+    // salva ambos no disco
     arvore_b_escrever_no(arquivo, RRN_atual, &no);
     arvore_b_escrever_no(arquivo, rrn_novo_no, &novo_no);
 
@@ -409,7 +409,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int byte_offset_dado)
 {
 
-    // Caso base: Árvore vazia, cria o nó raiz
+    // caso base: Árvore vazia, cria o nó raiz
     if (cabecalho->no_raiz == -1)
     {
         no_arvore_b raiz = arvore_b_criar_no_vazio();
@@ -423,20 +423,20 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
 
         printf("RRN da raiz: %d\n", rrn_raiz);
 
-        cabecalho->no_raiz = rrn_raiz; // Atualiza o RRN da raiz no cabeçalho
-        cabecalho->nro_nos = 1;        // Atualiza o número de nós
+        cabecalho->no_raiz = rrn_raiz; // atualiza o RRN da raiz no cabeçalho
+        cabecalho->nro_nos = 1;        // atualiza o número de nós
 
         printf("numero de nos: %d\n", cabecalho->nro_nos);
 
-        arvore_b_atualizar_cabecalho(arquivo, cabecalho); // Atualiza o cabeçalho no disco após a modificação
+        arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
         return;
     }
 
-    // Chama a função recursiva de inserção a partir da raiz
+    // chama a função recursiva de inserção a partir da raiz
     retorno_insercao_t resultado = _inserir_recursivo(arquivo, cabecalho, cabecalho->no_raiz, chave, byte_offset_dado);
 
-    // Se houve split na raiz, precisamos criar um novo nó raiz
+    // se houve split na raiz, precisamos criar um novo nó raiz
     if (resultado.houve_split)
     {
         no_arvore_b nova_raiz = arvore_b_criar_no_vazio();
@@ -444,16 +444,16 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
         nova_raiz.numero_chaves = 1;
         nova_raiz.chaves[0] = resultado.chave_promovida;
         nova_raiz.dados_byte_offsets[0] = resultado.RRN_dado_promovido;
-        nova_raiz.filhos[0] = cabecalho->no_raiz;          // Filho esquerdo é a antiga raiz
-        nova_raiz.filhos[1] = resultado.RRN_filho_direito; // Filho direito é o novo nó criado
+        nova_raiz.filhos[0] = cabecalho->no_raiz;          // filho esquerdo é a antiga raiz
+        nova_raiz.filhos[1] = resultado.RRN_filho_direito; // filho direito é o novo nó criado
 
         int rrn_nova_raiz = _obter_rrn_livre(arquivo, cabecalho);
         arvore_b_escrever_no(arquivo, rrn_nova_raiz, &nova_raiz);
 
-        cabecalho->no_raiz = rrn_nova_raiz; // Atualiza o RRN da nova raiz no cabeçalho
+        cabecalho->no_raiz = rrn_nova_raiz; // atualiza o RRN da nova raiz no cabeçalho
     }
 
-    arvore_b_atualizar_cabecalho(arquivo, cabecalho); // Atualiza o cabeçalho no disco após a modificação
+    arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
     printf("numero de nos: %d\n", cabecalho->nro_nos);
 }
@@ -471,12 +471,16 @@ static void _remover_pagina(FILE *arquivo, header_arvore_b *cabecalho, int rrn_r
 
     no.removido = '1';
     no.proximo = cabecalho->topo;
+<<<<<<< Updated upstream
     // O resto dos bytes devem permanecer inalterados, conforme especificação.
+=======
+>>>>>>> Stashed changes
 
     arvore_b_escrever_no(arquivo, rrn_removido, &no);
 
     cabecalho->topo = rrn_removido;
     cabecalho->nro_nos--;
+    printf("Removido RRN: %d, novo topo: %d, numero de nos: %d\n", rrn_removido, cabecalho->topo, cabecalho->nro_nos);
 }
 
 /**
@@ -486,7 +490,11 @@ static void _buscar_sucessor(FILE *arquivo, int RRN_atual, int *chave_sucessores
 {
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
+<<<<<<< Updated upstream
     // Se for folha, a primeira chave é o sucessor
+=======
+    // se for folha, a primeira chave é o sucessor
+>>>>>>> Stashed changes
     if (no.tipo_no == -1)
     {
         *chave_sucessoressora = no.chaves[0];
@@ -504,7 +512,11 @@ static void _buscar_sucessor(FILE *arquivo, int RRN_atual, int *chave_sucessores
 static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RRN_atual, int chave_busca)
 {
     if (RRN_atual == -1)
+<<<<<<< Updated upstream
         return false; // Chave não encontrada
+=======
+        return false; // chave não encontrada
+>>>>>>> Stashed changes
 
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
@@ -517,12 +529,20 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
 
     bool underflow_filho = false;
 
+<<<<<<< Updated upstream
     // CASO 1: A chave foi encontrada neste nó
+=======
+    // caso 1: A chave foi encontrada neste nó
+>>>>>>> Stashed changes
     if (i < no.numero_chaves && chave_busca == no.chaves[i])
     {
         if (no.tipo_no == -1)
         {
+<<<<<<< Updated upstream
             // É folha: Remove fazendo shift para a esquerda
+=======
+            // é folha: Remove fazendo shift para a esquerda
+>>>>>>> Stashed changes
             for (int j = i; j < no.numero_chaves - 1; j++)
             {
                 no.chaves[j] = no.chaves[j + 1];
@@ -537,7 +557,11 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
         }
         else
         {
+<<<<<<< Updated upstream
             // É nó interno: Troca pelo sucessor imediato (folha)
+=======
+            // é nó interno: Troca pelo sucessor imediato (folha)
+>>>>>>> Stashed changes
             int chave_sucessor, byte_offset_dado_sucessor;
             _buscar_sucessor(arquivo, no.filhos[i + 1], &chave_sucessor, &byte_offset_dado_sucessor);
 
@@ -547,17 +571,21 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
 
             // Vai recursivamente remover o sucessor na subárvore
             underflow_filho = _remover_recursivo(arquivo, cabecalho, no.filhos[i + 1], chave_sucessor);
-            i++; // Para o tratamento de underflow abaixo saber qual filho deu problema
+            i++; // para o tratamento de underflow abaixo saber qual filho deu problema
         }
     }
     else
     {
+<<<<<<< Updated upstream
         // CASO 2: A chave não está neste nó, desce recursivamente
+=======
+        // caso 2: A chave não está neste nó, desce recursivamente
+>>>>>>> Stashed changes
         underflow_filho = _remover_recursivo(arquivo, cabecalho, no.filhos[i], chave_busca);
     }
 
     // =========================================================================
-    // TRATAMENTO DE UNDERFLOW NO FILHO [i]
+    //              tratamento de underflow [i]
     // =========================================================================
     if (underflow_filho)
     {
@@ -581,7 +609,11 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             irmao_esq = arvore_b_ler_no(arquivo, rrn_irmao_esq);
         }
 
+<<<<<<< Updated upstream
         // Redistribuição à direita: O irmão direito tem mais de 1 chave, então pode ceder uma chave para o filho
+=======
+        // distribuição à direita
+>>>>>>> Stashed changes
         if (tem_irmao_dir && irmao_dir.numero_chaves > 1)
         {
             filho.chaves[0] = no.chaves[i];
@@ -607,24 +639,32 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             arvore_b_escrever_no(arquivo, rrn_filho, &filho);
             arvore_b_escrever_no(arquivo, rrn_irmao_dir, &irmao_dir);
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
-            return false; // Resolvido
+            return false; // resolvido
         }
 
+<<<<<<< Updated upstream
         // Redistribuição à esquerda: O irmão esquerdo tem mais de 1 chave, então pode ceder uma chave para o filho
         if (tem_irmao_esq && irmao_esq.numero_chaves > 1)
         {
             // Filho recebe a chave do pai no índice i-1
             filho.filhos[1] = filho.filhos[0]; // Shift do ponteiro herdado
+=======
+        // distribuição à esquerda
+        if (tem_irmao_esq && irmao_esq.numero_chaves > 1)
+        {
+            // filho recebe a chave do pai no índice i-1
+            filho.filhos[1] = filho.filhos[0]; // shift do ponteiro herdado
+>>>>>>> Stashed changes
             filho.chaves[0] = no.chaves[i - 1];
             filho.dados_byte_offsets[0] = no.dados_byte_offsets[i - 1];
             filho.filhos[0] = irmao_esq.filhos[irmao_esq.numero_chaves];
             filho.numero_chaves = 1;
 
-            // Pai recebe a última chave do irmão esquerdo
+            // pai recebe a última chave do irmão esquerdo
             no.chaves[i - 1] = irmao_esq.chaves[irmao_esq.numero_chaves - 1];
             no.dados_byte_offsets[i - 1] = irmao_esq.dados_byte_offsets[irmao_esq.numero_chaves - 1];
 
-            // Limpa o espaço cedido no irmão esquerdo
+            // limpa o espaço cedido no irmão esquerdo
             irmao_esq.chaves[irmao_esq.numero_chaves - 1] = -1;
             irmao_esq.dados_byte_offsets[irmao_esq.numero_chaves - 1] = -1;
             irmao_esq.filhos[irmao_esq.numero_chaves] = -1;
@@ -633,9 +673,10 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             arvore_b_escrever_no(arquivo, rrn_filho, &filho);
             arvore_b_escrever_no(arquivo, rrn_irmao_esq, &irmao_esq);
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
-            return false; // Resolvido
+            return false; // resolvido
         }
 
+<<<<<<< Updated upstream
         // Concatenação à esquerda: O irmão esquerdo tem apenas 1 chave, então é necessário fundir o filho com o irmão esquerdo e puxar a chave do pai para esse meio-fio
         if (tem_irmao_esq)
         {
@@ -666,6 +707,9 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
         }
 
         // Concatenação à direita: O irmão direito tem apenas 1 chave, então é necessário fundir o filho com o irmão direito e puxar a chave do pai para esse meio-fio - filho esquerdo
+=======
+        // concatenação à direita
+>>>>>>> Stashed changes
         if (tem_irmao_dir)
         {
             // O Filho (atual, sem chaves) absorve a chave do Pai e todo o conteúdo do Irmão Direito
@@ -682,10 +726,14 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             }
             filho.numero_chaves = 1 + irmao_dir.numero_chaves;
 
-            // A página do Irmão Direito é destruída
+            // a página do Irmão Direito é destruída
             _remover_pagina(arquivo, cabecalho, rrn_irmao_dir);
 
+<<<<<<< Updated upstream
             // Shift no Pai para remover a chave [i] que desceu e o ponteiro [i+1]
+=======
+            // shift no Pai para remover a chave [i] que desceu e o ponteiro [i+1]
+>>>>>>> Stashed changes
             for (int j = i; j < no.numero_chaves - 1; j++)
             {
                 no.chaves[j] = no.chaves[j + 1];
@@ -699,7 +747,36 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
 
             arvore_b_escrever_no(arquivo, rrn_filho, &filho);
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
-            return (no.numero_chaves == 0); // Repassa o sob-aviso se o pai zerou
+            return (no.numero_chaves == 0); // repassa o sob-aviso se o pai zerou
+        }
+
+        // concatenação à esquerda
+        if (tem_irmao_esq)
+        {
+            // irmão Esquerdo absorve a chave do Pai e todo o conteúdo do Filho (que estava vazio de chaves)
+            irmao_esq.chaves[irmao_esq.numero_chaves] = no.chaves[i - 1];
+            irmao_esq.dados_byte_offsets[irmao_esq.numero_chaves] = no.dados_byte_offsets[i - 1];
+            irmao_esq.filhos[irmao_esq.numero_chaves + 1] = filho.filhos[0];
+            irmao_esq.numero_chaves++;
+
+            // a página do Filho (à direita da junção) é destruída
+            _remover_pagina(arquivo, cabecalho, rrn_filho);
+
+            // shift no Pai para remover a chave [i-1] que desceu e o ponteiro [i] que apontava para o Filho morto
+            for (int j = i - 1; j < no.numero_chaves - 1; j++)
+            {
+                no.chaves[j] = no.chaves[j + 1];
+                no.dados_byte_offsets[j] = no.dados_byte_offsets[j + 1];
+                no.filhos[j + 1] = no.filhos[j + 2];
+            }
+            no.chaves[no.numero_chaves - 1] = -1;
+            no.dados_byte_offsets[no.numero_chaves - 1] = -1;
+            no.filhos[no.numero_chaves] = -1;
+            no.numero_chaves--;
+
+            arvore_b_escrever_no(arquivo, rrn_irmao_esq, &irmao_esq);
+            arvore_b_escrever_no(arquivo, RRN_atual, &no);
+            return (no.numero_chaves == 0); // repassa o sob-aviso se o pai zerou
         }
     }
 
@@ -716,18 +793,27 @@ void arvore_b_remover(FILE *arquivo, header_arvore_b *cabecalho, int chave_busca
 
     bool underflow_raiz = _remover_recursivo(arquivo, cabecalho, cabecalho->no_raiz, chave_busca);
 
+<<<<<<< Updated upstream
     // Se a raiz sofreu underflow e zerou suas chaves
+=======
+    // se a raiz sofreu underflow e zerou suas chaves
+>>>>>>> Stashed changes
     if (underflow_raiz)
     {
         no_arvore_b raiz = arvore_b_ler_no(arquivo, cabecalho->no_raiz);
 
+<<<<<<< Updated upstream
         // Se ela tiver um descendente, esse descendente vira a nova raiz absoluta
+=======
+        // se ela tiver um descendente, esse descendente vira a nova raiz absoluta
+>>>>>>> Stashed changes
         if (raiz.tipo_no != -1)
         {
             int nova_raiz_rrn = raiz.filhos[0];
             _remover_pagina(arquivo, cabecalho, cabecalho->no_raiz);
             cabecalho->no_raiz = nova_raiz_rrn;
 
+<<<<<<< Updated upstream
             no_arvore_b nova_raiz = arvore_b_ler_no(arquivo, nova_raiz_rrn);
             nova_raiz.tipo_no = 0; // A nova raiz é promovida a raiz
             arvore_b_escrever_no(arquivo, nova_raiz_rrn, &nova_raiz);
@@ -735,11 +821,24 @@ void arvore_b_remover(FILE *arquivo, header_arvore_b *cabecalho, int chave_busca
         else
         {
             // Se a raiz folha secou, a árvore está 100% vazia
+=======
+            // O novo nó que assumiu precisa ter seu tipo atualizado para raiz (0),
+            // caso ele fosse um nó intermediário (1). Se for folha (-1), continua folha.
+            no_arvore_b nova_raiz = arvore_b_ler_no(arquivo, nova_raiz_rrn);
+            if (nova_raiz.tipo_no == 1) {
+                nova_raiz.tipo_no = 0;
+                arvore_b_escrever_no(arquivo, nova_raiz_rrn, &nova_raiz);
+            }
+        }
+        else
+        {
+            // se a raiz folha secou, a árvore está 100% vazia
+>>>>>>> Stashed changes
             _remover_pagina(arquivo, cabecalho, cabecalho->no_raiz);
             cabecalho->no_raiz = -1;
         }
     }
 
-    // Assim como na inserção, é crucial gravar o cabeçalho no disco ao fim
+    // assim como na inserção, é crucial gravar o cabeçalho no disco ao fim
     arvore_b_atualizar_cabecalho(arquivo, cabecalho);
 }

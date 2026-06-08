@@ -67,7 +67,7 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Est
 
     int byte_offset = arvore_b_buscar(fab, &header_b, estacao_busca->codEstacao);
 
-    // Se retornou -1, o registro não existe, então a deleção está concluída
+    // se retornou -1, o registro não existe, então a deleção está concluída
     if (byte_offset == -1)
     {
         return EXIT_SUCCESS;
@@ -81,23 +81,23 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Est
     {
         escrever_buffer_na_estacao(buffer, estacao);
 
-        // Verifica se já não foi removido e se bate com o restante da busca
+        // verifica se já não foi removido e se bate com o restante da busca
         if (estacao->removido == '0' && comparar_estacoes(estacao_busca, estacao))
         {
-            // Calcula qual é o RRN para empilhar no topo do cabeçalho
+            // calcula qual é o RRN para empilhar no topo do cabeçalho
             int rrn_atual = (byte_offset - TAM_HEADER) / TAM_REGISTRO;
 
-            // Atualiza a estação para marcação lógica (dados)
+            // atualiza a estação para marcação lógica (dados)
             estacao->removido = '1';
             estacao->proximo = header->topo;
             header->topo = rrn_atual;
 
-            // Reescreve no buffer e salva no disco na mesma posição
+            // reescreve no buffer e salva no disco na mesma posição
             escrever_estacao_no_buffer(estacao, buffer);
             fseek(arquivo_dados, byte_offset, SEEK_SET);
             escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
-            // Remove a chave do índice (índice)
+            // remove a chave do índice (índice)
             arvore_b_remover(fab, &header_b, estacao_busca->codEstacao);
         }
 
@@ -115,7 +115,8 @@ int crud_delete(Estacao *estacao_busca, FILE *f, FILE *fab, Header *header)
     // int removeu_estacao = 0;
     int erro;
 
-    if (estacao_busca->codEstacao != -1 && estacao_busca->codEstacao != 0)
+    // se o arquivo de índice for fornecido e a estação de busca tiver um código válido, tenta remover usando o índice, senão faz a busca sequencial
+    if (fab != NULL && estacao_busca->codEstacao != -1 && estacao_busca->codEstacao != 0)
     {
         erro = busca_em_indice_e_delete(f, fab, header, estacao_busca);
     }
@@ -182,12 +183,14 @@ int DELETE(int n, FILE *f, FILE *fab)
 
     char buffer[TAM_REGISTRO];
 
-    // Contagem de número de estações únicas e pares válidos
+    int numero_estacoes = 0;
+
+    // contagem de número de estações únicas e pares válidos
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
         escrever_buffer_na_estacao(buffer, estacao);
 
-        // Se estiver logicamente removido, ignora e vai pro próximo
+        // se estiver logicamente removido, ignora e vai pro próximo
         if (estacao->removido == '1')
         {
             limpar_estacao(estacao);
@@ -195,13 +198,15 @@ int DELETE(int n, FILE *f, FILE *fab)
             continue;
         }
 
-        // Só inclui e incrementa se a estação ainda não existir no Set
+        numero_estacoes++;
+
+        // só inclui e incrementa se a estação ainda não existir no Set
         if (!existe_estacao(set_estacoes, estacao->nomeEstacao))
         {
             incluir_estacao(set_estacoes, estacao->nomeEstacao);
         }
 
-        // Só insere o par se existir uma próxima estação válida
+        // só insere o par se existir uma próxima estação válida
         if (estacao->codProxEstacao != -1)
         {
             inserir_par(&info_pares_estacoes, estacao->codEstacao, estacao->codProxEstacao);
@@ -224,6 +229,8 @@ int DELETE(int n, FILE *f, FILE *fab)
     free(header);
 
     destruir_estacao(estacao);
+
+    printf("Número de estações quaisquer: %d\n", numero_estacoes);
 
     return err;
 }

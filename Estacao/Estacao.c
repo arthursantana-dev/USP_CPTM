@@ -288,7 +288,7 @@ int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
     memcpy(buffer + offset, estacao->nomeLinha, estacao->tamNomeLinha);
     offset += estacao->tamNomeLinha;
 
-    return offset; // Retorna o número de bytes escritos no buffer
+    return offset; // retorna o número de bytes escritos no buffer
 }
 
 int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
@@ -320,7 +320,7 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
 
     if (removido == '1')
     {
-        return 1; // Registro removido, não preenchemos a estacao, apenas retornamos.
+        return 1; // registro removido, não preenchemos a estacao, apenas retornamos.
     }
 
     memcpy(&codEstacao, buffer + offset, sizeof(codEstacao));
