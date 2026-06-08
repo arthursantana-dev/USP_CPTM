@@ -78,11 +78,13 @@ int main()
 		break;
 
 	// SELECT WHERE
-	case 3:
+	case 8:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb");
+		scanf("%s", nome_arquivo_arvore_b);
+		fab = fopen(nome_arquivo_arvore_b, "rb");
 		scanf("%d", &n);
-		err = SELECT(n, f);
+		err = SELECT(n, f, fab);
 		break;
 
 	// DELETE
@@ -94,18 +96,18 @@ int main()
 		break;
 
 	// DELETE
-	case 5:
+	case 9:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb+");
-		err = INSERT(f);
+		scanf("%s", nome_arquivo_arvore_b);
+		fab = fopen(nome_arquivo_arvore_b, "rb+");
+		err = INSERT(f, fab);
 		break;
 		
 	// INSERT INTO
 	case 6:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
-
-		f = fopen(nome_arquivo_binario, "rb+");
 		err = UPDATE(n, f);
 		break;
 
@@ -118,7 +120,7 @@ int main()
 		err = CREATE_INDEX(nome_arquivo_binario, nome_arquivo_arvore_b);
 		break;
 
-	case 9: // A deleção usando a estrutura de índices e cuidada internamente (crud_delete)
+	case 10: // A deleção usando a estrutura de índices e cuidada internamente (crud_delete)
 		scanf("%s", nome_arquivo_binario);
 		scanf("%s", nome_arquivo_arvore_b);
 
@@ -149,7 +151,7 @@ int main()
 		return 0;
 	}
 
-	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7)
+	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7 && opcode != 8)
 	{
 		BinarioNaTela(nome_arquivo_binario);
 		BinarioNaTela(nome_arquivo_arvore_b);

@@ -12,11 +12,11 @@
 
     int DELETE(int n, FILE *f, FILE* fab);
 
-    int INSERT(FILE *f);
+    int INSERT(FILE *f, FILE *fab);
 
     int SELECT_ALL(FILE *f);
 
-    int SELECT(int n, FILE *f);
+    int SELECT(int n, FILE *f, FILE *fab);
 
     int UPDATE(int n, FILE *f);
 

@@ -4,7 +4,7 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Es
 {
     char buffer[TAM_REGISTRO];
 
-    bool removeu_estacao = false;
+    // bool removeu_estacao = false;
 
     header_arvore_b header_b = arvore_b_ler_cabecalho(fab);
 
@@ -33,7 +33,7 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Es
             continue;
         }
 
-        removeu_estacao = true;
+        // removeu_estacao = true;
 
         RRNnovo = RRN_atual;
 
@@ -111,17 +111,20 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Est
 int crud_delete(Estacao *estacao_busca, FILE *f, FILE *fab, Header *header)
 {
 
-    int removeu_estacao = 0;
+    // int removeu_estacao = 0;
+    int erro;
 
     if (estacao_busca->codEstacao != -1 && estacao_busca->codEstacao != 0)
     {
-        int err = busca_em_indice_e_delete(f, fab, header, estacao_busca);
+        erro = busca_em_indice_e_delete(f, fab, header, estacao_busca);
     }
     else
     {
-        int err = busca_sequencial_e_delete(f, fab, header, estacao_busca);
+        erro = busca_sequencial_e_delete(f, fab, header, estacao_busca);
     }
-
+    if(erro){
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
 

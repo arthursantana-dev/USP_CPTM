@@ -1,15 +1,16 @@
 #include "CRUD.h"
 
-int crud_select(Estacao *estacao_selecao, FILE *f)
+int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
 {
-
     char buffer[TAM_REGISTRO];
 
     Header *header = ler_header_do_arquivo(f);
+    header_arvore_b header_b = arvore_b_ler_cabecalho(fab);
 
-    if (header == NULL)
+    if (header == NULL || header_b.status == '0')
     {
         free(header);
+
         return EXIT_FAILURE;
     }
 
@@ -27,10 +28,42 @@ int crud_select(Estacao *estacao_selecao, FILE *f)
 
     Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
+    if(estacao_selecao->codEstacao != 0){
+        // printf("entrei 1\n");
+        int offset = arvore_b_buscar(fab, &header_b, estacao_selecao->codEstacao);
+        if(offset == -1){
+            printf("Registro inexistente.\n");
+        }
+        else{
+            fseek(f, offset, SEEK_SET);
+            fread(buffer, TAM_REGISTRO, 1, f);
+
+            escrever_buffer_na_estacao(buffer, ea);
+            // imprimir_estacao(ea);
+
+            if (ea->removido == '1')
+            {
+                printf("Registro inexistente.\n");
+            }
+            else
+            {
+                if(comparar_estacoes(estacao_selecao, ea)){
+                    imprimir_estacao(ea);
+                }
+                else{
+                    printf("Registro inexistente.\n");
+                }
+            }
+        }
+
+        destruir_estacao(ea);
+        free(header);
+        return EXIT_SUCCESS;
+    }
+
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-
-        //Tecnicamente, ea foi lido
+        // Tecnicamente, ea foi lido
         escrever_buffer_na_estacao(buffer, ea);
 
         if (ea->removido == '1')
@@ -106,7 +139,7 @@ int SELECT_ALL(FILE *f)
     return 0;
 }
 
-int SELECT(int n, FILE *f)
+int SELECT(int n, FILE *f, FILE *fab)
 {
     int err = 0;
 
@@ -123,7 +156,7 @@ int SELECT(int n, FILE *f)
         set_valores_estacao_para_busca(estacao_selecao);
 
         ler_input_para_estacao_de_busca(estacao_selecao);
-        err = crud_select(estacao_selecao, f);
+        err = crud_select(estacao_selecao, f, fab);
 
         limpar_estacao(estacao_selecao);
 

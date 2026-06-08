@@ -267,7 +267,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 {
     retorno_insercao_t ret = {false, -1, -1, -1};
 
-    printf("Descendo para RRN: %d\n", RRN_atual);
+    // printf("Descendo para RRN: %d\n", RRN_atual);
 
     // Caso Base: Chegou em um ponteiro nulo, a chave deve ser inserida na folha pai
     if (RRN_atual == -1)
