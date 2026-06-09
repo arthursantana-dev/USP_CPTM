@@ -6,7 +6,10 @@ SRCS = programaTrab.c \
 	Header/Header.c \
 	EstruturasAuxiliares/SetNomes.c \
 	EstruturasAuxiliares/ParEstacoes.c \
-	ArvoreB/ArvoreB.c \
+	BTREE/BTREE.c \
+	BTREE/btree_busca.c \
+	BTREE/btree_insercao.c \
+	BTREE/btree_remocao.c \
 	IO/IO.c \
 	IO/misc.c \
 	IO/parser.c \
@@ -59,6 +62,9 @@ ci:
 
 di:
 	./programaTrab < delete_i.in
+
+ii:
+	./programaTrab < insert_i.in
 
 zip:
 	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" 

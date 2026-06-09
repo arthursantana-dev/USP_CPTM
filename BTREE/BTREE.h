@@ -27,6 +27,21 @@ typedef struct {
     int filhos[ORDEM];       // P1, P2, P3, P4 (RRN das subarvores)
 } no_arvore_b;
 
+
+// Estrutura de retorno para guiar a subida recursiva do split
+// @param houve_split Indica se ocorreu um split no nível inferior
+// @param chave_promovida A chave que deve ser promovida para o nível superior
+// @param RRN_dado_promovido O PR associado à chave promovida (relevante para folhas)
+// @param RRN_filho_direito O RRN do novo nó criado à direita após o split
+typedef struct
+{
+    bool houve_split;
+    int chave_promovida;
+    int RRN_dado_promovido;
+    int RRN_filho_direito;
+} retorno_insercao_t;
+
+
 /* =========================================================
  * Funcoes de Gerenciamento do Arquivo
  * ========================================================= */
