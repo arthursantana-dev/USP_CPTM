@@ -99,6 +99,18 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
 
     // printf("ea: \n");
 
+    if(ea->tamNomeLinha != 0){
+        printf("-----------------------------\n");
+        printf("codEstacao: %d\n", ea->codEstacao);
+        printf("nomeEstacao: %s\n", ea->nomeEstacao);
+        printf("codLinha: %d\n", ea->codLinha);
+        printf("nomeLinha: %s\n", ea->nomeLinha);
+        printf("codProxEstacao: %d\n", ea->codProxEstacao);
+        printf("distProxEstacao: %d\n", ea->distProxEstacao);
+        printf("codLinhaIntegra: %d\n", ea->codLinhaIntegra);
+        printf("codEstacaoIntegra: %d\n", ea->codEstacaoIntegra);
+    }
+
     // printf("Encontrou\n");
 
     return 1;
@@ -277,7 +289,7 @@ int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
     memcpy(buffer + offset, estacao->nomeLinha, estacao->tamNomeLinha);
     offset += estacao->tamNomeLinha;
 
-    return offset; // Retorna o número de bytes escritos no buffer
+    return offset; // retorna o número de bytes escritos no buffer
 }
 
 int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
@@ -309,7 +321,7 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
 
     if (removido == '1')
     {
-        return 1; // Registro removido, não preenchemos a estacao, apenas retornamos.
+        return 1; // registro removido, não preenchemos a estacao, apenas retornamos.
     }
 
     memcpy(&codEstacao, buffer + offset, sizeof(codEstacao));
