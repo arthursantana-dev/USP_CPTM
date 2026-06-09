@@ -6,7 +6,11 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Es
 
     // bool removeu_estacao = false;
 
-    header_arvore_b header_b = arvore_b_ler_cabecalho(fab);
+    header_arvore_b header_b;
+
+    if (fab != NULL) {
+        header_b = arvore_b_ler_cabecalho(fab);
+    }
 
     int RRNnovo = 0;
     int RRN_atual = -1;
@@ -51,8 +55,10 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Es
 
         escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
-        printf("remoção sequencial feita, agora na arvore\n");
-        arvore_b_remover(fab, &header_b, estacao->codEstacao);
+        // printf("remoção sequencial feita, agora na arvore\n");
+        if (fab != NULL) {
+            arvore_b_remover(fab, &header_b, estacao->codEstacao);
+        }
 
         limpar_estacao(estacao);
     }
@@ -99,7 +105,6 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Est
             escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
             // remove a chave do índice (índice)
-            printf("remoção em indice feita, agora na arvore\n");
             arvore_b_remover(fab, &header_b, estacao_busca->codEstacao);
         }
 
@@ -138,7 +143,6 @@ int DELETE(int n, FILE *f, FILE *fab)
 
     if (f == NULL)
     {
-        mostrar_erro();
         return EXIT_FAILURE;
     }
 
@@ -150,8 +154,6 @@ int DELETE(int n, FILE *f, FILE *fab)
 
     if (header == NULL)
     {
-        fclose(f);
-        mostrar_erro();
         return EXIT_FAILURE;
     }
 
@@ -165,8 +167,8 @@ int DELETE(int n, FILE *f, FILE *fab)
 
         ler_input_para_estacao_de_busca(estacao);
 
-        printf("Estação a ser buscada: ");
-        imprimir_estacao(estacao);
+        // printf("Estação a ser buscada: ");
+        // imprimir_estacao(estacao);
 
         err = crud_delete(estacao, f, fab, header);
 

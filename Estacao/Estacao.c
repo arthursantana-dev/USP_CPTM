@@ -390,7 +390,7 @@ void atualizar_nros_estacoes_no_header(FILE *f){
     header->status = '0';
     escrever_header_no_arquivo(f, header);
 
-    Estacao *estacao = criar_estacao(0, "", 0, "", 0, 0, 0, 0);
+    Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
     InfoParesEstacoes info_pares_estacoes;
     

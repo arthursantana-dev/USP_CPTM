@@ -271,7 +271,10 @@ void arvore_b_remover(FILE *arquivo, header_arvore_b *cabecalho, int chave_busca
             cabecalho->no_raiz = nova_raiz_rrn;
 
             no_arvore_b nova_raiz = arvore_b_ler_no(arquivo, nova_raiz_rrn);
-            nova_raiz.tipo_no = 0; // A nova raiz é promovida a raiz
+
+            if (nova_raiz.tipo_no == 1)
+                nova_raiz.tipo_no = 0;
+
             arvore_b_escrever_no(arquivo, nova_raiz_rrn, &nova_raiz);
         }
         else
@@ -282,6 +285,5 @@ void arvore_b_remover(FILE *arquivo, header_arvore_b *cabecalho, int chave_busca
         }
     }
 
-    // Assim como na inserção, é crucial gravar o cabeçalho no disco ao fim
     arvore_b_atualizar_cabecalho(arquivo, cabecalho);
 }

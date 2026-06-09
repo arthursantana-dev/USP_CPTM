@@ -26,8 +26,8 @@
 
 	7. CREATE INDEX - Santana
 	8. SELECT WHERE - Martins
-	9. DELETE  - Santana
-	10.INSERT INTO - Martins
+	9. INSERT INTO - Martins
+	10.DELETE  - Santana
 
 	Obs.:
 
@@ -95,24 +95,25 @@ int main()
 		err = DELETE(n, f, NULL);
 		break;
 
-	// DELETE
+	// INSERT INTO
 	case 9:
 		scanf("%s", nome_arquivo_binario);
 		f = fopen(nome_arquivo_binario, "rb+");
 		scanf("%s", nome_arquivo_arvore_b);
 		fab = fopen(nome_arquivo_arvore_b, "rb+");
 		err = INSERT(f, fab);
-		if(!err)
+		if (!err)
 			atualizar_nros_estacoes_no_header(f);
 		break;
-		
-	// INSERT INTO
+
+	// UPDATE
 	case 6:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
 		err = UPDATE(n, f);
 		break;
 
+	// CREATE INDEX
 	case 7:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%s", nome_arquivo_arvore_b);
@@ -122,6 +123,7 @@ int main()
 		err = CREATE_INDEX(nome_arquivo_binario, nome_arquivo_arvore_b);
 		break;
 
+	// DELETE usando a estrutura de índices
 	case 10: // A deleção usando a estrutura de índices e cuidada internamente (crud_delete)
 		scanf("%s", nome_arquivo_binario);
 		scanf("%s", nome_arquivo_arvore_b);
@@ -130,22 +132,24 @@ int main()
 		f = fopen(nome_arquivo_binario, "rb+");
 		fab = fopen(nome_arquivo_arvore_b, "rb+");
 
-		if(fab == NULL){
+		if (fab == NULL)
+		{
 			err = EXIT_FAILURE;
 			mostrar_erro();
 			break;
 		}
-		
+
 		err = DELETE(n, f, fab);
-		if(!err)
+
+		if (!err)
 			atualizar_nros_estacoes_no_header(f);
 		break;
 	}
 
-	if(f != NULL)
+	if (f != NULL)
 		fclose(f);
 
-	if(fab != NULL)
+	if (fab != NULL)
 		fclose(fab);
 
 	if (err == 1)
