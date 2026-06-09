@@ -187,12 +187,12 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
         int rrn_raiz = _obter_rrn_livre(arquivo, cabecalho);
         arvore_b_escrever_no(arquivo, rrn_raiz, &raiz);
 
-        printf("RRN da raiz: %d\n", rrn_raiz);
+        // printf("RRN da raiz: %d\n", rrn_raiz);
 
         cabecalho->no_raiz = rrn_raiz; // atualiza o RRN da raiz no cabeçalho
         cabecalho->nro_nos = 1;        // atualiza o número de nós
 
-        printf("numero de nos: %d\n", cabecalho->nro_nos);
+        // printf("numero de nos: %d\n", cabecalho->nro_nos);
 
         arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
@@ -221,5 +221,5 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
 
     arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
-    printf("numero de nos: %d\n", cabecalho->nro_nos);
+    // printf("numero de nos: %d\n", cabecalho->nro_nos);
 }

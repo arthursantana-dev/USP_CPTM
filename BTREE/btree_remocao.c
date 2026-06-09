@@ -16,7 +16,7 @@ static void _remover_pagina(FILE *arquivo, header_arvore_b *cabecalho, int rrn_r
 
     cabecalho->topo = rrn_removido;
     cabecalho->nro_nos--;
-    printf("Removido RRN: %d, novo topo: %d, numero de nos: %d\n", rrn_removido, cabecalho->topo, cabecalho->nro_nos);
+    // printf("Removido RRN: %d, novo topo: %d, numero de nos: %d\n", rrn_removido, cabecalho->topo, cabecalho->nro_nos);
 }
 
 /**
