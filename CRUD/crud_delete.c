@@ -51,6 +51,7 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Es
 
         escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
+        printf("remoção sequencial feita, agora na arvore\n");
         arvore_b_remover(fab, &header_b, estacao->codEstacao);
 
         limpar_estacao(estacao);
@@ -98,6 +99,7 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *fab, Header *header, Est
             escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
             // remove a chave do índice (índice)
+            printf("remoção em indice feita, agora na arvore\n");
             arvore_b_remover(fab, &header_b, estacao_busca->codEstacao);
         }
 
@@ -116,7 +118,7 @@ int crud_delete(Estacao *estacao_busca, FILE *f, FILE *fab, Header *header)
     int erro;
 
     // se o arquivo de índice for fornecido e a estação de busca tiver um código válido, tenta remover usando o índice, senão faz a busca sequencial
-    if (fab != NULL && estacao_busca->codEstacao != -1 && estacao_busca->codEstacao != 0)
+    if (fab != NULL && estacao_busca->codEstacao != -2 && estacao_busca->codEstacao != 0)
     {
         erro = busca_em_indice_e_delete(f, fab, header, estacao_busca);
     }

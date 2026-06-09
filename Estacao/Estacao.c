@@ -411,7 +411,6 @@ void atualizar_nros_estacoes_no_header(FILE *f){
         if (estacao->removido == '1')
         {
             limpar_estacao(estacao);
-            imprimir_estacao(estacao);
             continue;
         }
 
