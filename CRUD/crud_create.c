@@ -1,5 +1,4 @@
 #include "CRUD.h"
-#include "../BTREE/BTREE.h"
 
 int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
 {

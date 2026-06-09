@@ -6,7 +6,10 @@ SRCS = programaTrab.c \
 	Header/Header.c \
 	EstruturasAuxiliares/SetNomes.c \
 	EstruturasAuxiliares/ParEstacoes.c \
-	ArvoreB/ArvoreB.c \
+	BTREE/btree_busca.c \
+	BTREE/btree_insercao.c \
+	BTREE/btree_remocao.c \
+	BTREE/BTREE.c \
 	IO/IO.c \
 	IO/misc.c \
 	IO/parser.c \
