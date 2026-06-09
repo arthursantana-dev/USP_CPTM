@@ -1,6 +1,6 @@
 #include "CRUD.h"
 
-// estacao_valores: valores == 0 -> ignorar e manter;
+// estacao_valores: valores == -2 -> ignorar e manter;
 // valores == -1 -> atualizar para NULO
 int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 {
@@ -67,9 +67,9 @@ int UPDATE(int n, FILE *f)
         return EXIT_FAILURE;
     }
 
-    Estacao *estacao_busca = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+    Estacao *estacao_busca = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
-    Estacao *estacao_valores = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+    Estacao *estacao_valores = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
     for (int i = 0; i < n; i++)
     {

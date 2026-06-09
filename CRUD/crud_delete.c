@@ -139,7 +139,7 @@ int DELETE(int n, FILE *f, FILE *fab)
 
     int err = 0;
 
-    Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+    Estacao *estacao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
     Header *header = ler_header_do_arquivo(f);
 
@@ -170,58 +170,8 @@ int DELETE(int n, FILE *f, FILE *fab)
         if (err)
             break;
     }
-
-    SetNomesEstacoes *set_estacoes = criar_set_estacoes();
-
-    InfoParesEstacoes info_pares_estacoes;
-    inicializar_pares(&info_pares_estacoes);
-
-    fseek(f, TAM_HEADER, SEEK_SET);
-
-    char buffer[TAM_REGISTRO];
-
-    // Contagem de número de estações únicas e pares válidos
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
-    {
-        escrever_buffer_na_estacao(buffer, estacao);
-
-        // Se estiver logicamente removido, ignora e vai pro próximo
-        if (estacao->removido == '1')
-        {
-            limpar_estacao(estacao);
-            imprimir_estacao(estacao);
-            continue;
-        }
-
-        // Só inclui e incrementa se a estação ainda não existir no Set
-        if (!existe_estacao(set_estacoes, estacao->nomeEstacao))
-        {
-            incluir_estacao(set_estacoes, estacao->nomeEstacao);
-        }
-
-        // Só insere o par se existir uma próxima estação válida
-        if (estacao->codProxEstacao != -1)
-        {
-            inserir_par(&info_pares_estacoes, estacao->codEstacao, estacao->codProxEstacao);
-        }
-
-        printf("Qtd Estacoes: %d | Qtd Pares: %d\n", set_estacoes->tamanho, info_pares_estacoes.nroPares);
-
-        limpar_estacao(estacao);
-    }
-
     header->status = '1';
-    header->nroEstacoes = set_estacoes->tamanho;
-    header->nroParesEstacao = info_pares_estacoes.nroPares;
-
     escrever_header_no_arquivo(f, header);
-
-    destruir_set_estacoes(set_estacoes);
-    destruir_pares(&info_pares_estacoes);
-
-    free(header);
-
     destruir_estacao(estacao);
-
     return err;
 }

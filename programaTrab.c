@@ -102,6 +102,8 @@ int main()
 		scanf("%s", nome_arquivo_arvore_b);
 		fab = fopen(nome_arquivo_arvore_b, "rb+");
 		err = INSERT(f, fab);
+		if(!err)
+			atualizar_nros_estacoes_no_header(f);
 		break;
 		
 	// INSERT INTO
@@ -135,8 +137,9 @@ int main()
 		}
 		
 		err = DELETE(n, f, fab);
+		if(!err)
+			atualizar_nros_estacoes_no_header(f);
 		break;
-
 	}
 
 	if(f != NULL)

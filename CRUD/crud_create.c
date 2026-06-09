@@ -135,7 +135,7 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
 
     char* buffer = criar_buffer();
 
-    Estacao* estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+    Estacao* estacao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
     int RRN = 0;
 
@@ -154,7 +154,7 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
             continue;
         }
 
-        imprimir_estacao(estacao);
+        // imprimir_estacao(estacao);
 
         int byteoffset = TAM_HEADER + (RRN * TAM_REGISTRO);
 

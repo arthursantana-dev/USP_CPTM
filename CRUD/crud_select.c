@@ -2,6 +2,7 @@
 
 int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
 {
+    // imprimir_estacao(estacao_selecao);
     char buffer[TAM_REGISTRO];
 
     Header *header = ler_header_do_arquivo(f);
@@ -28,7 +29,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
 
     Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
-    if(estacao_selecao->codEstacao != 0){
+    if(estacao_selecao->codEstacao != -2){
         // printf("entrei 1\n");
         int offset = arvore_b_buscar(fab, &header_b, estacao_selecao->codEstacao);
         if(offset == -1){
@@ -143,7 +144,7 @@ int SELECT(int n, FILE *f, FILE *fab)
 {
     int err = 0;
 
-    Estacao *estacao_selecao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+    Estacao *estacao_selecao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
     if (f == NULL)
     {

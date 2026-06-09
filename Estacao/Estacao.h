@@ -89,4 +89,6 @@
 
 	void escrever_buffer_no_arquivo(FILE *f, char *buffer);
 
+	void atualizar_nros_estacoes_no_header(FILE *f);
+
 #endif

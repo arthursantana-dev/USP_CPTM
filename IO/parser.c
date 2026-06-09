@@ -91,7 +91,7 @@ void input_para_estacao(Estacao *estacao, char *linha)
 }
 
 /*
-    Diferente da estação normal, a estação de busca tem campos com valor 0 para campos a serem ignorados na busca
+    Diferente da estação normal, a estação de busca tem campos com valor -2 para campos a serem ignorados na busca
     e -1 para campos explicitamente definidos como nulos 
 */
 void ler_input_para_estacao_de_busca(Estacao *estacao)

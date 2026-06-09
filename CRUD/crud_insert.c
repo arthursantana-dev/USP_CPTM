@@ -69,7 +69,7 @@ int INSERT(FILE *f, FILE *fab)
     int n;
     scanf("%d", &n);
 
-    Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
+    Estacao *estacao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
     for (int i = 0; i < n; i++)
     {
@@ -91,10 +91,10 @@ int INSERT(FILE *f, FILE *fab)
 
         free(nomeEstacao);
         free(nomeLinha);
+
         int erro = crud_insert(f, estacao, fab);
         if (erro)
         {
-            printf("destruid");
             destruir_estacao(estacao);
             return EXIT_FAILURE;
         }

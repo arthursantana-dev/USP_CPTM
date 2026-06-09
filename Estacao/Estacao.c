@@ -1,4 +1,5 @@
 #include "Estacao.h"
+#include "../EstruturasAuxiliares/EstruturasAuxiliares.h"
 
 /*cria estação normal: campos iniciados com 0 serão convertidos em -1 (nulos)*/
 Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
@@ -12,12 +13,12 @@ Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *no
 
     estacao->removido = '0';
     estacao->proximo = -1;
-    estacao->codEstacao = codEstacao == 0 ? -1 : codEstacao;
-    estacao->codLinha = codLinha == 0 ? -1 : codLinha;
-    estacao->codProxEstacao = codProxEstacao == 0 ? -1 : codProxEstacao;
-    estacao->distProxEstacao = distProxEstacao == 0 ? -1 : distProxEstacao;
-    estacao->codLinhaIntegra = codLinhaIntegra == 0 ? -1 : codLinhaIntegra;
-    estacao->codEstacaoIntegra = codEstacaoIntegra == 0 ? -1 : codEstacaoIntegra;
+    estacao->codEstacao = codEstacao;
+    estacao->codLinha = codLinha;
+    estacao->codProxEstacao = codProxEstacao;
+    estacao->distProxEstacao = distProxEstacao;
+    estacao->codLinhaIntegra = codLinhaIntegra;
+    estacao->codEstacaoIntegra = codEstacaoIntegra;
     estacao->tamNomeEstacao = strlen(nomeEstacao);
     estacao->nomeEstacao = nomeEstacao;
     estacao->tamNomeLinha = strlen(nomeLinha);
@@ -56,27 +57,27 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
 int comparar_estacoes(Estacao *ea, Estacao *eb)
 {
     // printf("codEstacao\n");
-    if (ea->codEstacao != 0 && ea->codEstacao != eb->codEstacao)
+    if (ea->codEstacao != -2 && ea->codEstacao != eb->codEstacao)
         return 0;
     // printf("codLinha = %d\n", ea->codLinha);
 
-    if (ea->codLinha != 0 && ea->codLinha != eb->codLinha)
+    if (ea->codLinha != -2 && ea->codLinha != eb->codLinha)
         return 0;
     // printf("codProxEstacao\n");
 
-    if (ea->codProxEstacao != 0 && ea->codProxEstacao != eb->codProxEstacao)
+    if (ea->codProxEstacao != -2 && ea->codProxEstacao != eb->codProxEstacao)
         return 0;
     // printf("distProxEstacao\n");
 
-    if (ea->distProxEstacao != 0 && ea->distProxEstacao != eb->distProxEstacao)
+    if (ea->distProxEstacao != -2 && ea->distProxEstacao != eb->distProxEstacao)
         return 0;
     // printf("codLinhaIntegra\n");
 
-    if (ea->codLinhaIntegra != 0 && ea->codLinhaIntegra != eb->codLinhaIntegra)
+    if (ea->codLinhaIntegra != -2 && ea->codLinhaIntegra != eb->codLinhaIntegra)
         return 0;
     // printf("codEstacaoIntegra\n");
 
-    if (ea->codEstacaoIntegra != 0 && ea->codEstacaoIntegra != eb->codEstacaoIntegra)
+    if (ea->codEstacaoIntegra != -2 && ea->codEstacaoIntegra != eb->codEstacaoIntegra)
         return 0;
     // printf("tamNomeEstacao\n");
     // printf("%d (%s) %d (%s)\n", ea->tamNomeEstacao, ea->nomeEstacao, eb->tamNomeEstacao, eb->nomeEstacao);
@@ -105,22 +106,22 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
 
 void copiar_estacao(Estacao *estacao, Estacao *novos_valores)
 {
-    if (novos_valores->codEstacao != 0)
+    if (novos_valores->codEstacao != -2)
         estacao->codEstacao = novos_valores->codEstacao;
 
-    if (novos_valores->codLinha != 0)
+    if (novos_valores->codLinha != -2)
         estacao->codLinha = novos_valores->codLinha;
 
-    if (novos_valores->codProxEstacao != 0)
+    if (novos_valores->codProxEstacao != -2)
         estacao->codProxEstacao = novos_valores->codProxEstacao;
 
-    if (novos_valores->distProxEstacao != 0)
+    if (novos_valores->distProxEstacao != -2)
         estacao->distProxEstacao = novos_valores->distProxEstacao;
 
-    if (novos_valores->codLinhaIntegra != 0)
+    if (novos_valores->codLinhaIntegra != -2)
         estacao->codLinhaIntegra = novos_valores->codLinhaIntegra;
 
-    if (novos_valores->codEstacaoIntegra != 0)
+    if (novos_valores->codEstacaoIntegra != -2)
         estacao->codEstacaoIntegra = novos_valores->codEstacaoIntegra;
 
     if (novos_valores->tamNomeEstacao != 0)
@@ -174,12 +175,12 @@ void limpar_estacao(Estacao *estacao)
 
 void set_valores_estacao_para_busca(Estacao *estacao)
 {
-    estacao->codEstacao = 0;
-    estacao->codLinha = 0;
-    estacao->codProxEstacao = 0;
-    estacao->distProxEstacao = 0;
-    estacao->codLinhaIntegra = 0;
-    estacao->codEstacaoIntegra = 0;
+    estacao->codEstacao = -2;
+    estacao->codLinha = -2;
+    estacao->codProxEstacao = -2;
+    estacao->distProxEstacao = -2;
+    estacao->codLinhaIntegra = -2;
+    estacao->codEstacaoIntegra = -2;
     estacao->tamNomeEstacao = 0;
     if (estacao->nomeEstacao != NULL)
     {
@@ -197,12 +198,12 @@ void set_valores_estacao_para_busca(Estacao *estacao)
 void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
 {
 
-    estacao->codEstacao = codEstacao == 0 ? -1 : codEstacao;
-    estacao->codLinha = codLinha == 0 ? -1 : codLinha;
-    estacao->codProxEstacao = codProxEstacao == 0 ? -1 : codProxEstacao;
-    estacao->distProxEstacao = distProxEstacao == 0 ? -1 : distProxEstacao;
-    estacao->codLinhaIntegra = codLinhaIntegra == 0 ? -1 : codLinhaIntegra;
-    estacao->codEstacaoIntegra = codEstacaoIntegra == 0 ? -1 : codEstacaoIntegra;
+    estacao->codEstacao = codEstacao == -2 ? -1 : codEstacao;
+    estacao->codLinha = codLinha == -2 ? -1 : codLinha;
+    estacao->codProxEstacao = codProxEstacao == -2 ? -1 : codProxEstacao;
+    estacao->distProxEstacao = distProxEstacao == -2 ? -1 : distProxEstacao;
+    estacao->codLinhaIntegra = codLinhaIntegra == -2 ? -1 : codLinhaIntegra;
+    estacao->codEstacaoIntegra = codEstacaoIntegra == -2 ? -1 : codEstacaoIntegra;
 
     if (estacao->nomeEstacao != NULL)
     {
@@ -370,4 +371,54 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
 void escrever_buffer_no_arquivo(FILE *f, char *buffer)
 {
     fwrite(buffer, sizeof(char), TAM_REGISTRO, f);
+}
+
+void atualizar_nros_estacoes_no_header(FILE *f){
+    Header *header = ler_header_do_arquivo(f);
+    Estacao *estacao = criar_estacao(0, "", 0, "", 0, 0, 0, 0);
+    SetNomesEstacoes *set_estacoes = criar_set_estacoes();
+    InfoParesEstacoes info_pares_estacoes;
+    inicializar_pares(&info_pares_estacoes);
+
+    fseek(f, TAM_HEADER, SEEK_SET);
+
+    char buffer[TAM_REGISTRO];
+
+    // Contagem de número de estações únicas e pares válidos
+    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    {
+        escrever_buffer_na_estacao(buffer, estacao);
+
+        // Se estiver logicamente removido, ignora e vai pro próximo
+        if (estacao->removido == '1')
+        {
+            limpar_estacao(estacao);
+            // imprimir_estacao(estacao);
+            continue;
+        }
+
+        // Só inclui e incrementa se a estação ainda não existir no Set
+        if (!existe_estacao(set_estacoes, estacao->nomeEstacao))
+        {
+            incluir_estacao(set_estacoes, estacao->nomeEstacao);
+        }
+
+        // Só insere o par se existir uma próxima estação válida
+        if (estacao->codProxEstacao != -1)
+        {
+            inserir_par(&info_pares_estacoes, estacao->codEstacao, estacao->codProxEstacao);
+        }
+
+        limpar_estacao(estacao);
+    }
+
+    header->nroEstacoes = set_estacoes->tamanho;
+    header->nroParesEstacao = info_pares_estacoes.nroPares;
+
+    escrever_header_no_arquivo(f, header);
+
+    destruir_set_estacoes(set_estacoes);
+    destruir_pares(&info_pares_estacoes);
+
+    free(header);
 }
