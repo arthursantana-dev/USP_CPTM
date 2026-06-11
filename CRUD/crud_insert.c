@@ -63,7 +63,7 @@ int crud_insert(FILE *f, Estacao *estacao, FILE *fab)
 
 int INSERT(FILE *f, FILE *fab)
 {
-    if (f == NULL)
+    if (f == NULL || fab == NULL)
         return 1;
 
     int n;
