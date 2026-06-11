@@ -15,7 +15,7 @@ int arvore_b_buscar_recursivo(FILE *arquivo, int RRN_atual, int chave_busca)
         return -1;
     }
 
-    // Realiza a leitura física do nó atual a partir do disco
+    // realiza a leitura física do nó atual a partir do disco
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
     int i = 0;
@@ -28,7 +28,7 @@ int arvore_b_buscar_recursivo(FILE *arquivo, int RRN_atual, int chave_busca)
     // Caso 1: A chave foi encontrada no nó atual
     if (i < no.numero_chaves && chave_busca == no.chaves[i])
     {
-        return no.dados_byte_offsets[i]; // Retorna o PR (ponteiro para o arquivo de dados)
+        return no.dados_byte_offsets[i]; // retorna o PR (ponteiro para o arquivo de dados)
     }
 
     // Caso 2: A chave não está neste nó e ele é um nó folha (tipo_no == -1)

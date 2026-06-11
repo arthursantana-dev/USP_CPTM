@@ -55,8 +55,8 @@ int main()
 
 	scanf("%d", &opcode);
 
-	FILE *f = NULL;
-	FILE *fab = NULL;
+	FILE *f_dados= NULL;
+	FILE *f_ab = NULL;
 
 	int err = 0;
 
@@ -73,44 +73,50 @@ int main()
 	// SELECT FROM
 	case 2:
 		scanf("%s", nome_arquivo_binario);
-		f = fopen(nome_arquivo_binario, "rb");
-		err = SELECT_ALL(f);
+		f_dados= fopen(nome_arquivo_binario, "rb");
+		err = SELECT_ALL(f_dados);
 		break;
 
 	// SELECT WHERE
 	case 8:
 		scanf("%s", nome_arquivo_binario);
-		f = fopen(nome_arquivo_binario, "rb");
 		scanf("%s", nome_arquivo_arvore_b);
-		fab = fopen(nome_arquivo_arvore_b, "rb");
+
+		f_dados= fopen(nome_arquivo_binario, "rb");
+		f_ab = fopen(nome_arquivo_arvore_b, "rb");
+
 		scanf("%d", &n);
-		err = SELECT(n, f, fab);
+		err = SELECT(n, f_dados, f_ab);
 		break;
 
 	// DELETE
 	case 4:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
-		f = fopen(nome_arquivo_binario, "rb+");
-		err = DELETE(n, f, NULL);
+
+		f_dados= fopen(nome_arquivo_binario, "rb+");
+		err = DELETE(n, f_dados, NULL);
 		break;
 
 	// INSERT INTO
 	case 9:
 		scanf("%s", nome_arquivo_binario);
-		f = fopen(nome_arquivo_binario, "rb+");
 		scanf("%s", nome_arquivo_arvore_b);
-		fab = fopen(nome_arquivo_arvore_b, "rb+");
-		err = INSERT(f, fab);
+
+		f_dados= fopen(nome_arquivo_binario, "rb+");
+		f_ab = fopen(nome_arquivo_arvore_b, "rb+");
+
+		err = INSERT(f_dados, f_ab);
 		if (!err)
-			atualizar_nros_estacoes_no_header(f);
+			atualizar_nros_estacoes_no_header(f_dados);
 		break;
 
 	// UPDATE
 	case 6:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
-		err = UPDATE(n, f);
+		
+		err = UPDATE(n, f_dados);
 		break;
 
 	// CREATE INDEX
@@ -124,33 +130,33 @@ int main()
 		break;
 
 	// DELETE usando a estrutura de índices
-	case 10: // A deleção usando a estrutura de índices e cuidada internamente (crud_delete)
+	case 10:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%s", nome_arquivo_arvore_b);
 
 		scanf("%d", &n);
-		f = fopen(nome_arquivo_binario, "rb+");
-		fab = fopen(nome_arquivo_arvore_b, "rb+");
+		f_dados= fopen(nome_arquivo_binario, "rb+");
+		f_ab = fopen(nome_arquivo_arvore_b, "rb+");
 
-		if (fab == NULL)
+		if (f_ab == NULL)
 		{
 			err = EXIT_FAILURE;
 			mostrar_erro();
 			break;
 		}
 
-		err = DELETE(n, f, fab);
+		err = DELETE(n, f_dados, f_ab);
 
 		if (!err)
-			atualizar_nros_estacoes_no_header(f);
+			atualizar_nros_estacoes_no_header(f_dados);
 		break;
 	}
 
-	if (f != NULL)
-		fclose(f);
+	if (f_dados != NULL)
+		fclose(f_dados);
 
-	if (fab != NULL)
-		fclose(fab);
+	if (f_ab != NULL)
+		fclose(f_ab);
 
 	if (err == 1)
 	{

@@ -1,20 +1,22 @@
 #include "CRUD.h"
 
-int crud_insert(FILE *f, Estacao *estacao, FILE *fab)
+int crud_insert(FILE *f_dados, Estacao *estacao, FILE *f_ab, header_arvore_b *header_b)
 {
-    Header *header = ler_header_do_arquivo(f);
+    Header *header = ler_header_do_arquivo(f_dados);
     if (header == NULL){
         mostrar_erro();
         return 1;
     }
 
-    header_arvore_b header_b = arvore_b_ler_cabecalho(fab);
 
     // Header inconsistente
     header->status = '0';
-    escrever_header_no_arquivo(f, header);
+    escrever_header_no_arquivo(f_dados, header);
 
-    int topo = header->topo; // RRN do topo da pilha de removidos
+    header_b->status = '0';
+    arvore_b_atualizar_cabecalho(f_ab, header_b);
+
+    int topo = header->topo; // rRN do topo da pilha de removidos
     int proxRRN = header->proxRRN; // Próximo RRN disponível
     
     char *buffer = criar_buffer();
@@ -24,16 +26,16 @@ int crud_insert(FILE *f, Estacao *estacao, FILE *fab)
     if (topo == -1)
     {
         offset = proxRRN * TAM_REGISTRO + TAM_HEADER;
-        fseek(f, offset, SEEK_SET);
+        fseek(f_dados, offset, SEEK_SET);
         header->proxRRN++;
     }
     else
     {
         // fseek para o topo da pilha de removidos e leitura (para pegar o próximo da pilha)
         offset = topo * TAM_REGISTRO + TAM_HEADER;
-        fseek(f, offset, SEEK_SET);
-        fread(buffer, TAM_REGISTRO, 1, f);
-        fseek(f, offset, SEEK_SET);
+        fseek(f_dados, offset, SEEK_SET);
+        fread(buffer, TAM_REGISTRO, 1, f_dados);
+        fseek(f_dados, offset, SEEK_SET);
 
         // Pegando o próximo da pilha de removidos
         Estacao *estacao_removida = (Estacao *)calloc(1, sizeof(Estacao));
@@ -43,9 +45,9 @@ int crud_insert(FILE *f, Estacao *estacao, FILE *fab)
     }
     escrever_estacao_no_buffer(estacao, buffer);
 
-    // Inserção
-    escrever_buffer_no_arquivo(f, buffer);
-    arvore_b_inserir(fab, &header_b, estacao->codEstacao, offset);
+    // inserção
+    escrever_buffer_no_arquivo(f_dados, buffer);
+    arvore_b_inserir(f_ab, header_b, estacao->codEstacao, offset);
 
 
     // if (estacao->codProxEstacao != -1)
@@ -53,7 +55,7 @@ int crud_insert(FILE *f, Estacao *estacao, FILE *fab)
     //     header->nroParesEstacao++;
 
     header->status = '1';
-    escrever_header_no_arquivo(f, header);
+    escrever_header_no_arquivo(f_dados, header);
 
     free(buffer);
     free(header);
@@ -61,15 +63,18 @@ int crud_insert(FILE *f, Estacao *estacao, FILE *fab)
     return 0;
 }
 
-int INSERT(FILE *f, FILE *fab)
+int INSERT(FILE *f_dados, FILE *f_ab)
 {
-    if (f == NULL || fab == NULL)
+    if (f_dados == NULL || f_ab == NULL)
         return 1;
 
     int n;
     scanf("%d", &n);
 
     Estacao *estacao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
+    
+    header_arvore_b header_b = arvore_b_ler_cabecalho(f_ab);
+
 
     for (int i = 0; i < n; i++)
     {
@@ -92,7 +97,7 @@ int INSERT(FILE *f, FILE *fab)
         free(nomeEstacao);
         free(nomeLinha);
 
-        int erro = crud_insert(f, estacao, fab);
+        int erro = crud_insert(f_dados, estacao, f_ab, &header_b);
         if (erro)
         {
             destruir_estacao(estacao);

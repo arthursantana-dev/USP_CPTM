@@ -129,16 +129,16 @@ int destruir_set_estacoes(SetNomesEstacoes *set)
     return 0;
 }
 
-SetNomesEstacoes *criar_set_estacoes_populado(FILE *f)
+SetNomesEstacoes *criar_set_estacoes_populado(FILE *f_dados)
 {
     SetNomesEstacoes *set = criar_set_estacoes();
-    if (set == NULL || f == NULL)
+    if (set == NULL || f_dados ==NULL)
         return NULL;
 
     char *buffer = criar_buffer();
-    fseek(f, TAM_HEADER, SEEK_SET);
+    fseek(f_dados, TAM_HEADER, SEEK_SET);
 
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
         Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
         escrever_buffer_na_estacao(buffer, ea);

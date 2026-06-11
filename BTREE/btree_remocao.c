@@ -1,7 +1,7 @@
 #include "BTREE.h"
 
 /* =========================================================
- * Funcoes Auxiliares de Remocao
+ * funcoes Auxiliares de Remocao
  * ========================================================= */
 
 /**
@@ -123,7 +123,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             irmao_esq = arvore_b_ler_no(arquivo, rrn_irmao_esq);
         }
 
-        // Redistribuição à direita: O irmão direito tem mais de 1 chave, então pode ceder uma chave para o filho
+        // redistribuição à direita: O irmão direito tem mais de 1 chave, então pode ceder uma chave para o filho
         if (tem_irmao_dir && irmao_dir.numero_chaves > 1)
         {
             filho.chaves[0] = no.chaves[i];
@@ -149,13 +149,13 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             arvore_b_escrever_no(arquivo, rrn_filho, &filho);
             arvore_b_escrever_no(arquivo, rrn_irmao_dir, &irmao_dir);
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
-            return false; // Resolvido
+            return false; // resolvido
         }
 
-        // Redistribuição à esquerda: O irmão esquerdo tem mais de 1 chave, então pode ceder uma chave para o filho
+        // redistribuição à esquerda: O irmão esquerdo tem mais de 1 chave, então pode ceder uma chave para o filho
         if (tem_irmao_esq && irmao_esq.numero_chaves > 1)
         {
-            // Filho recebe a chave do pai no índice i-1
+            // filho recebe a chave do pai no índice i-1
             filho.filhos[1] = filho.filhos[0]; // Shift do ponteiro herdado
             filho.chaves[0] = no.chaves[i - 1];
             filho.dados_byte_offsets[0] = no.dados_byte_offsets[i - 1];
@@ -166,7 +166,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             no.chaves[i - 1] = irmao_esq.chaves[irmao_esq.numero_chaves - 1];
             no.dados_byte_offsets[i - 1] = irmao_esq.dados_byte_offsets[irmao_esq.numero_chaves - 1];
 
-            // Limpa o espaço cedido no irmão esquerdo
+            // limpa o espaço cedido no irmão esquerdo
             irmao_esq.chaves[irmao_esq.numero_chaves - 1] = -1;
             irmao_esq.dados_byte_offsets[irmao_esq.numero_chaves - 1] = -1;
             irmao_esq.filhos[irmao_esq.numero_chaves] = -1;
@@ -175,19 +175,19 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             arvore_b_escrever_no(arquivo, rrn_filho, &filho);
             arvore_b_escrever_no(arquivo, rrn_irmao_esq, &irmao_esq);
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
-            return false; // Resolvido
+            return false; // resolvido
         }
 
         // Concatenação à esquerda: O irmão esquerdo tem apenas 1 chave, então é necessário fundir o filho com o irmão esquerdo e puxar a chave do pai para esse meio-fio
         if (tem_irmao_esq)
         {
-            // Irmão Esquerdo absorve a chave do Pai e todo o conteúdo do Filho (que estava vazio de chaves)
+            // irmão Esquerdo absorve a chave do Pai e todo o conteúdo do Filho (que estava vazio de chaves)
             irmao_esq.chaves[irmao_esq.numero_chaves] = no.chaves[i - 1];
             irmao_esq.dados_byte_offsets[irmao_esq.numero_chaves] = no.dados_byte_offsets[i - 1];
             irmao_esq.filhos[irmao_esq.numero_chaves + 1] = filho.filhos[0];
             irmao_esq.numero_chaves++;
 
-            // A página do Filho (à direita da junção) é destruída
+            // a página do Filho (à direita da junção) é destruída
             _remover_pagina(arquivo, cabecalho, rrn_filho);
 
             // Shift no Pai para remover a chave [i-1] que desceu e o ponteiro [i] que apontava para o Filho morto
@@ -204,7 +204,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
 
             arvore_b_escrever_no(arquivo, rrn_irmao_esq, &irmao_esq);
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
-            return (no.numero_chaves == 0); // Repassa o sob-aviso se o pai zerou
+            return (no.numero_chaves == 0); // repassa o sob-aviso se o pai zerou
         }
 
         // Concatenação à direita: O irmão direito tem apenas 1 chave, então é necessário fundir o filho com o irmão direito e puxar a chave do pai para esse meio-fio - filho esquerdo
@@ -224,7 +224,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             }
             filho.numero_chaves = 1 + irmao_dir.numero_chaves;
 
-            // A página do Irmão Direito é destruída
+            // a página do Irmão Direito é destruída
             _remover_pagina(arquivo, cabecalho, rrn_irmao_dir);
 
             // Shift no Pai para remover a chave [i] que desceu e o ponteiro [i+1]
@@ -241,7 +241,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
 
             arvore_b_escrever_no(arquivo, rrn_filho, &filho);
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
-            return (no.numero_chaves == 0); // Repassa o sob-aviso se o pai zerou
+            return (no.numero_chaves == 0); // repassa o sob-aviso se o pai zerou
         }
     }
 

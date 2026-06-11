@@ -67,4 +67,4 @@ ii:
 	./programaTrab < insert_i.in
 
 zip:
-	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" 
+	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" -x "*.in" 

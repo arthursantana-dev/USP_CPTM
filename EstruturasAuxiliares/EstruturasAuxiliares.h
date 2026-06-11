@@ -124,7 +124,7 @@ int destruir_set_estacoes(SetNomesEstacoes* set);
  * @param f Ponteiro para o ficheiro binário de onde os registos serão lidos.
  * @return Retorna um ponteiro para o conjunto (SetNomesEstacoes) totalmente populado com os dados do ficheiro.
  */
-SetNomesEstacoes* criar_set_estacoes_populado(FILE* f);
+SetNomesEstacoes* criar_set_estacoes_populado(FILE* f_dados);
 
 
 #endif

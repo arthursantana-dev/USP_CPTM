@@ -10,15 +10,15 @@
 
     int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario);
 
-    int DELETE(int n, FILE *f, FILE* fab);
+    int DELETE(int n, FILE *f_dados, FILE* f_ab);
 
-    int INSERT(FILE *f, FILE *fab);
+    int INSERT(FILE *f_dados, FILE *f_ab);
 
-    int SELECT_ALL(FILE *f);
+    int SELECT_ALL(FILE *f_dados);
 
-    int SELECT(int n, FILE *f, FILE *fab);
+    int SELECT(int n, FILE *f_dados, FILE *f_ab);
 
-    int UPDATE(int n, FILE *f);
+    int UPDATE(int n, FILE *f_dados);
 
     int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b);
 

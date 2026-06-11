@@ -11,7 +11,7 @@
 	typedef struct
 	{
 		char removido;		 // '0' para registro existente, '1' para registro removido
-		int proximo;		 // RRN do próximo registro na pilha de registros removidos (apenas para registros removidos)
+		int proximo;		 // rRN do próximo registro na pilha de registros removidos (apenas para registros removidos)
 		int codEstacao;		 // Código da estação (Não aceita valor nulo)
 		int codLinha;		 // Código da linha a qual a estação pertence
 		int codProxEstacao;	 // Código da próxima estação na mesma linha
@@ -87,8 +87,8 @@
 
 	int escrever_estacao_no_buffer(Estacao *estacao, char *buffer);
 
-	void escrever_buffer_no_arquivo(FILE *f, char *buffer);
+	void escrever_buffer_no_arquivo(FILE *f_dados, char *buffer);
 
-	void atualizar_nros_estacoes_no_header(FILE *f);
+	void atualizar_nros_estacoes_no_header(FILE *f_dados);
 
 #endif

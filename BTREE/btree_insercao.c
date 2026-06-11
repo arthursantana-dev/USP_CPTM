@@ -14,7 +14,7 @@ int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
     {
         rrn = cabecalho->topo;
         no_arvore_b no_removido = arvore_b_ler_no(arquivo, rrn);
-        cabecalho->topo = no_removido.proximo; // Atualiza o topo para o próximo removido
+        cabecalho->topo = no_removido.proximo; // atualiza o topo para o próximo removido
     }
     else
     {
@@ -23,7 +23,7 @@ int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
         cabecalho->prox_RRN++;
     }
 
-    cabecalho->nro_nos++; // Incrementa o número de nós para a nova raiz
+    cabecalho->nro_nos++; // incrementa o número de nós para a nova raiz
 
     return rrn;
 }
@@ -49,7 +49,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
-    // Busca a posição correta no nó
+    // busca a posição correta no nó
     int i = 0;
     while (i < no.numero_chaves && chave > no.chaves[i])
     {
@@ -80,7 +80,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     // Caso 1: Nó atual tem espaço
     if (no.numero_chaves < MAX_CHAVES)
     {
-        // Faz o "shift" para abrir espaço para a nova chave
+        // faz o "shift" para abrir espaço para a nova chave
         for (int j = no.numero_chaves; j > i; j--)
         {
             no.chaves[j] = no.chaves[j - 1];
@@ -100,11 +100,11 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     }
 
     // --- Caso 2: Nó atual não tem espaço (SPLIT) ---
-    // A redistribuição não deve ser implementada na inserção, forçando um particionamento direto.
+    // a redistribuição não deve ser implementada na inserção, forçando um particionamento direto.
 
     // Nó pai: vindo de um filho que houve promoção.
 
-    // Arrays temporários para organizar as chaves em ordem
+    // arrays temporários para organizar as chaves em ordem
     int temp_chaves[MAX_CHAVES + 1];
     int temp_dados_byte_offsets[MAX_CHAVES + 1];
     int temp_filhos[MAX_CHAVES + 2];
@@ -127,7 +127,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     }
     temp_filhos[i + 1] = ret.RRN_filho_direito;
 
-    // Reseta o nó original (Nó da Esquerda)
+    // reseta o nó original (Nó da Esquerda)
     for (int j = 0; j < MAX_CHAVES; j++)
     {
         no.chaves[j] = -1;
@@ -136,7 +136,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     }
     no.filhos[MAX_CHAVES] = -1;
 
-    // A distribuição deve ser a mais uniforme possível, com o nó esquerdo contendo 2 chaves e o direito 1 chave.
+    // a distribuição deve ser a mais uniforme possível, com o nó esquerdo contendo 2 chaves e o direito 1 chave.
     no.numero_chaves = 2;
     no.chaves[0] = temp_chaves[0];
     no.dados_byte_offsets[0] = temp_dados_byte_offsets[0];
@@ -161,7 +161,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     novo_no.filhos[0] = temp_filhos[3];
     novo_no.filhos[1] = temp_filhos[4];
 
-    // A chave promovida passa a ser a primeira do nó resultante do particionamento (índice 2 do array temporário).
+    // a chave promovida passa a ser a primeira do nó resultante do particionamento (índice 2 do array temporário).
     ret.houve_split = true;
     ret.chave_promovida = temp_chaves[2];
     ret.RRN_dado_promovido = temp_dados_byte_offsets[2];
@@ -191,12 +191,12 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
 
         // printf("RRN da raiz: %d\n", rrn_raiz);
 
-        cabecalho->no_raiz = rrn_raiz; // Atualiza o RRN da raiz no cabeçalho
-        cabecalho->nro_nos = 1;        // Atualiza o número de nós
+        cabecalho->no_raiz = rrn_raiz; // atualiza o RRN da raiz no cabeçalho
+        cabecalho->nro_nos = 1;        // atualiza o número de nós
 
         // printf("numero de nos: %d\n", cabecalho->nro_nos);
 
-        arvore_b_atualizar_cabecalho(arquivo, cabecalho); // Atualiza o cabeçalho no disco após a modificação
+        arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
         return;
     }
@@ -212,16 +212,16 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
         nova_raiz.numero_chaves = 1;
         nova_raiz.chaves[0] = resultado.chave_promovida;
         nova_raiz.dados_byte_offsets[0] = resultado.RRN_dado_promovido;
-        nova_raiz.filhos[0] = cabecalho->no_raiz;          // Filho esquerdo é a antiga raiz
-        nova_raiz.filhos[1] = resultado.RRN_filho_direito; // Filho direito é o novo nó criado
+        nova_raiz.filhos[0] = cabecalho->no_raiz;          // filho esquerdo é a antiga raiz
+        nova_raiz.filhos[1] = resultado.RRN_filho_direito; // filho direito é o novo nó criado
 
         int rrn_nova_raiz = _obter_rrn_livre(arquivo, cabecalho);
         arvore_b_escrever_no(arquivo, rrn_nova_raiz, &nova_raiz);
 
-        cabecalho->no_raiz = rrn_nova_raiz; // Atualiza o RRN da nova raiz no cabeçalho
+        cabecalho->no_raiz = rrn_nova_raiz; // atualiza o RRN da nova raiz no cabeçalho
     }
 
-    arvore_b_atualizar_cabecalho(arquivo, cabecalho); // Atualiza o cabeçalho no disco após a modificação
+    arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
     // printf("numero de nos: %d\n", cabecalho->nro_nos);
 }

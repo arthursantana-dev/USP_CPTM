@@ -118,7 +118,7 @@ void nullOrInt(int *n)
         scanf("%d", n);
     }
     else
-    { // EOF
+    { // eOF
         *n = -1;
     }
 }
@@ -160,7 +160,7 @@ void nullOrString(char *str){
         scanf("%s", str);
     }
     else
-    { // EOF
+    { // eOF
         strcpy(str, "-1");
     }
 }

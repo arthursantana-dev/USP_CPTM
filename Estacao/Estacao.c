@@ -380,15 +380,15 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     return 0;
 }
 
-void escrever_buffer_no_arquivo(FILE *f, char *buffer)
+void escrever_buffer_no_arquivo(FILE *f_dados, char *buffer)
 {
-    fwrite(buffer, sizeof(char), TAM_REGISTRO, f);
+    fwrite(buffer, sizeof(char), TAM_REGISTRO, f_dados);
 }
 
-void atualizar_nros_estacoes_no_header(FILE *f){
-    Header *header = ler_header_do_arquivo(f);
+void atualizar_nros_estacoes_no_header(FILE *f_dados){
+    Header *header = ler_header_do_arquivo(f_dados);
     header->status = '0';
-    escrever_header_no_arquivo(f, header);
+    escrever_header_no_arquivo(f_dados, header);
 
     Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
@@ -396,14 +396,14 @@ void atualizar_nros_estacoes_no_header(FILE *f){
     
     inicializar_pares(&info_pares_estacoes);
 
-    fseek(f, TAM_HEADER, SEEK_SET);
+    fseek(f_dados, TAM_HEADER, SEEK_SET);
 
     char buffer[TAM_REGISTRO];
 
     int numero_estacoes = 0;
 
     // contagem de número de estações únicas e pares válidos
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
         escrever_buffer_na_estacao(buffer, estacao);
 
@@ -437,7 +437,7 @@ void atualizar_nros_estacoes_no_header(FILE *f){
     header->nroEstacoes = set_estacoes->tamanho;
     header->nroParesEstacao = info_pares_estacoes.nroPares;
 
-    escrever_header_no_arquivo(f, header);
+    escrever_header_no_arquivo(f_dados, header);
     destruir_set_estacoes(set_estacoes);
     destruir_pares(&info_pares_estacoes);
 
