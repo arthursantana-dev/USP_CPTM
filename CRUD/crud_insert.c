@@ -107,6 +107,10 @@ int INSERT(FILE *f_dados, FILE *f_ab)
         limpar_estacao(estacao);
     }
 
+    header_b.status = '1';
+
+    arvore_b_atualizar_cabecalho(f_ab, &header_b);
+
     destruir_estacao(estacao);
 
     return 0;
