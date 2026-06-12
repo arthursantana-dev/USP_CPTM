@@ -72,9 +72,10 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Es
 {
     header_arvore_b header_b = arvore_b_ler_cabecalho(f_ab);
 
+    // recupera o byte offset físico consultando a árvore b
     int byte_offset = arvore_b_buscar(f_ab, &header_b, estacao_busca->codEstacao);
 
-    // se retornou -1, o registro não existe, então a deleção está concluída
+    // aborta a deleção se a chave primária não existir no índice
     if (byte_offset == -1)
     {
         return EXIT_SUCCESS;
@@ -83,28 +84,29 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Es
     char buffer[TAM_REGISTRO];
     Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
 
+    // salta cirurgicamente para a posição do registro no arquivo de dados
     fseek(arquivo_dados, byte_offset, SEEK_SET);
     if (fread(buffer, TAM_REGISTRO, 1, arquivo_dados) == 1)
     {
         escrever_buffer_na_estacao(buffer, estacao);
 
-        // verifica se já não foi removido e se bate com o restante da busca
+        // garante que o registro não foi apagado previamente e que os outros campos coincidem
         if (estacao->removido == '0' && comparar_estacoes(estacao_busca, estacao))
         {
-            // calcula qual é o RRN para empilhar no topo do cabeçalho
+            // deduz o rrn a partir do byte offset para atualizar a pilha
             int rrn_atual = (byte_offset - TAM_HEADER) / TAM_REGISTRO;
 
-            // atualiza a estação para marcação lógica (dados)
+            // efetua a remoção lógica e encadeia o registro atual no topo da lista
             estacao->removido = '1';
             estacao->proximo = header->topo;
             header->topo = rrn_atual;
 
-            // reescreve no buffer e salva no disco na mesma posição
+            // volta o cursor para sobrescrever apenas o registro alvo
             escrever_estacao_no_buffer(estacao, buffer);
             fseek(arquivo_dados, byte_offset, SEEK_SET);
             escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
-            // remove a chave do índice (índice)
+            // espelha a remoção na árvore b para manter a sincronia
             arvore_b_remover(f_ab, &header_b, estacao_busca->codEstacao);
         }
 
@@ -115,7 +117,6 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Es
 
     return EXIT_SUCCESS;
 }
-
 int crud_delete(Estacao *estacao_busca, FILE *f_dados, FILE *f_ab, Header *header)
 {
 
@@ -170,6 +171,7 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
         // printf("Estação a ser buscada: ");
         // imprimir_estacao(estacao);
 
+        // repassa o ponteiro da árvore para que a remoção secundária ocorra internamente se possível
         err = crud_delete(estacao, f_dados, f_ab, header);
 
         limpar_estacao(estacao);

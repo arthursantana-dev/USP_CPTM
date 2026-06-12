@@ -2,7 +2,6 @@
 
 int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
 {
-    // imprimir_estacao(estacao_selecao);
     char buffer[TAM_REGISTRO];
 
     Header *header = ler_header_do_arquivo(f_dados);
@@ -11,7 +10,6 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
     if (header == NULL || header_b.status == '0')
     {
         free(header);
-
         return EXIT_FAILURE;
     }
 
@@ -26,21 +24,24 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
     fseek(f_dados, TAM_HEADER, SEEK_SET);
 
     int achou = 0;
-
     Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
-    if(estacao_selecao->codEstacao != -2){
-        // printf("entrei 1\n");
+    // prioriza a busca pelo índice caso a chave primária tenha sido informada
+    if (estacao_selecao->codEstacao != -2)
+    {
+
         int offset = arvore_b_buscar(f_ab, &header_b, estacao_selecao->codEstacao);
-        if(offset == -1){
+        if (offset == -1)
+        {
             printf("Registro inexistente.\n");
         }
-        else{
+        else
+        {
+            // acessa diretamente o registro no disco sem varredura sequencial
             fseek(f_dados, offset, SEEK_SET);
             fread(buffer, TAM_REGISTRO, 1, f_dados);
 
             escrever_buffer_na_estacao(buffer, ea);
-            // imprimir_estacao(ea);
 
             if (ea->removido == '1')
             {
@@ -48,10 +49,13 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
             }
             else
             {
-                if(comparar_estacoes(estacao_selecao, ea)){
+                // confirma se os demais parâmetros de busca não primários batem
+                if (comparar_estacoes(estacao_selecao, ea))
+                {
                     imprimir_estacao(ea);
                 }
-                else{
+                else
+                {
                     printf("Registro inexistente.\n");
                 }
             }
@@ -62,11 +66,12 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
         return EXIT_SUCCESS;
     }
 
+    // varredura linear caso a busca seja por campos secundários (ex: nome da estação)
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
-        // Tecnicamente, ea foi lido
         escrever_buffer_na_estacao(buffer, ea);
 
+        // filtra os registros logicamente removidos
         if (ea->removido == '1')
         {
             limpar_estacao(ea);
@@ -76,7 +81,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
         if (comparar_estacoes(estacao_selecao, ea))
         {
             imprimir_estacao(ea);
-            achou = 1; // encontrou pelo menos um registro nessa consulta, então não mostramos a mensagem de inexistente.
+            achou = 1;
         }
 
         limpar_estacao(ea);
@@ -98,7 +103,7 @@ int SELECT_ALL(FILE *f_dados)
 {
     // abrindo arquivo binário, lendo header, verificações etc
     char buffer[TAM_REGISTRO];
-    if (f_dados== NULL)
+    if (f_dados == NULL)
     {
         return EXIT_FAILURE;
     }
@@ -122,7 +127,7 @@ int SELECT_ALL(FILE *f_dados)
 
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
-        
+
         escrever_buffer_na_estacao(buffer, ea);
         if (ea->removido == '1')
         {
@@ -146,7 +151,7 @@ int SELECT(int n, FILE *f_dados, FILE *f_ab)
 
     Estacao *estacao_selecao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
-    if (f_dados== NULL)
+    if (f_dados == NULL)
     {
         return EXIT_FAILURE;
     }
@@ -154,6 +159,7 @@ int SELECT(int n, FILE *f_dados, FILE *f_ab)
     for (int i = 0; i < n; i++)
     {
 
+        // formata a struct com -2 para que a verificação descarte os campos não informados
         set_valores_estacao_para_busca(estacao_selecao);
 
         ler_input_para_estacao_de_busca(estacao_selecao);
@@ -171,5 +177,3 @@ int SELECT(int n, FILE *f_dados, FILE *f_ab)
 
     return err;
 }
-
-

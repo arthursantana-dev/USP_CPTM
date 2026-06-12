@@ -146,6 +146,7 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
 
         removido = escrever_buffer_na_estacao(buffer, estacao);
 
+        // pula registros apagados para que não façam parte do índice
         if(removido == 1){
             limpar_estacao(estacao);
             removido = 0;
@@ -155,6 +156,7 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
 
         // imprimir_estacao(estacao);
 
+        // calcula a posição física exata da chave antes de enviá-la para a árvore
         int byteoffset = TAM_HEADER + (RRN * TAM_REGISTRO);
 
         arvore_b_inserir(arquivo_arvore_b, &header_b, estacao->codEstacao, byteoffset);
