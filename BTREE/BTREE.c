@@ -87,7 +87,7 @@ no_arvore_b arvore_b_ler_no(FILE *arquivo, int rrn)
     fread(&no.tipo_no, sizeof(int), 1, arquivo);
     fread(&no.numero_chaves, sizeof(int), 1, arquivo);
 
-    // Chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
+    // chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
     for (int i = 0; i < MAX_CHAVES; i++)
     {
         fread(&no.chaves[i], sizeof(int), 1, arquivo);
@@ -127,7 +127,7 @@ void arvore_b_escrever_no(FILE *arquivo, int rrn, no_arvore_b *no)
     fwrite(&no->tipo_no, sizeof(int), 1, arquivo);
     fwrite(&no->numero_chaves, sizeof(int), 1, arquivo);
 
-    // Chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
+    // chaves e Referencias (Intercalados C1, PR1, C2, PR2...)
     for (int i = 0; i < MAX_CHAVES; i++)
     {
         fwrite(&no->chaves[i], sizeof(int), 1, arquivo);

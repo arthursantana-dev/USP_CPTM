@@ -9,7 +9,7 @@
  */
 int arvore_b_buscar_recursivo(FILE *arquivo, int RRN_atual, int chave_busca)
 {
-    // Caso base: se o RRN for -1, atingiu uma subárvore inexistente (chave não encontrada)
+    // caso base: se o RRN for -1, atingiu uma subárvore inexistente (chave não encontrada)
     if (RRN_atual == -1)
     {
         return -1;
@@ -25,19 +25,19 @@ int arvore_b_buscar_recursivo(FILE *arquivo, int RRN_atual, int chave_busca)
         i++;
     }
 
-    // Caso 1: A chave foi encontrada no nó atual
+    // caso 1: A chave foi encontrada no nó atual
     if (i < no.numero_chaves && chave_busca == no.chaves[i])
     {
         return no.dados_byte_offsets[i]; // retorna o PR (ponteiro para o arquivo de dados)
     }
 
-    // Caso 2: A chave não está neste nó e ele é um nó folha (tipo_no == -1)
+    // caso 2: A chave não está neste nó e ele é um nó folha (tipo_no == -1)
     if (no.tipo_no == -1)
     {
-        return -1; // Não há mais subárvores para descer
+        return -1; // não há mais subárvores para descer
     }
 
-    // Caso 3: Intermediário/Raiz. Continua a busca descendo para a subárvore correspondente
+    // caso 3: Intermediário/Raiz. Continua a busca descendo para a subárvore correspondente
     return arvore_b_buscar_recursivo(arquivo, no.filhos[i], chave_busca);
 }
 
@@ -55,7 +55,7 @@ int arvore_b_buscar(FILE *arquivo, header_arvore_b *cabecalho, int chave_busca)
         return -1; // Árvore vazia ou parâmetros inválidos
     }
 
-    // Dispara a recursão passando o RRN do nó raiz
+    // dispara a recursão passando o RRN do nó raiz
     return arvore_b_buscar_recursivo(arquivo, cabecalho->no_raiz, chave_busca);
 }
 

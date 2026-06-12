@@ -27,7 +27,7 @@
 	7. CREATE INDEX - Santana
 	8. SELECT WHERE - Martins
 	9. INSERT INTO - Martins
-	10.DELETE  - Santana
+	10.DELETE - Santana
 
 	Obs.:
 

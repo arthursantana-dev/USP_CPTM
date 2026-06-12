@@ -37,7 +37,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 
     // printf("Descendo para RRN: %d\n", RRN_atual);
 
-    // Caso Base: Chegou em um ponteiro nulo, a chave deve ser inserida na folha pai
+    // caso Base: Chegou em um ponteiro nulo, a chave deve ser inserida na folha pai
     if (RRN_atual == -1)
     {
         ret.houve_split = true;
@@ -62,7 +62,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         return ret;
     }
 
-    // Desce para o filho apropriado
+    // desce para o filho apropriado
     ret = _inserir_recursivo(arquivo, cabecalho, no.filhos[i], chave, byte_offset_dado);
 
     /*
@@ -75,9 +75,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         return ret;
     }
 
-    // --- Filho splitou, tenta alocar a chave promovida no NÓ ATUAL ---
-
-    // Caso 1: Nó atual tem espaço
+    // caso 1: Nó atual tem espaço
     if (no.numero_chaves < MAX_CHAVES)
     {
         // faz o "shift" para abrir espaço para a nova chave
@@ -95,14 +93,11 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 
         arvore_b_escrever_no(arquivo, RRN_atual, &no);
 
-        ret.houve_split = false; // O split foi absorvido neste nó
+        ret.houve_split = false; // o split foi absorvido neste nó
         return ret;
     }
 
-    // --- Caso 2: Nó atual não tem espaço (SPLIT) ---
-    // a redistribuição não deve ser implementada na inserção, forçando um particionamento direto.
-
-    // Nó pai: vindo de um filho que houve promoção.
+    // tratamento de split
 
     // arrays temporários para organizar as chaves em ordem
     int temp_chaves[MAX_CHAVES + 1];
@@ -146,15 +141,15 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     no.filhos[1] = temp_filhos[1];
     no.filhos[2] = temp_filhos[2];
 
-    // O tipo do nó original é ajustado: se ele era raiz (0), passa a ser intermediário (1). Folhas continuam -1.
+    // o tipo do nó original é ajustado: se ele era raiz (0), passa a ser intermediário (1). folhas continuam -1
     if (no.tipo_no == 0)
         no.tipo_no = 1;
 
-    // Cria o Novo Nó (Nó da Direita)
+    // cria o Novo Nó (Nó da Direita)
     int rrn_novo_no = _obter_rrn_livre(arquivo, cabecalho);
     no_arvore_b novo_no = arvore_b_criar_no_vazio();
 
-    novo_no.tipo_no = no.tipo_no; // Copia a tipagem do irmão recém rebaixado
+    novo_no.tipo_no = no.tipo_no; // copia a tipagem do irmão recém rebaixado
     novo_no.numero_chaves = 1;
     novo_no.chaves[0] = temp_chaves[3];
     novo_no.dados_byte_offsets[0] = temp_dados_byte_offsets[3];
@@ -177,11 +172,11 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int byte_offset_dado)
 {
 
-    // Caso base: Árvore vazia, cria o nó raiz
+    // caso base: Árvore vazia, cria o nó raiz
     if (cabecalho->no_raiz == -1)
     {
         no_arvore_b raiz = arvore_b_criar_no_vazio();
-        raiz.tipo_no = -1; // Nó folha
+        raiz.tipo_no = -1; // nó folha
         raiz.numero_chaves = 1;
         raiz.chaves[0] = chave;
         raiz.dados_byte_offsets[0] = byte_offset_dado;
@@ -201,14 +196,14 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
         return;
     }
 
-    // Chama a função recursiva de inserção a partir da raiz
+    // chama a função recursiva de inserção a partir da raiz
     retorno_insercao_t resultado = _inserir_recursivo(arquivo, cabecalho, cabecalho->no_raiz, chave, byte_offset_dado);
 
     // se houve split na raiz, precisamos criar um novo nó raiz
     if (resultado.houve_split)
     {
         no_arvore_b nova_raiz = arvore_b_criar_no_vazio();
-        nova_raiz.tipo_no = 0; // Nó raiz
+        nova_raiz.tipo_no = 0; // nó raiz
         nova_raiz.numero_chaves = 1;
         nova_raiz.chaves[0] = resultado.chave_promovida;
         nova_raiz.dados_byte_offsets[0] = resultado.RRN_dado_promovido;

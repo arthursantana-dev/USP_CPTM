@@ -11,17 +11,17 @@
 	typedef struct
 	{
 		char removido;		 // '0' para registro existente, '1' para registro removido
-		int proximo;		 // rRN do próximo registro na pilha de registros removidos (apenas para registros removidos)
-		int codEstacao;		 // Código da estação (Não aceita valor nulo)
-		int codLinha;		 // Código da linha a qual a estação pertence
-		int codProxEstacao;	 // Código da próxima estação na mesma linha
-		int distProxEstacao; // Distância para a próxima estação na mesma linha
-		int codLinhaIntegra; // Código da linha de integração (-1 se não houver integração)
-		int codEstacaoIntegra;	 // Código da estação de integração (-1 se não houver integração)
+		int proximo;		 // RRN do próximo registro na pilha de registros removidos (apenas para registros removidos)
+		int codEstacao;		 // código da estação (Não aceita valor nulo)
+		int codLinha;		 // código da linha a qual a estação pertence
+		int codProxEstacao;	 // código da próxima estação na mesma linha
+		int distProxEstacao; // distância para a próxima estação na mesma linha
+		int codLinhaIntegra; // código da linha de integração (-1 se não houver integração)
+		int codEstacaoIntegra;	 // código da estação de integração (-1 se não houver integração)
 		int tamNomeEstacao;	 // Tamanho do nome da estação
-		char *nomeEstacao;	 // Nome da estação (string de tamanho variável) (Não aceita valor nulo)
+		char *nomeEstacao;	 // nome da estação (string de tamanho variável) (Não aceita valor nulo)
 		int tamNomeLinha;	 // Tamanho do nome da linha
-		char *nomeLinha;	 // Nome da linha (string de tamanho variável)
+		char *nomeLinha;	 // nome da linha (string de tamanho variável)
 	} Estacao;
 
 	/**

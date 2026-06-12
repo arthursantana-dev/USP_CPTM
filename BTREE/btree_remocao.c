@@ -1,8 +1,6 @@
 #include "BTREE.h"
 
-/* =========================================================
- * funcoes Auxiliares de Remocao
- * ========================================================= */
+// funcoes auxiliares de remocao
 
 /**
  * @brief Marca uma página no disco como logicamente removida e a empilha no cabeçalho.
@@ -36,7 +34,7 @@ static void _buscar_sucessor(FILE *arquivo, int RRN_atual, int *chave_sucessores
         return;
     }
 
-    // Desce sempre pelo ponteiro mais à esquerda
+    // desce sempre pelo ponteiro mais à esquerda
     _buscar_sucessor(arquivo, no.filhos[0], chave_sucessoressora, byte_offset_dado_sucessora);
 }
 
@@ -46,7 +44,7 @@ static void _buscar_sucessor(FILE *arquivo, int RRN_atual, int *chave_sucessores
 static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RRN_atual, int chave_busca)
 {
     if (RRN_atual == -1)
-        return false; // Chave não encontrada
+        return false; // chave não encontrada
 
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
@@ -59,12 +57,12 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
 
     bool underflow_filho = false;
 
-    // CASO 1: A chave foi encontrada neste nó
+    // caso 1: A chave foi encontrada neste nó
     if (i < no.numero_chaves && chave_busca == no.chaves[i])
     {
         if (no.tipo_no == -1)
         {
-            // É folha: Remove fazendo shift para a esquerda
+            // é folha: Remove fazendo shift para a esquerda
             for (int j = i; j < no.numero_chaves - 1; j++)
             {
                 no.chaves[j] = no.chaves[j + 1];
@@ -79,7 +77,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
         }
         else
         {
-            // É nó interno: Troca pelo sucessor imediato (folha)
+            // é nó interno: Troca pelo sucessor imediato (folha)
             int chave_sucessor, byte_offset_dado_sucessor;
             _buscar_sucessor(arquivo, no.filhos[i + 1], &chave_sucessor, &byte_offset_dado_sucessor);
 
@@ -87,20 +85,18 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             no.dados_byte_offsets[i] = byte_offset_dado_sucessor;
             arvore_b_escrever_no(arquivo, RRN_atual, &no);
 
-            // Vai recursivamente remover o sucessor na subárvore
+            // vai recursivamente remover o sucessor na subárvore
             underflow_filho = _remover_recursivo(arquivo, cabecalho, no.filhos[i + 1], chave_sucessor);
             i++; // para o tratamento de underflow abaixo saber qual filho deu problema
         }
     }
     else
     {
-        // CASO 2: A chave não está neste nó, desce recursivamente
+        // caso 2: A chave não está neste nó, desce recursivamente
         underflow_filho = _remover_recursivo(arquivo, cabecalho, no.filhos[i], chave_busca);
     }
 
-    // =========================================================================
-    // TRATAMENTO DE UNDERFLOW NO FILHO [i]
-    // =========================================================================
+    // tratamento de underflow no filho
     if (underflow_filho)
     {
         int rrn_filho = no.filhos[i];
@@ -178,7 +174,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             return false; // resolvido
         }
 
-        // Concatenação à esquerda: O irmão esquerdo tem apenas 1 chave, então é necessário fundir o filho com o irmão esquerdo e puxar a chave do pai para esse meio-fio
+        // concatenação à esquerda: O irmão esquerdo tem apenas 1 chave, então é necessário fundir o filho com o irmão esquerdo e puxar a chave do pai para esse meio-fio
         if (tem_irmao_esq)
         {
             // irmão Esquerdo absorve a chave do Pai e todo o conteúdo do Filho (que estava vazio de chaves)
@@ -207,7 +203,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             return (no.numero_chaves == 0); // repassa o sob-aviso se o pai zerou
         }
 
-        // Concatenação à direita: O irmão direito tem apenas 1 chave, então é necessário fundir o filho com o irmão direito e puxar a chave do pai para esse meio-fio - filho esquerdo
+        // concatenação à direita: O irmão direito tem apenas 1 chave, então é necessário fundir o filho com o irmão direito e puxar a chave do pai para esse meio-fio - filho esquerdo
         if (tem_irmao_dir)
         {
             // O Filho (atual, sem chaves) absorve a chave do Pai e todo o conteúdo do Irmão Direito

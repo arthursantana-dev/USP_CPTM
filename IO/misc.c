@@ -49,8 +49,8 @@ void BinarioNaTela(char *arquivo)
  *		nomeDoCampo "MARIA DA SILVA"
  *
  *	Para ler isso para as strings já alocadas str1 e str2 do seu programa,
- * você faz: scanf("%s", str1); // Vai salvar nomeDoCampo em str1
- *		scan_quote_string(str2); // Vai salvar MARIA DA SILVA em str2
+ * você faz: scanf("%s", str1); // vai salvar nomeDoCampo em str1
+ *		scan_quote_string(str2); // vai salvar MARIA DA SILVA em str2
  * (sem as aspas)
  *
  */
