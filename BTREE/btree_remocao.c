@@ -28,7 +28,7 @@ static void _buscar_sucessor(FILE *arquivo, int RRN_atual, int *chave_sucessores
 {
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
-    // Se for folha, a primeira chave é o sucessor
+    // se for folha, a primeira chave é o sucessor
     if (no.tipo_no == -1)
     {
         *chave_sucessoressora = no.chaves[0];
@@ -89,7 +89,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
 
             // Vai recursivamente remover o sucessor na subárvore
             underflow_filho = _remover_recursivo(arquivo, cabecalho, no.filhos[i + 1], chave_sucessor);
-            i++; // Para o tratamento de underflow abaixo saber qual filho deu problema
+            i++; // para o tratamento de underflow abaixo saber qual filho deu problema
         }
     }
     else
@@ -156,13 +156,13 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
         if (tem_irmao_esq && irmao_esq.numero_chaves > 1)
         {
             // filho recebe a chave do pai no índice i-1
-            filho.filhos[1] = filho.filhos[0]; // Shift do ponteiro herdado
+            filho.filhos[1] = filho.filhos[0]; // shift do ponteiro herdado
             filho.chaves[0] = no.chaves[i - 1];
             filho.dados_byte_offsets[0] = no.dados_byte_offsets[i - 1];
             filho.filhos[0] = irmao_esq.filhos[irmao_esq.numero_chaves];
             filho.numero_chaves = 1;
 
-            // Pai recebe a última chave do irmão esquerdo
+            // pai recebe a última chave do irmão esquerdo
             no.chaves[i - 1] = irmao_esq.chaves[irmao_esq.numero_chaves - 1];
             no.dados_byte_offsets[i - 1] = irmao_esq.dados_byte_offsets[irmao_esq.numero_chaves - 1];
 
@@ -190,7 +190,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             // a página do Filho (à direita da junção) é destruída
             _remover_pagina(arquivo, cabecalho, rrn_filho);
 
-            // Shift no Pai para remover a chave [i-1] que desceu e o ponteiro [i] que apontava para o Filho morto
+            // shift no Pai para remover a chave [i-1] que desceu e o ponteiro [i] que apontava para o Filho morto
             for (int j = i - 1; j < no.numero_chaves - 1; j++)
             {
                 no.chaves[j] = no.chaves[j + 1];
@@ -227,7 +227,7 @@ static bool _remover_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RR
             // a página do Irmão Direito é destruída
             _remover_pagina(arquivo, cabecalho, rrn_irmao_dir);
 
-            // Shift no Pai para remover a chave [i] que desceu e o ponteiro [i+1]
+            // shift no Pai para remover a chave [i] que desceu e o ponteiro [i+1]
             for (int j = i; j < no.numero_chaves - 1; j++)
             {
                 no.chaves[j] = no.chaves[j + 1];
@@ -258,12 +258,12 @@ void arvore_b_remover(FILE *arquivo, header_arvore_b *cabecalho, int chave_busca
 
     bool underflow_raiz = _remover_recursivo(arquivo, cabecalho, cabecalho->no_raiz, chave_busca);
 
-    // Se a raiz sofreu underflow e zerou suas chaves
+    // se a raiz sofreu underflow e zerou suas chaves
     if (underflow_raiz)
     {
         no_arvore_b raiz = arvore_b_ler_no(arquivo, cabecalho->no_raiz);
 
-        // Se ela tiver um descendente, esse descendente vira a nova raiz absoluta
+        // se ela tiver um descendente, esse descendente vira a nova raiz absoluta
         if (raiz.tipo_no != -1)
         {
             int nova_raiz_rrn = raiz.filhos[0];
@@ -279,7 +279,7 @@ void arvore_b_remover(FILE *arquivo, header_arvore_b *cabecalho, int chave_busca
         }
         else
         {
-            // Se a raiz folha secou, a árvore está 100% vazia
+            // se a raiz folha secou, a árvore está 100% vazia
             _remover_pagina(arquivo, cabecalho, cabecalho->no_raiz);
             cabecalho->no_raiz = -1;
         }

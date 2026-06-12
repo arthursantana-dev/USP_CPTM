@@ -40,6 +40,9 @@ truncate: clean
 v:
 	valgrind --leak-check=yes ./programaTrab
 
+vv: 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./programaTrab < v.in
+
 clean:
 	rm -f $(OBJS) $(EXEC)
 c:

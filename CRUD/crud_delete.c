@@ -182,6 +182,8 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
     escrever_header_no_arquivo(f_dados, header);
     destruir_estacao(estacao);
 
+    free(header);
+
     // printf("Número de estações quaisquer: %d\n", numero_estacoes);
 
     return err;

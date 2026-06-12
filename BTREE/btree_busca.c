@@ -19,7 +19,7 @@ int arvore_b_buscar_recursivo(FILE *arquivo, int RRN_atual, int chave_busca)
     no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
 
     int i = 0;
-    // Percorre as chaves do nó enquanto a chave procurada for maior que as chaves locais
+    // percorre as chaves do nó enquanto a chave procurada for maior que as chaves locais
     while (i < no.numero_chaves && chave_busca > no.chaves[i])
     {
         i++;

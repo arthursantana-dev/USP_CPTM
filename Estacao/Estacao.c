@@ -4,7 +4,7 @@
 /*cria estação normal: campos iniciados com 0 serão convertidos em -1 (nulos)*/
 Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
 {
-    Estacao *estacao = (Estacao *)malloc(sizeof(Estacao));
+    Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
 
     if (estacao == NULL)
     {
@@ -46,9 +46,13 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     estacao->codLinhaIntegra = codLinhaIntegra;
     estacao->codEstacaoIntegra = codEstacaoIntegra;
     estacao->tamNomeEstacao = strlen(nomeEstacao);
-    estacao->nomeEstacao = strdup(nomeEstacao);
+
+    if(estacao->tamNomeEstacao > 0)
+        estacao->nomeEstacao = strdup(nomeEstacao);
+
     estacao->tamNomeLinha = strlen(nomeLinha);
-    estacao->nomeLinha = strdup(nomeLinha);
+    if(estacao->tamNomeLinha > 0)
+        estacao->nomeLinha = strdup(nomeLinha);
 
     return estacao;
 }
@@ -166,7 +170,7 @@ void destruir_estacao(Estacao *estacao)
     }
 }
 
-// Diferentemente do destruir_estacao, não libera a struct
+// diferentemente do destruir_estacao, não libera a struct
 void limpar_estacao(Estacao *estacao)
 {
     if (estacao != NULL)

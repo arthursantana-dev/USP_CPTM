@@ -13,7 +13,7 @@ typedef struct
     char status;  // '0' inconsistente, '1' consistente
     int no_raiz;  // rRN do no raiz, -1 se vazia
     int topo;     // rRN de no removido, -1 se nao houver
-    int prox_RRN; // Proximo RRN livre
+    int prox_RRN; // proximo RRN livre
     int nro_nos;  // Quantidade de nos na arvore
 } header_arvore_b;
 
@@ -25,8 +25,8 @@ typedef struct
     int tipo_no;                        // -1 folha, 0 raiz, 1 intermediario
     int numero_chaves;                  // Quantidade de chaves no no
     int chaves[MAX_CHAVES];             // C1, C2, C3 (codEstacao)
-    int dados_byte_offsets[MAX_CHAVES]; // PR1, PR2, PR3 (RRN no arquivo de dados)
-    int filhos[ORDEM];                  // P1, P2, P3, P4 (RRN das subarvores)
+    int dados_byte_offsets[MAX_CHAVES]; // pR1, PR2, PR3 (RRN no arquivo de dados)
+    int filhos[ORDEM];                  // p1, P2, P3, P4 (RRN das subarvores)
 } no_arvore_b;
 
 // estrutura de retorno para guiar a subida recursiva do split

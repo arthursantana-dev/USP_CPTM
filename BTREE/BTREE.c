@@ -79,7 +79,7 @@ no_arvore_b arvore_b_ler_no(FILE *arquivo, int rrn)
 {
     no_arvore_b no;
 
-    // Posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
+    // posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
     fseek(arquivo, TAM_CABECALHO + (rrn * TAM_NO), SEEK_SET);
 
     fread(&no.removido, sizeof(char), 1, arquivo);
@@ -94,7 +94,7 @@ no_arvore_b arvore_b_ler_no(FILE *arquivo, int rrn)
         fread(&no.dados_byte_offsets[i], sizeof(int), 1, arquivo);
     }
 
-    // Ponteiros das Subarvores (P1, P2, P3, P4)
+    // ponteiros das Subarvores (P1, P2, P3, P4)
     for (int i = 0; i < ORDEM; i++)
     {
         fread(&no.filhos[i], sizeof(int), 1, arquivo);
@@ -118,7 +118,7 @@ void arvore_b_atualizar_cabecalho(FILE *arquivo, header_arvore_b *cabecalho)
 
 void arvore_b_escrever_no(FILE *arquivo, int rrn, no_arvore_b *no)
 {
-    // Posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
+    // posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
     fseek(arquivo, TAM_CABECALHO + (rrn * TAM_NO), SEEK_SET);
 
     // escrita campo a campo obrigatoria conforme as restricoes
@@ -134,7 +134,7 @@ void arvore_b_escrever_no(FILE *arquivo, int rrn, no_arvore_b *no)
         fwrite(&no->dados_byte_offsets[i], sizeof(int), 1, arquivo);
     }
 
-    // Ponteiros das Subarvores (P1, P2, P3, P4)
+    // ponteiros das Subarvores (P1, P2, P3, P4)
     for (int i = 0; i < ORDEM; i++)
     {
         fwrite(&no->filhos[i], sizeof(int), 1, arquivo);

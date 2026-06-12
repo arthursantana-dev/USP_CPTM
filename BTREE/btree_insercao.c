@@ -9,7 +9,7 @@ int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
 {
     int rrn;
 
-    // Se há registros removidos na pilha, reaproveita o topo
+    // se há registros removidos na pilha, reaproveita o topo
     if (cabecalho->topo != -1)
     {
         rrn = cabecalho->topo;
@@ -18,7 +18,7 @@ int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
     }
     else
     {
-        // Se não há removidos, pega o RRN do fim do arquivo e incrementa
+        // se não há removidos, pega o RRN do fim do arquivo e incrementa
         rrn = cabecalho->prox_RRN;
         cabecalho->prox_RRN++;
     }
@@ -56,7 +56,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         i++;
     }
 
-    // Se a chave já existir, a inserção é ignorada
+    // se a chave já existir, a inserção é ignorada
     if (i < no.numero_chaves && chave == no.chaves[i])
     {
         return ret;
@@ -69,7 +69,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         Volta da recursão
     */
 
-    // Se o filho não splitou, a estrutura de baixo já resolveu a inserção
+    // se o filho não splitou, a estrutura de baixo já resolveu a inserção
     if (!ret.houve_split)
     {
         return ret;
@@ -112,7 +112,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     for (int j = 0, idx = 0; j < MAX_CHAVES; j++, idx++)
     {
         if (idx == i)
-            idx++; // Pula o índice onde a chave promovida vai entrar
+            idx++; // pula o índice onde a chave promovida vai entrar
         temp_chaves[idx] = no.chaves[j];
         temp_dados_byte_offsets[idx] = no.dados_byte_offsets[j];
     }
@@ -122,7 +122,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     for (int j = 0, idx = 0; j < MAX_CHAVES + 1; j++, idx++)
     {
         if (idx == i + 1)
-            idx++; // Pula o ponteiro do novo filho
+            idx++; // pula o ponteiro do novo filho
         temp_filhos[idx] = no.filhos[j];
     }
     temp_filhos[i + 1] = ret.RRN_filho_direito;
@@ -167,7 +167,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     ret.RRN_dado_promovido = temp_dados_byte_offsets[2];
     ret.RRN_filho_direito = rrn_novo_no;
 
-    // Salva ambos no disco
+    // salva ambos no disco
     arvore_b_escrever_no(arquivo, RRN_atual, &no);
     arvore_b_escrever_no(arquivo, rrn_novo_no, &novo_no);
 
@@ -204,7 +204,7 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
     // Chama a função recursiva de inserção a partir da raiz
     retorno_insercao_t resultado = _inserir_recursivo(arquivo, cabecalho, cabecalho->no_raiz, chave, byte_offset_dado);
 
-    // Se houve split na raiz, precisamos criar um novo nó raiz
+    // se houve split na raiz, precisamos criar um novo nó raiz
     if (resultado.houve_split)
     {
         no_arvore_b nova_raiz = arvore_b_criar_no_vazio();
