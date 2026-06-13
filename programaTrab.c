@@ -88,29 +88,6 @@ int main()
 
 		break;
 
-	// INSERT INTO
-	case 5:
-		scanf("%s", nome_arquivo_binario);
-
-		f_dados = fopen(nome_arquivo_binario, "rb+");
-
-		err = INSERT_SEM_INDICE(f_dados);
-		if (!err)
-			atualizar_nros_estacoes_no_header(f_dados);
-		break;
-
-	// SELECT WHERE
-	case 8:
-		scanf("%s", nome_arquivo_binario);
-		scanf("%s", nome_arquivo_btree);
-
-		f_dados = fopen(nome_arquivo_binario, "rb");
-		f_ab = fopen(nome_arquivo_btree, "rb");
-
-		scanf("%d", &n);
-		err = SELECT(n, f_dados, f_ab);
-		break;
-
 	// DELETE
 	case 4:
 		scanf("%s", nome_arquivo_binario);
@@ -121,14 +98,12 @@ int main()
 		break;
 
 	// INSERT INTO
-	case 9:
+	case 5:
 		scanf("%s", nome_arquivo_binario);
-		scanf("%s", nome_arquivo_btree);
 
 		f_dados = fopen(nome_arquivo_binario, "rb+");
-		f_ab = fopen(nome_arquivo_btree, "rb+");
 
-		err = INSERT(f_dados, f_ab);
+		err = INSERT_SEM_INDICE(f_dados);
 		if (!err)
 			atualizar_nros_estacoes_no_header(f_dados);
 		break;
@@ -151,6 +126,31 @@ int main()
 		// printf("%s %s\n", nome_arquivo_binario, nome_arquivo_btree);
 
 		err = CREATE_INDEX(nome_arquivo_binario, nome_arquivo_btree);
+		break;
+
+	// SELECT WHERE
+	case 8:
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", nome_arquivo_btree);
+
+		f_dados = fopen(nome_arquivo_binario, "rb");
+		f_ab = fopen(nome_arquivo_btree, "rb");
+
+		scanf("%d", &n);
+		err = SELECT(n, f_dados, f_ab);
+		break;
+
+	// INSERT INTO
+	case 9:
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", nome_arquivo_btree);
+
+		f_dados = fopen(nome_arquivo_binario, "rb+");
+		f_ab = fopen(nome_arquivo_btree, "rb+");
+
+		err = INSERT(f_dados, f_ab);
+		if (!err)
+			atualizar_nros_estacoes_no_header(f_dados);
 		break;
 
 	// DELETE usando a estrutura de índices
