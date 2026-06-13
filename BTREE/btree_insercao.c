@@ -5,7 +5,7 @@
 /**
  * @brief Obtém um RRN livre, seja reaproveitando o lixo ou expandindo o arquivo.
  */
-int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
+int _obter_rrn_livre(FILE *arquivo, header_btree *cabecalho)
 {
     int rrn;
 
@@ -13,7 +13,7 @@ int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
     if (cabecalho->topo != -1)
     {
         rrn = cabecalho->topo;
-        no_arvore_b no_removido = arvore_b_ler_no(arquivo, rrn);
+        no_btree no_removido = btree_ler_no(arquivo, rrn);
         cabecalho->topo = no_removido.proximo; // atualiza o topo para o próximo removido
     }
     else
@@ -31,7 +31,7 @@ int _obter_rrn_livre(FILE *arquivo, header_arvore_b *cabecalho)
 /**
  * @brief Função interna que desce a árvore até a folha e trata os splits na subida.
  */
-retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho, int RRN_atual, int chave, int byte_offset_dado)
+retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_btree *cabecalho, int RRN_atual, int chave, int byte_offset_dado)
 {
     retorno_insercao_t ret = {false, -1, -1, -1};
 
@@ -47,7 +47,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         return ret;
     }
 
-    no_arvore_b no = arvore_b_ler_no(arquivo, RRN_atual);
+    no_btree no = btree_ler_no(arquivo, RRN_atual);
 
     // busca a posição correta no nó
     int i = 0;
@@ -91,7 +91,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
         no.filhos[i + 1] = ret.RRN_filho_direito;
         no.numero_chaves++;
 
-        arvore_b_escrever_no(arquivo, RRN_atual, &no);
+        btree_escrever_no(arquivo, RRN_atual, &no);
 
         ret.houve_split = false; // o split foi absorvido neste nó
         return ret;
@@ -104,13 +104,17 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     int temp_dados_byte_offsets[MAX_CHAVES + 1];
     int temp_filhos[MAX_CHAVES + 2];
 
+    // preenche os arrays temporários, inserindo a nova chave no lugar correto (indice i)
+    // como há 3 chaves e 4 filhos, j e idx não estão necessariamente alinhados, pois idx pula o índice onde a nova chave e o novo filho vão entrar
     for (int j = 0, idx = 0; j < MAX_CHAVES; j++, idx++)
     {
         if (idx == i)
             idx++; // pula o índice onde a chave promovida vai entrar
+
         temp_chaves[idx] = no.chaves[j];
         temp_dados_byte_offsets[idx] = no.dados_byte_offsets[j];
     }
+
     temp_chaves[i] = ret.chave_promovida;
     temp_dados_byte_offsets[i] = ret.RRN_dado_promovido;
 
@@ -147,7 +151,7 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
 
     // cria o Novo Nó (Nó da Direita)
     int rrn_novo_no = _obter_rrn_livre(arquivo, cabecalho);
-    no_arvore_b novo_no = arvore_b_criar_no_vazio();
+    no_btree novo_no = btree_criar_no_vazio();
 
     novo_no.tipo_no = no.tipo_no; // copia a tipagem do irmão recém rebaixado
     novo_no.numero_chaves = 1;
@@ -163,26 +167,26 @@ retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_arvore_b *cabecalho,
     ret.RRN_filho_direito = rrn_novo_no;
 
     // salva ambos no disco
-    arvore_b_escrever_no(arquivo, RRN_atual, &no);
-    arvore_b_escrever_no(arquivo, rrn_novo_no, &novo_no);
+    btree_escrever_no(arquivo, RRN_atual, &no);
+    btree_escrever_no(arquivo, rrn_novo_no, &novo_no);
 
     return ret;
 }
 
-void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int byte_offset_dado)
+void btree_inserir(FILE *arquivo, header_btree *cabecalho, int chave, int byte_offset_dado)
 {
 
     // caso base: Árvore vazia, cria o nó raiz
     if (cabecalho->no_raiz == -1)
     {
-        no_arvore_b raiz = arvore_b_criar_no_vazio();
+        no_btree raiz = btree_criar_no_vazio();
         raiz.tipo_no = -1; // nó folha
         raiz.numero_chaves = 1;
         raiz.chaves[0] = chave;
         raiz.dados_byte_offsets[0] = byte_offset_dado;
 
         int rrn_raiz = _obter_rrn_livre(arquivo, cabecalho);
-        arvore_b_escrever_no(arquivo, rrn_raiz, &raiz);
+        btree_escrever_no(arquivo, rrn_raiz, &raiz);
 
         // printf("RRN da raiz: %d\n", rrn_raiz);
 
@@ -191,7 +195,7 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
 
         // printf("numero de nos: %d\n", cabecalho->nro_nos);
 
-        arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
+        btree_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
         return;
     }
@@ -202,7 +206,7 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
     // se houve split na raiz, precisamos criar um novo nó raiz
     if (resultado.houve_split)
     {
-        no_arvore_b nova_raiz = arvore_b_criar_no_vazio();
+        no_btree nova_raiz = btree_criar_no_vazio();
         nova_raiz.tipo_no = 0; // nó raiz
         nova_raiz.numero_chaves = 1;
         nova_raiz.chaves[0] = resultado.chave_promovida;
@@ -211,12 +215,12 @@ void arvore_b_inserir(FILE *arquivo, header_arvore_b *cabecalho, int chave, int 
         nova_raiz.filhos[1] = resultado.RRN_filho_direito; // filho direito é o novo nó criado
 
         int rrn_nova_raiz = _obter_rrn_livre(arquivo, cabecalho);
-        arvore_b_escrever_no(arquivo, rrn_nova_raiz, &nova_raiz);
+        btree_escrever_no(arquivo, rrn_nova_raiz, &nova_raiz);
 
         cabecalho->no_raiz = rrn_nova_raiz; // atualiza o RRN da nova raiz no cabeçalho
     }
 
-    arvore_b_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
+    btree_atualizar_cabecalho(arquivo, cabecalho); // atualiza o cabeçalho no disco após a modificação
 
     // printf("numero de nos: %d\n", cabecalho->nro_nos);
 }

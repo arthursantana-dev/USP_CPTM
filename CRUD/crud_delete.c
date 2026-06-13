@@ -1,15 +1,15 @@
 #include "CRUD.h"
 
-int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Estacao *estacao_busca)
+int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_dados, Estacao *estacao_busca)
 {
     char buffer[TAM_REGISTRO];
 
     // bool removeu_estacao = false;
 
-    header_arvore_b header_b;
+    header_btree header_b;
 
     if (f_ab != NULL) {
-        header_b = arvore_b_ler_cabecalho(f_ab);
+        header_b = btree_ler_cabecalho(f_ab);
     }
 
     int RRNnovo = 0;
@@ -45,9 +45,9 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, E
         RRNnovo = RRN_atual;
 
         estacao->removido = '1';
-        estacao->proximo = header->topo;
+        estacao->proximo = header_dados->topo;
 
-        header->topo = RRNnovo;
+        header_dados->topo = RRNnovo;
 
         escrever_estacao_no_buffer(estacao, buffer);
 
@@ -57,7 +57,7 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, E
 
         // printf("remoção sequencial feita, agora na arvore\n");
         if (f_ab != NULL) {
-            arvore_b_remover(f_ab, &header_b, estacao->codEstacao);
+            btree_remover(f_ab, &header_b, estacao->codEstacao);
         }
 
         limpar_estacao(estacao);
@@ -68,12 +68,12 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, E
     return EXIT_SUCCESS;
 }
 
-int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Estacao *estacao_busca)
+int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_dados, Estacao *estacao_busca)
 {
-    header_arvore_b header_b = arvore_b_ler_cabecalho(f_ab);
+    header_btree header_b = btree_ler_cabecalho(f_ab);
 
     // recupera o byte offset físico consultando a árvore b
-    int byte_offset = arvore_b_buscar(f_ab, &header_b, estacao_busca->codEstacao);
+    int byte_offset = btree_buscar(f_ab, &header_b, estacao_busca->codEstacao);
 
     // aborta a deleção se a chave primária não existir no índice
     if (byte_offset == -1)
@@ -98,8 +98,8 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Es
 
             // efetua a remoção lógica e encadeia o registro atual no topo da lista
             estacao->removido = '1';
-            estacao->proximo = header->topo;
-            header->topo = rrn_atual;
+            estacao->proximo = header_dados->topo;
+            header_dados->topo = rrn_atual;
 
             // volta o cursor para sobrescrever apenas o registro alvo
             escrever_estacao_no_buffer(estacao, buffer);
@@ -107,7 +107,7 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Es
             escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
             // espelha a remoção na árvore b para manter a sincronia
-            arvore_b_remover(f_ab, &header_b, estacao_busca->codEstacao);
+            btree_remover(f_ab, &header_b, estacao_busca->codEstacao);
         }
 
         limpar_estacao(estacao);
@@ -117,7 +117,7 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header, Es
 
     return EXIT_SUCCESS;
 }
-int crud_delete(Estacao *estacao_busca, FILE *f_dados, FILE *f_ab, Header *header)
+int crud_delete(Estacao *estacao_busca, FILE *f_dados, FILE *f_ab, Header *header_dados)
 {
 
     // int removeu_estacao = 0;
@@ -126,11 +126,11 @@ int crud_delete(Estacao *estacao_busca, FILE *f_dados, FILE *f_ab, Header *heade
     // se o arquivo de índice for fornecido e a estação de busca tiver um código válido, tenta remover usando o índice, senão faz a busca sequencial
     if (f_ab != NULL && estacao_busca->codEstacao != -2 && estacao_busca->codEstacao != 0)
     {
-        erro = busca_em_indice_e_delete(f_dados, f_ab, header, estacao_busca);
+        erro = busca_em_indice_e_delete(f_dados, f_ab, header_dados, estacao_busca);
     }
     else
     {
-        erro = busca_sequencial_e_delete(f_dados, f_ab, header, estacao_busca);
+        erro = busca_sequencial_e_delete(f_dados, f_ab, header_dados, estacao_busca);
     }
     if (erro)
     {
@@ -151,15 +151,15 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
 
     Estacao *estacao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
 
-    Header *header = ler_header_do_arquivo(f_dados);
+    Header *header_dados = ler_header_do_arquivo(f_dados);
 
-    if (header == NULL)
+    if (header_dados == NULL)
     {
         return EXIT_FAILURE;
     }
 
-    header->status = '0';
-    escrever_header_no_arquivo(f_dados, header);
+    header_dados->status = '0';
+    escrever_header_no_arquivo(f_dados, header_dados);
 
     for (int i = 0; i < n; i++)
     {
@@ -172,7 +172,7 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
         // imprimir_estacao(estacao);
 
         // repassa o ponteiro da árvore para que a remoção secundária ocorra internamente se possível
-        err = crud_delete(estacao, f_dados, f_ab, header);
+        err = crud_delete(estacao, f_dados, f_ab, header_dados);
 
         limpar_estacao(estacao);
 
@@ -180,11 +180,11 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
             break;
     }
 
-    header->status = '1';
-    escrever_header_no_arquivo(f_dados, header);
+    header_dados->status = '1';
+    escrever_header_no_arquivo(f_dados, header_dados);
     destruir_estacao(estacao);
 
-    free(header);
+    free(header_dados);
 
     // printf("Número de estações quaisquer: %d\n", numero_estacoes);
 

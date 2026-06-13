@@ -49,7 +49,7 @@ int main()
 	int opcode;
 
 	char nome_arquivo_binario[MAX_TAM_NOME];
-	char nome_arquivo_arvore_b[MAX_TAM_NOME];
+	char nome_arquivo_btree[MAX_TAM_NOME];
 
 	int n;
 
@@ -80,10 +80,10 @@ int main()
 	// SELECT WHERE
 	case 8:
 		scanf("%s", nome_arquivo_binario);
-		scanf("%s", nome_arquivo_arvore_b);
+		scanf("%s", nome_arquivo_btree);
 
 		f_dados= fopen(nome_arquivo_binario, "rb");
-		f_ab = fopen(nome_arquivo_arvore_b, "rb");
+		f_ab = fopen(nome_arquivo_btree, "rb");
 
 		scanf("%d", &n);
 		err = SELECT(n, f_dados, f_ab);
@@ -101,10 +101,10 @@ int main()
 	// INSERT INTO
 	case 9:
 		scanf("%s", nome_arquivo_binario);
-		scanf("%s", nome_arquivo_arvore_b);
+		scanf("%s", nome_arquivo_btree);
 
 		f_dados= fopen(nome_arquivo_binario, "rb+");
-		f_ab = fopen(nome_arquivo_arvore_b, "rb+");
+		f_ab = fopen(nome_arquivo_btree, "rb+");
 
 		err = INSERT(f_dados, f_ab);
 		if (!err)
@@ -122,21 +122,21 @@ int main()
 	// CREATE INDEX
 	case 7:
 		scanf("%s", nome_arquivo_binario);
-		scanf("%s", nome_arquivo_arvore_b);
+		scanf("%s", nome_arquivo_btree);
 
-		// printf("%s %s\n", nome_arquivo_binario, nome_arquivo_arvore_b);
+		// printf("%s %s\n", nome_arquivo_binario, nome_arquivo_btree);
 
-		err = CREATE_INDEX(nome_arquivo_binario, nome_arquivo_arvore_b);
+		err = CREATE_INDEX(nome_arquivo_binario, nome_arquivo_btree);
 		break;
 
 	// DELETE usando a estrutura de índices
 	case 10:
 		scanf("%s", nome_arquivo_binario);
-		scanf("%s", nome_arquivo_arvore_b);
+		scanf("%s", nome_arquivo_btree);
 
 		scanf("%d", &n);
 		f_dados= fopen(nome_arquivo_binario, "rb+");
-		f_ab = fopen(nome_arquivo_arvore_b, "rb+");
+		f_ab = fopen(nome_arquivo_btree, "rb+");
 
 		if (f_ab == NULL)
 		{
@@ -167,7 +167,7 @@ int main()
 	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7 && opcode != 8)
 	{
 		BinarioNaTela(nome_arquivo_binario);
-		BinarioNaTela(nome_arquivo_arvore_b);
+		BinarioNaTela(nome_arquivo_btree);
 	}
 
 	return 0;

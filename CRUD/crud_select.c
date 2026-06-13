@@ -4,20 +4,20 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
 {
     char buffer[TAM_REGISTRO];
 
-    Header *header = ler_header_do_arquivo(f_dados);
-    header_arvore_b header_b = arvore_b_ler_cabecalho(f_ab);
+    Header *header_dados = ler_header_do_arquivo(f_dados);
+    header_btree header_b = btree_ler_cabecalho(f_ab);
 
-    if (header == NULL || header_b.status == '0')
+    if (header_dados == NULL || header_b.status == '0')
     {
-        free(header);
+        free(header_dados);
         return EXIT_FAILURE;
     }
 
-    int nroEstacoes = header->nroEstacoes;
+    int nroEstacoes = header_dados->nroEstacoes;
     if (nroEstacoes == 0)
     {
         printf("Registro inexistente.\n");
-        free(header);
+        free(header_dados);
         return EXIT_SUCCESS;
     }
 
@@ -30,7 +30,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
     if (estacao_selecao->codEstacao != -2)
     {
 
-        int offset = arvore_b_buscar(f_ab, &header_b, estacao_selecao->codEstacao);
+        int offset = btree_buscar(f_ab, &header_b, estacao_selecao->codEstacao);
         if (offset == -1)
         {
             printf("Registro inexistente.\n");
@@ -62,7 +62,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
         }
 
         destruir_estacao(ea);
-        free(header);
+        free(header_dados);
         return EXIT_SUCCESS;
     }
 
@@ -94,7 +94,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
         printf("Registro inexistente.\n");
     }
 
-    free(header);
+    free(header_dados);
 
     return EXIT_SUCCESS;
 }
@@ -107,17 +107,17 @@ int SELECT_ALL(FILE *f_dados)
     {
         return EXIT_FAILURE;
     }
-    Header *header = ler_header_do_arquivo(f_dados);
-    if (header == NULL)
+    Header *header_dados = ler_header_do_arquivo(f_dados);
+    if (header_dados == NULL)
     {
         mostrar_erro();
         return EXIT_FAILURE;
     }
-    int nroEstacoes = header->nroEstacoes;
+    int nroEstacoes = header_dados->nroEstacoes;
     if (nroEstacoes == 0)
     {
         printf("Registro inexistente.\n");
-        free(header);
+        free(header_dados);
         return 0; // erro tratado localmente, sem necessidade de flag
     }
 
@@ -141,7 +141,7 @@ int SELECT_ALL(FILE *f_dados)
 
     destruir_estacao(ea);
 
-    free(header);
+    free(header_dados);
     return 0;
 }
 

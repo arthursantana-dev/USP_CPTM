@@ -13,7 +13,7 @@
         int nroParesEstacao; // número de pares de estações cadastrados
     } Header;
 
-    int escrever_header_no_arquivo(FILE *f_dados, Header *header);
+    int escrever_header_no_arquivo(FILE *f_dados, Header *header_dados);
 
     Header *ler_header_do_arquivo(FILE *f_dados);
 

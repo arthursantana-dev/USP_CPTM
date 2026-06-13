@@ -390,9 +390,9 @@ void escrever_buffer_no_arquivo(FILE *f_dados, char *buffer)
 }
 
 void atualizar_nros_estacoes_no_header(FILE *f_dados){
-    Header *header = ler_header_do_arquivo(f_dados);
-    header->status = '0';
-    escrever_header_no_arquivo(f_dados, header);
+    Header *header_dados = ler_header_do_arquivo(f_dados);
+    header_dados->status = '0';
+    escrever_header_no_arquivo(f_dados, header_dados);
 
     Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
@@ -437,15 +437,15 @@ void atualizar_nros_estacoes_no_header(FILE *f_dados){
         limpar_estacao(estacao);
     }
 
-    header->status = '1';
-    header->nroEstacoes = set_estacoes->tamanho;
-    header->nroParesEstacao = info_pares_estacoes.nroPares;
+    header_dados->status = '1';
+    header_dados->nroEstacoes = set_estacoes->tamanho;
+    header_dados->nroParesEstacao = info_pares_estacoes.nroPares;
 
-    escrever_header_no_arquivo(f_dados, header);
+    escrever_header_no_arquivo(f_dados, header_dados);
     destruir_set_estacoes(set_estacoes);
     destruir_pares(&info_pares_estacoes);
 
-    free(header);
+    free(header_dados);
 
     destruir_estacao(estacao);
 }

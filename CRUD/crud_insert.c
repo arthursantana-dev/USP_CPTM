@@ -1,29 +1,29 @@
 #include "CRUD.h"
 
-int crud_insert(FILE *f_dados, Estacao *estacao, FILE *f_ab, header_arvore_b *header_b)
+int crud_insert(FILE *f_dados, Estacao *estacao, FILE *f_ab, header_btree *header_b)
 {
-    Header *header = ler_header_do_arquivo(f_dados);
-    if (header == NULL){
+    Header *header_dados = ler_header_do_arquivo(f_dados);
+    if (header_dados == NULL){
         mostrar_erro();
         return 1;
     }
 
     // impede a inserção de chaves primárias duplicadas checando o índice primeiro
-    if (arvore_b_buscar(f_ab, header_b, estacao->codEstacao) != -1)
+    if (btree_buscar(f_ab, header_b, estacao->codEstacao) != -1)
     {
-        free(header);
+        free(header_dados);
         return 0; 
     }
 
     // marca os arquivos de dados e de índice como inconsistentes durante a transação
-    header->status = '0';
-    escrever_header_no_arquivo(f_dados, header);
+    header_dados->status = '0';
+    escrever_header_no_arquivo(f_dados, header_dados);
 
     header_b->status = '0';
-    arvore_b_atualizar_cabecalho(f_ab, header_b);
+    btree_atualizar_cabecalho(f_ab, header_b);
 
-    int topo = header->topo; 
-    int proxRRN = header->proxRRN; 
+    int topo = header_dados->topo; 
+    int proxRRN = header_dados->proxRRN; 
     
     char *buffer = criar_buffer();
     int offset = 0; 
@@ -34,7 +34,7 @@ int crud_insert(FILE *f_dados, Estacao *estacao, FILE *f_ab, header_arvore_b *he
         // calcula o offset físico no final do arquivo e incrementa o contador
         offset = proxRRN * TAM_REGISTRO + TAM_HEADER;
         fseek(f_dados, offset, SEEK_SET);
-        header->proxRRN++;
+        header_dados->proxRRN++;
     }
     else
     {
@@ -49,7 +49,7 @@ int crud_insert(FILE *f_dados, Estacao *estacao, FILE *f_ab, header_arvore_b *he
         // recupera o rrn do próximo item removido para ser o novo topo da pilha
         Estacao *estacao_removida = (Estacao *)calloc(1, sizeof(Estacao));
         escrever_buffer_na_estacao(buffer, estacao_removida);
-        header->topo = estacao_removida->proximo;
+        header_dados->topo = estacao_removida->proximo;
         destruir_estacao(estacao_removida);
     }
     
@@ -57,14 +57,14 @@ int crud_insert(FILE *f_dados, Estacao *estacao, FILE *f_ab, header_arvore_b *he
 
     // grava o registro no disco e registra seu offset exato na árvore b
     escrever_buffer_no_arquivo(f_dados, buffer);
-    arvore_b_inserir(f_ab, header_b, estacao->codEstacao, offset);
+    btree_inserir(f_ab, header_b, estacao->codEstacao, offset);
 
     // restaura o status de consistência após o sucesso da operação
-    header->status = '1';
-    escrever_header_no_arquivo(f_dados, header);
+    header_dados->status = '1';
+    escrever_header_no_arquivo(f_dados, header_dados);
 
     free(buffer);
-    free(header);
+    free(header_dados);
 
     return 0;
 }
@@ -79,7 +79,7 @@ int INSERT(FILE *f_dados, FILE *f_ab)
 
     Estacao *estacao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
     
-    header_arvore_b header_b = arvore_b_ler_cabecalho(f_ab);
+    header_btree header_b = btree_ler_cabecalho(f_ab);
 
 
     for (int i = 0; i < n; i++)
@@ -115,7 +115,7 @@ int INSERT(FILE *f_dados, FILE *f_ab)
 
     header_b.status = '1';
 
-    arvore_b_atualizar_cabecalho(f_ab, &header_b);
+    btree_atualizar_cabecalho(f_ab, &header_b);
 
     destruir_estacao(estacao);
 
