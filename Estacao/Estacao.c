@@ -47,11 +47,11 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     estacao->codEstacaoIntegra = codEstacaoIntegra;
     estacao->tamNomeEstacao = strlen(nomeEstacao);
 
-    if(estacao->tamNomeEstacao > 0)
+    if (estacao->tamNomeEstacao > 0)
         estacao->nomeEstacao = strdup(nomeEstacao);
 
     estacao->tamNomeLinha = strlen(nomeLinha);
-    if(estacao->tamNomeLinha > 0)
+    if (estacao->tamNomeLinha > 0)
         estacao->nomeLinha = strdup(nomeLinha);
 
     return estacao;
@@ -389,15 +389,17 @@ void escrever_buffer_no_arquivo(FILE *f_dados, char *buffer)
     fwrite(buffer, sizeof(char), TAM_REGISTRO, f_dados);
 }
 
-void atualizar_nros_estacoes_no_header(FILE *f_dados){
+void atualizar_nros_estacoes_no_header(FILE *f_dados)
+{
     Header *header_dados = ler_header_do_arquivo(f_dados);
     header_dados->status = '0';
+
     escrever_header_no_arquivo(f_dados, header_dados);
 
     Estacao *estacao = criar_estacao_para_busca(0, "", 0, "", 0, 0, 0, 0);
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
     InfoParesEstacoes info_pares_estacoes;
-    
+
     inicializar_pares(&info_pares_estacoes);
 
     fseek(f_dados, TAM_HEADER, SEEK_SET);

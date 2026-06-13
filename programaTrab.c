@@ -55,7 +55,7 @@ int main()
 
 	scanf("%d", &opcode);
 
-	FILE *f_dados= NULL;
+	FILE *f_dados = NULL;
 	FILE *f_ab = NULL;
 
 	int err = 0;
@@ -70,11 +70,33 @@ int main()
 		err = CREATE(nome_arquivo_csv, nome_arquivo_binario);
 		break;
 
-	// SELECT FROM
+	// SELECT ALL
 	case 2:
 		scanf("%s", nome_arquivo_binario);
-		f_dados= fopen(nome_arquivo_binario, "rb");
+		f_dados = fopen(nome_arquivo_binario, "rb");
 		err = SELECT_ALL(f_dados);
+		break;
+
+	// SELECT ALL
+	case 3:
+		scanf("%s", nome_arquivo_binario);
+
+		f_dados = fopen(nome_arquivo_binario, "rb");
+
+		scanf("%d", &n);
+		err = SELECT_SEM_INDICE(n, f_dados);
+
+		break;
+
+	// INSERT INTO
+	case 5:
+		scanf("%s", nome_arquivo_binario);
+
+		f_dados = fopen(nome_arquivo_binario, "rb+");
+
+		err = INSERT_SEM_INDICE(f_dados);
+		if (!err)
+			atualizar_nros_estacoes_no_header(f_dados);
 		break;
 
 	// SELECT WHERE
@@ -82,7 +104,7 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		scanf("%s", nome_arquivo_btree);
 
-		f_dados= fopen(nome_arquivo_binario, "rb");
+		f_dados = fopen(nome_arquivo_binario, "rb");
 		f_ab = fopen(nome_arquivo_btree, "rb");
 
 		scanf("%d", &n);
@@ -94,8 +116,8 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
 
-		f_dados= fopen(nome_arquivo_binario, "rb+");
-		err = DELETE(n, f_dados, NULL);
+		f_dados = fopen(nome_arquivo_binario, "rb+");
+		err = DELETE_SEM_INDICE(n, f_dados);
 		break;
 
 	// INSERT INTO
@@ -103,7 +125,7 @@ int main()
 		scanf("%s", nome_arquivo_binario);
 		scanf("%s", nome_arquivo_btree);
 
-		f_dados= fopen(nome_arquivo_binario, "rb+");
+		f_dados = fopen(nome_arquivo_binario, "rb+");
 		f_ab = fopen(nome_arquivo_btree, "rb+");
 
 		err = INSERT(f_dados, f_ab);
@@ -115,7 +137,9 @@ int main()
 	case 6:
 		scanf("%s", nome_arquivo_binario);
 		scanf("%d", &n);
-		
+
+		f_dados = fopen(nome_arquivo_binario, "rb+");
+
 		err = UPDATE(n, f_dados);
 		break;
 
@@ -135,7 +159,7 @@ int main()
 		scanf("%s", nome_arquivo_btree);
 
 		scanf("%d", &n);
-		f_dados= fopen(nome_arquivo_binario, "rb+");
+		f_dados = fopen(nome_arquivo_binario, "rb+");
 		f_ab = fopen(nome_arquivo_btree, "rb+");
 
 		if (f_ab == NULL)
@@ -167,6 +191,10 @@ int main()
 	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7 && opcode != 8)
 	{
 		BinarioNaTela(nome_arquivo_binario);
+	}
+
+	if (opcode >= 9 && opcode <= 10)
+	{
 		BinarioNaTela(nome_arquivo_btree);
 	}
 

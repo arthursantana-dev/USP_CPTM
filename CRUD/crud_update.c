@@ -61,7 +61,7 @@ int UPDATE(int n, FILE *f_dados)
 {
     int err = 0;
 
-    if (f_dados== NULL)
+    if (f_dados == NULL)
     {
         mostrar_erro();
         return EXIT_FAILURE;

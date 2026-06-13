@@ -177,3 +177,96 @@ int SELECT(int n, FILE *f_dados, FILE *f_ab)
 
     return err;
 }
+
+// realiza a varredura linear para busca sem utilizar a arvore b
+int crud_select_sem_indice(Estacao *estacao_selecao, FILE *f_dados)
+{
+    char buffer[TAM_REGISTRO];
+
+    Header *header = ler_header_do_arquivo(f_dados);
+    if (header == NULL)
+    {
+        return EXIT_FAILURE;
+    }
+
+    int nroEstacoes = header->nroEstacoes;
+    if (nroEstacoes == 0)
+    {
+        printf("Registro inexistente.\n");
+        free(header);
+        return EXIT_SUCCESS;
+    }
+
+    fseek(f_dados, TAM_HEADER, SEEK_SET);
+
+    int achou = 0;
+    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+
+    // varredura linear completa no arquivo de dados
+    while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
+    {
+        escrever_buffer_na_estacao(buffer, ea);
+
+        // ignora registros logicamente apagados
+        if (ea->removido == '1')
+        {
+            limpar_estacao(ea);
+            continue;
+        }
+
+        // verifica se os parametros da struct coincidem com o registro
+        if (comparar_estacoes(estacao_selecao, ea))
+        {
+            imprimir_estacao(ea);
+            achou = 1;
+        }
+
+        limpar_estacao(ea);
+    }
+
+    destruir_estacao(ea);
+
+    if (!achou)
+    {
+        printf("Registro inexistente.\n");
+    }
+
+    free(header);
+
+    return EXIT_SUCCESS;
+}
+
+// executa n buscas consecutivas focadas apenas no arquivo de dados
+int SELECT_SEM_INDICE(int n, FILE *f_dados)
+{
+    int err = 0;
+
+    if (f_dados == NULL)
+    {
+        return EXIT_FAILURE;
+    }
+
+    Estacao *estacao_selecao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
+
+    for (int i = 0; i < n; i++)
+    {
+        // reseta a struct para ignorar os campos da busca anterior
+        set_valores_estacao_para_busca(estacao_selecao);
+
+        ler_input_para_estacao_de_busca(estacao_selecao);
+        
+        err = crud_select_sem_indice(estacao_selecao, f_dados);
+
+        limpar_estacao(estacao_selecao);
+
+        if (err)
+            break;
+            
+        // mantem o padrao de quebra de linha exigido na saida original
+        printf("\n");
+    }
+
+    destruir_estacao(estacao_selecao);
+
+    return err;
+}
