@@ -40,7 +40,7 @@ typedef struct
     int chave_promovida;
     int RRN_dado_promovido;
     int RRN_filho_direito;
-} retorno_insercao_t;
+} retorno_insercao;
 
 /* =========================================================
  * funcoes de gerenciamento do arquivo

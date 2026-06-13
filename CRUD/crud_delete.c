@@ -4,8 +4,6 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_da
 {
     char buffer[TAM_REGISTRO];
 
-    // bool removeu_estacao = false;
-
     header_btree header_b;
 
     if (f_ab != NULL)
@@ -17,8 +15,6 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_da
     int RRN_atual = -1;
 
     Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
-
-    // int i = 0;
 
     fseek(arquivo_dados, TAM_HEADER, SEEK_SET);
 
@@ -41,8 +37,6 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_da
             continue;
         }
 
-        // removeu_estacao = true;
-
         RRNnovo = RRN_atual;
 
         estacao->removido = '1';
@@ -56,7 +50,6 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_da
 
         escrever_buffer_no_arquivo(arquivo_dados, buffer);
 
-        // printf("remoção sequencial feita, agora na arvore\n");
         if (f_ab != NULL)
         {
             btree_remover(f_ab, &header_b, estacao->codEstacao);
@@ -119,6 +112,7 @@ int busca_em_indice_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_dad
 
     return EXIT_SUCCESS;
 }
+
 int crud_delete(Estacao *estacao_busca, FILE *f_dados, FILE *f_ab, Header *header_dados)
 {
 
@@ -169,9 +163,6 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
         set_valores_estacao_para_busca(estacao);
 
         ler_input_para_estacao_de_busca(estacao);
-
-        // printf("Estação a ser buscada: ");
-        // imprimir_estacao(estacao);
 
         // repassa o ponteiro da árvore para que a remoção secundária ocorra internamente se possível
         err = crud_delete(estacao, f_dados, f_ab, header_dados);

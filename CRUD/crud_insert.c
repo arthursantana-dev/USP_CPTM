@@ -222,6 +222,8 @@ int INSERT_SEM_INDICE(FILE *f_dados)
         limpar_estacao(estacao);
     }
 
+	atualizar_nros_estacoes_no_header(f_dados);
+
     destruir_estacao(estacao);
 
     return 0;

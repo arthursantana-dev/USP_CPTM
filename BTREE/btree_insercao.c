@@ -31,9 +31,9 @@ int _obter_rrn_livre(FILE *arquivo, header_btree *cabecalho)
 /**
  * @brief Função interna que desce a árvore até a folha e trata os splits na subida.
  */
-retorno_insercao_t _inserir_recursivo(FILE *arquivo, header_btree *cabecalho, int RRN_atual, int chave, int byte_offset_dado)
+retorno_insercao _inserir_recursivo(FILE *arquivo, header_btree *cabecalho, int RRN_atual, int chave, int byte_offset_dado)
 {
-    retorno_insercao_t ret = {false, -1, -1, -1};
+    retorno_insercao ret = {false, -1, -1, -1};
 
     // printf("Descendo para RRN: %d\n", RRN_atual);
 
@@ -201,7 +201,7 @@ void btree_inserir(FILE *arquivo, header_btree *cabecalho, int chave, int byte_o
     }
 
     // chama a função recursiva de inserção a partir da raiz
-    retorno_insercao_t resultado = _inserir_recursivo(arquivo, cabecalho, cabecalho->no_raiz, chave, byte_offset_dado);
+    retorno_insercao resultado = _inserir_recursivo(arquivo, cabecalho, cabecalho->no_raiz, chave, byte_offset_dado);
 
     // se houve split na raiz, precisamos criar um novo nó raiz
     if (resultado.houve_split)
