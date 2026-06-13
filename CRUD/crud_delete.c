@@ -184,6 +184,10 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
 
     header_dados->status = '1';
     escrever_header_no_arquivo(f_dados, header_dados);
+
+    if (!err)
+        atualizar_nros_estacoes_no_header(f_dados);
+
     destruir_estacao(estacao);
 
     free(header_dados);

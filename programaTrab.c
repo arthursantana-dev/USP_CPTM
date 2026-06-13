@@ -149,8 +149,6 @@ int main()
 		f_ab = fopen(nome_arquivo_btree, "rb+");
 
 		err = INSERT(f_dados, f_ab);
-		if (!err)
-			atualizar_nros_estacoes_no_header(f_dados);
 		break;
 
 	// DELETE usando a estrutura de índices
@@ -171,8 +169,6 @@ int main()
 
 		err = DELETE(n, f_dados, f_ab);
 
-		if (!err)
-			atualizar_nros_estacoes_no_header(f_dados);
 		break;
 	}
 

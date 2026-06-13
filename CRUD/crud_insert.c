@@ -115,6 +115,8 @@ int INSERT(FILE *f_dados, FILE *f_ab)
 
     header_b.status = '1';
 
+    atualizar_nros_estacoes_no_header(f_dados);
+
     btree_atualizar_cabecalho(f_ab, &header_b);
 
     destruir_estacao(estacao);
