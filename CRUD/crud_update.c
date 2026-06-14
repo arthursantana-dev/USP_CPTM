@@ -16,10 +16,10 @@ int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f_dados)
     }
 
     header->status = '0';
-    escrever_header_no_arquivo(f, header);
+    escrever_header_no_arquivo(f_dados, header);
     
     // indo para o primeiro registro
-    fseek(f, TAM_HEADER, SEEK_SET);
+    fseek(f_dados, TAM_HEADER, SEEK_SET);
 
     Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
