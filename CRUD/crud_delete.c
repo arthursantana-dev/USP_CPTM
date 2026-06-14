@@ -18,9 +18,9 @@ int busca_sequencial_e_delete(FILE *arquivo_dados, FILE *f_ab, Header *header_da
 
     fseek(arquivo_dados, TAM_HEADER, SEEK_SET);
 
+    // iteração sobre o arquivo de dados
     while (fread(buffer, TAM_REGISTRO, 1, arquivo_dados) == 1)
     {
-
         escrever_buffer_na_estacao(buffer, estacao);
 
         RRN_atual++;
@@ -145,7 +145,8 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
 
     int err = 0;
 
-    Estacao *estacao = criar_estacao_para_busca(-2, "", -2, "", -2, -2, -2, -2);
+    // preparando a estação de busca
+    Estacao *estacao = (Estacao*)calloc(1, sizeof(Estacao));
 
     Header *header_dados = ler_header_do_arquivo(f_dados);
 
@@ -159,7 +160,7 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
 
     for (int i = 0; i < n; i++)
     {
-
+        // resetando os valores da estação de busca
         set_valores_estacao_para_busca(estacao);
 
         ler_input_para_estacao_de_busca(estacao);
@@ -182,8 +183,6 @@ int DELETE(int n, FILE *f_dados, FILE *f_ab)
     destruir_estacao(estacao);
 
     free(header_dados);
-
-    // printf("Número de estações quaisquer: %d\n", numero_estacoes);
 
     return err;
 }

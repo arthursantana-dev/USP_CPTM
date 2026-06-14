@@ -49,9 +49,6 @@ typedef struct
 // inicializa um novo arquivo de indice Arvore-B
 FILE *btree_abrir_escrita(const char *nome_arquivo);
 
-// abre um arquivo de indice Arvore-B existente para leitura/escrita
-FILE *btree_abrir_leitura(const char *nome_arquivo);
-
 // finaliza o uso do arquivo e atualiza o status para '1'
 void btree_fechar(FILE *arquivo, header_btree *cabecalho);
 

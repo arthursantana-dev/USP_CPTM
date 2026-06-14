@@ -24,13 +24,6 @@ typedef struct {
 int comparar_pares(const void *a, const void *b);
 
 /**
- * @brief Procura e remove da lista encadeada o par cuja estação de origem corresponda ao código fornecido.
- * @param info_pares_estacoes Ponteiro para a estrutura gestora da lista de pares.
- * @param codEstacaoRemovida Código (ID) da estação de origem que servirá de critério para a remoção.
- */
-void destruir_pares_estacoes(InfoParesEstacoes *info_pares_estacoes, int codEstacaoRemovida);
-
-/**
  * @brief Inicializa os valores de uma estrutura gestora de pares já alocada.
  * @param info Ponteiro para a estrutura InfoParesEstacoes a ser inicializada (define contadores a zero e ponteiros a NULL).
  */
@@ -49,19 +42,6 @@ void inserir_par(InfoParesEstacoes *info, int origem, int destino);
  * @param info Ponteiro para a estrutura InfoParesEstacoes a ser esvaziada.
  */
 void destruir_pares(InfoParesEstacoes *info);
-
-/**
- * @brief Ordena a lista encadeada de pares. Transfere os dados para um vetor contíguo, aplica o algoritmo qsort e devolve os valores ordenados à lista.
- * @param info Ponteiro para a estrutura gestora da lista de pares que será ordenada in-place.
- */
-void ordenar_pares(InfoParesEstacoes *info);
-
-/**
- * @brief Fornece acesso ao primeiro nó da lista encadeada para permitir iteração externa sem expor diretamente a estrutura interna.
- * @param info Ponteiro para a estrutura gestora da lista de pares.
- * @param par_externo Ponteiro duplo que receberá o endereço do nó inicial (início da lista).
- */
-void iniciar_iterador(InfoParesEstacoes *info, ParEstacoes **par_externo);
 
 /**
  * @brief Percorre a lista de pares para verificar se uma determinada ligação (origem -> destino) já se encontra registada.
@@ -105,26 +85,11 @@ int existe_estacao(SetNomesEstacoes* set, const char* nome);
 int incluir_estacao(SetNomesEstacoes* set, const char* nome);
 
 /**
- * @brief Procura e remove o nó correspondente a uma estação específica, refazendo as ligações da lista e libertando a memória.
- * @param set Ponteiro para o conjunto de estações.
- * @param nome String contendo o nome da estação a ser removida.
- * @return Retorna 1 se a estação for removida com sucesso, ou 0 se a estação não for encontrada.
- */
-int remover_estacao(SetNomesEstacoes* set, const char* nome);
-
-/**
  * @brief Itera sobre todo o conjunto, libertando a memória de cada string e de cada nó, bem como da própria estrutura principal.
  * @param set Ponteiro para o conjunto de estações a ser destruído.
  * @return Retorna 0 após a conclusão da libertação da memória.
  */
 int destruir_set_estacoes(SetNomesEstacoes* set);
-
-/**
- * @brief Lê o ficheiro binário de dados na sua totalidade para reconstruir um conjunto completo de nomes de estações ativas (não removidas).
- * @param f Ponteiro para o ficheiro binário de onde os registos serão lidos.
- * @return Retorna um ponteiro para o conjunto (SetNomesEstacoes) totalmente populado com os dados do ficheiro.
- */
-SetNomesEstacoes* criar_set_estacoes_populado(FILE* f_dados);
 
 
 #endif

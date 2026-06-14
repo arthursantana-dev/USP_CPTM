@@ -12,18 +12,13 @@
 
     int DELETE(int n, FILE *f_dados, FILE* f_ab);
 
-    
-
     int INSERT(FILE *f_dados, FILE *f_ab);
-
-    
 
     int SELECT_ALL(FILE *f_dados);
 
     // o mesmo comentário do INSERT se aplica ao SELECT, ou seja, a função só funciona se um arquivo de indice btree for passado como argumento. caso contrário, retorna falha.
     int SELECT(int n, FILE *f_dados, FILE *f_ab);
 
-    
     int UPDATE(int n, FILE *f_dados);
 
     int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_btree);

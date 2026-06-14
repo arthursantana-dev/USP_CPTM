@@ -67,47 +67,6 @@ int incluir_estacao(SetNomesEstacoes *set, const char *nome)
     return 1;
 }
 
-int tamanho_set_estacoes(SetNomesEstacoes *set)
-{
-    if (set == NULL)
-        return 0;
-    return set->tamanho;
-}
-
-int remover_estacao(SetNomesEstacoes *set, const char *nome)
-{
-    if (set == NULL || nome == NULL)
-        return 0;
-
-    NoSet *atual = set->inicio;
-    NoSet *anterior = NULL;
-
-    while (atual != NULL)
-    {
-        if (strcmp(atual->nome, nome) == 0)
-        {
-            if (anterior == NULL)
-            {
-                set->inicio = atual->prox;
-            }
-            else
-            {
-                anterior->prox = atual->prox;
-            }
-
-            free(atual->nome);
-            free(atual);
-            set->tamanho--;
-
-            return 1;
-        }
-        anterior = atual;
-        atual = atual->prox;
-    }
-
-    return 0;
-}
-
 int destruir_set_estacoes(SetNomesEstacoes *set)
 {
     if (set == NULL)
@@ -127,33 +86,4 @@ int destruir_set_estacoes(SetNomesEstacoes *set)
     free(set);        
 
     return 0;
-}
-
-SetNomesEstacoes *criar_set_estacoes_populado(FILE *f_dados)
-{
-    SetNomesEstacoes *set = criar_set_estacoes();
-    if (set == NULL || f_dados ==NULL)
-        return NULL;
-
-    char *buffer = criar_buffer();
-    fseek(f_dados, TAM_HEADER, SEEK_SET);
-
-    while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
-    {
-        Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-        escrever_buffer_na_estacao(buffer, ea);
-
-        if (ea->removido == '1')
-        {
-            destruir_estacao(ea);
-            continue;
-        }
-
-        incluir_estacao(set, ea->nomeEstacao);
-        destruir_estacao(ea);
-    }
-
-    free(buffer);
-
-    return set;
 }

@@ -64,17 +64,6 @@ FILE *btree_abrir_escrita(const char *nome_arquivo)
     return arquivo;
 }
 
-FILE *btree_abrir_leitura(const char *nome_arquivo)
-{
-    FILE *arquivo = fopen(nome_arquivo, "rb+");
-    if (arquivo == NULL)
-    {
-        perror("Erro ao abrir o arquivo de índice");
-        exit(EXIT_FAILURE);
-    }
-    return arquivo;
-}
-
 no_btree btree_ler_no(FILE *arquivo, int rrn)
 {
     no_btree no;
