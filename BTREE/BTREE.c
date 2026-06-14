@@ -1,11 +1,11 @@
 #include "BTREE.h"
 #include <stdlib.h>
 
-/* Leitura e escrita no arquivo de índice */
+/*Cabeçalho*/
 
-header_arvore_b arvore_b_ler_cabecalho(FILE *arquivo)
+header_btree btree_ler_cabecalho(FILE *arquivo)
 {
-    header_arvore_b cabecalho;
+    header_btree cabecalho;
 
     fseek(arquivo, 0, SEEK_SET);
     fread(&cabecalho.status, sizeof(char), 1, arquivo);
@@ -17,9 +17,9 @@ header_arvore_b arvore_b_ler_cabecalho(FILE *arquivo)
     return cabecalho;
 }
 
-no_arvore_b arvore_b_criar_no_vazio(void)
+no_btree btree_criar_no_vazio(void)
 {
-    no_arvore_b no;
+    no_btree no;
     no.removido = '0';
     no.proximo = -1;
     no.tipo_no = -1;
@@ -37,7 +37,7 @@ no_arvore_b arvore_b_criar_no_vazio(void)
     return no;
 }
 
-FILE *arvore_b_abrir_escrita(const char *nome_arquivo)
+FILE *btree_abrir_escrita(const char *nome_arquivo)
 {
     FILE *arquivo = fopen(nome_arquivo, "wb+");
     if (arquivo == NULL)
@@ -47,14 +47,14 @@ FILE *arvore_b_abrir_escrita(const char *nome_arquivo)
     }
 
     // inicializa o cabeçalho com valores padrão
-    header_arvore_b cabecalho = {
+    header_btree cabecalho = {
         .status = '0', // inconsistente até que seja fechado corretamente
         .no_raiz = -1,
         .topo = -1,
         .prox_RRN = 0,
         .nro_nos = 0};
 
-    // Escreve o cabeçalho inicial no arquivo
+    // escreve o cabeçalho inicial no arquivo
     fwrite(&cabecalho.status, sizeof(char), 1, arquivo);
     fwrite(&cabecalho.no_raiz, sizeof(int), 1, arquivo);
     fwrite(&cabecalho.topo, sizeof(int), 1, arquivo);
@@ -64,7 +64,7 @@ FILE *arvore_b_abrir_escrita(const char *nome_arquivo)
     return arquivo;
 }
 
-FILE *arvore_b_abrir_leitura(const char *nome_arquivo)
+FILE *btree_abrir_leitura(const char *nome_arquivo)
 {
     FILE *arquivo = fopen(nome_arquivo, "rb+");
     if (arquivo == NULL)
@@ -75,9 +75,9 @@ FILE *arvore_b_abrir_leitura(const char *nome_arquivo)
     return arquivo;
 }
 
-no_arvore_b arvore_b_ler_no(FILE *arquivo, int rrn)
+no_btree btree_ler_no(FILE *arquivo, int rrn)
 {
-    no_arvore_b no;
+    no_btree no;
 
     // posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
     fseek(arquivo, TAM_CABECALHO + (rrn * TAM_NO), SEEK_SET);
@@ -103,7 +103,7 @@ no_arvore_b arvore_b_ler_no(FILE *arquivo, int rrn)
     return no;
 }
 
-void arvore_b_atualizar_cabecalho(FILE *arquivo, header_arvore_b *cabecalho)
+void btree_atualizar_cabecalho(FILE *arquivo, header_btree *cabecalho)
 {
     if (arquivo == NULL || cabecalho == NULL)
         return;
@@ -116,12 +116,12 @@ void arvore_b_atualizar_cabecalho(FILE *arquivo, header_arvore_b *cabecalho)
     fwrite(&cabecalho->nro_nos, sizeof(int), 1, arquivo);
 }
 
-void arvore_b_escrever_no(FILE *arquivo, int rrn, no_arvore_b *no)
+void btree_escrever_no(FILE *arquivo, int rrn, no_btree *no)
 {
     // posiciona o ponteiro: Tamanho do cabecalho + (RRN * Tamanho do No)
     fseek(arquivo, TAM_CABECALHO + (rrn * TAM_NO), SEEK_SET);
 
-    // Escrita campo a campo obrigatoria conforme as restricoes
+    // escrita campo a campo obrigatoria conforme as restricoes
     fwrite(&no->removido, sizeof(char), 1, arquivo);
     fwrite(&no->proximo, sizeof(int), 1, arquivo);
     fwrite(&no->tipo_no, sizeof(int), 1, arquivo);
@@ -141,7 +141,7 @@ void arvore_b_escrever_no(FILE *arquivo, int rrn, no_arvore_b *no)
     }
 }
 
-void arvore_b_fechar(FILE *arquivo, header_arvore_b *cabecalho)
+void btree_fechar(FILE *arquivo, header_btree *cabecalho)
 {
     if (arquivo == NULL)
         return;

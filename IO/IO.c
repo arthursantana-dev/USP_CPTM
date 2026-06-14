@@ -101,7 +101,7 @@ void vetor_char_para_estacao(Estacao *estacao, char *vetor[], int num_campos)
         {
             if (estacao->nomeLinha != NULL)
             {
-                free(estacao->nomeLinha); // Libera o valor anterior ("")
+                free(estacao->nomeLinha); // libera o valor anterior ("")
             }
             estacao->tamNomeLinha = strlen(vetor[i + 1]);
             estacao->nomeLinha = (char *)malloc((estacao->tamNomeLinha + 1) * sizeof(char));

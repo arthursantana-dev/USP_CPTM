@@ -2,12 +2,12 @@
 
 // estacao_valores: valores == -2 -> ignorar e manter;
 // valores == -1 -> atualizar para NULO
-int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
+int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f_dados)
 {
 
     char buffer[TAM_REGISTRO];
 
-    Header *header = ler_header_do_arquivo(f);
+    Header *header = ler_header_do_arquivo(f_dados);
 
     if (header == NULL)
     {
@@ -23,7 +23,7 @@ int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
     Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
         // armazena a estação do arquivo na estação A
         escrever_buffer_na_estacao(buffer, ea);
@@ -40,8 +40,8 @@ int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
         {
             copiar_estacao(ea, estacao_valores);
             escrever_estacao_no_buffer(ea, buffer);
-            fseek(f, -TAM_REGISTRO, SEEK_CUR);
-            escrever_buffer_no_arquivo(f, buffer);
+            fseek(f_dados, -TAM_REGISTRO, SEEK_CUR);
+            escrever_buffer_no_arquivo(f_dados, buffer);
         }
 
         limpar_estacao(ea);
@@ -49,9 +49,9 @@ int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
 
     header->status = '1';
 
-    fseek(f, 0, SEEK_SET);
+    fseek(f_dados, 0, SEEK_SET);
 
-    escrever_header_no_arquivo(f, header);
+    escrever_header_no_arquivo(f_dados, header);
 
     free(header);
 
@@ -60,11 +60,11 @@ int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f)
     return EXIT_SUCCESS;
 }
 
-int UPDATE(int n, FILE *f)
+int UPDATE(int n, FILE *f_dados)
 {
     int err = 0;
 
-    if (f == NULL)
+    if (f_dados == NULL)
     {
         mostrar_erro();
         return EXIT_FAILURE;
@@ -86,7 +86,7 @@ int UPDATE(int n, FILE *f)
         ler_input_para_estacao_de_busca(estacao_busca);
         ler_input_para_estacao_de_busca(estacao_valores);
 
-        err = crud_update(estacao_busca, estacao_valores, f);
+        err = crud_update(estacao_busca, estacao_valores, f_dados);
 
         limpar_estacao(estacao_busca);
         limpar_estacao(estacao_valores);

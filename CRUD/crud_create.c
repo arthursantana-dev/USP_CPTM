@@ -1,5 +1,4 @@
 #include "CRUD.h"
-#include "../BTREE/BTREE.h"
 
 int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
 {
@@ -25,10 +24,10 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
 
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
 
-    // estação inconsistente: status = '0' no header, e só é setado para '1' ao final da criação do arquivo
-    Header header = {'0', -1, 0, 0, 0};
+    // estação inconsistente: status = '0' no header_dados, e só é setado para '1' ao final da criação do arquivo
+    Header header_dados = {'0', -1, 0, 0, 0};
 
-    escrever_header_no_arquivo(bin, &header);
+    escrever_header_no_arquivo(bin, &header_dados);
 
     InfoParesEstacoes info_pares_estacoes;
     inicializar_pares(&info_pares_estacoes);
@@ -92,12 +91,12 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
     }
 
     fseek(bin, 0, SEEK_SET);
-    header.status = '1';
-    header.nroParesEstacao = info_pares_estacoes.nroPares;
-    header.proxRRN = contador_estacoes;
-    header.nroEstacoes = set_estacoes->tamanho;
+    header_dados.status = '1';
+    header_dados.nroParesEstacao = info_pares_estacoes.nroPares;
+    header_dados.proxRRN = contador_estacoes;
+    header_dados.nroEstacoes = set_estacoes->tamanho;
 
-    escrever_header_no_arquivo(bin, &header);
+    escrever_header_no_arquivo(bin, &header_dados);
 
     destruir_pares(&info_pares_estacoes);
 
@@ -114,24 +113,24 @@ int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario)
 }
 
 
-int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
+int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_btree){
     FILE* bin = fopen(nome_arquivo_binario, "rb");
 
     if(bin == NULL){
         return EXIT_FAILURE;
     }
 
-    FILE* arquivo_arvore_b = arvore_b_abrir_escrita(nome_arquivo_arvore_b);
+    FILE* arquivo_btree = btree_abrir_escrita(nome_arquivo_btree);
 
-    if(arquivo_arvore_b == NULL){
+    if(arquivo_btree == NULL){
         fclose(bin);
         return EXIT_FAILURE;
     }
 
-    header_arvore_b header_b = arvore_b_ler_cabecalho(arquivo_arvore_b);
+    header_btree header_b = btree_ler_cabecalho(arquivo_btree);
 
     header_b.status = '0';
-    arvore_b_atualizar_cabecalho(arquivo_arvore_b, &header_b);
+    btree_atualizar_cabecalho(arquivo_btree, &header_b);
 
     char* buffer = criar_buffer();
 
@@ -147,6 +146,7 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
 
         removido = escrever_buffer_na_estacao(buffer, estacao);
 
+        // pula registros apagados para que não façam parte do índice
         if(removido == 1){
             limpar_estacao(estacao);
             removido = 0;
@@ -156,9 +156,10 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
 
         // imprimir_estacao(estacao);
 
+        // calcula a posição física exata da chave antes de enviá-la para a árvore
         int byteoffset = TAM_HEADER + (RRN * TAM_REGISTRO);
 
-        arvore_b_inserir(arquivo_arvore_b, &header_b, estacao->codEstacao, byteoffset);
+        btree_inserir(arquivo_btree, &header_b, estacao->codEstacao, byteoffset);
 
         limpar_estacao(estacao);
 
@@ -166,9 +167,9 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
     }
 
     header_b.status = '1';
-    arvore_b_atualizar_cabecalho(arquivo_arvore_b, &header_b);
+    btree_atualizar_cabecalho(arquivo_btree, &header_b);
 
-    arvore_b_fechar(arquivo_arvore_b, &header_b);
+    btree_fechar(arquivo_btree, &header_b);
 
     fclose(bin);
 
@@ -176,7 +177,7 @@ int CREATE_INDEX(char *nome_arquivo_binario, char* nome_arquivo_arvore_b){
 
     free(buffer);
 
-    BinarioNaTela(nome_arquivo_arvore_b);
+    BinarioNaTela(nome_arquivo_btree);
 
     return EXIT_SUCCESS;
 }

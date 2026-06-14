@@ -20,9 +20,13 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     estacao->codLinhaIntegra = codLinhaIntegra;
     estacao->codEstacaoIntegra = codEstacaoIntegra;
     estacao->tamNomeEstacao = strlen(nomeEstacao);
-    estacao->nomeEstacao = strdup(nomeEstacao);
+
+    if (estacao->tamNomeEstacao > 0)
+        estacao->nomeEstacao = strdup(nomeEstacao);
+
     estacao->tamNomeLinha = strlen(nomeLinha);
-    estacao->nomeLinha = strdup(nomeLinha);
+    if (estacao->tamNomeLinha > 0)
+        estacao->nomeLinha = strdup(nomeLinha);
 
     return estacao;
 }
@@ -116,7 +120,7 @@ void destruir_estacao(Estacao *estacao)
     }
 }
 
-// Diferentemente do destruir_estacao, não libera a struct
+// diferentemente do destruir_estacao, não libera a struct
 void limpar_estacao(Estacao *estacao)
 {
     if (estacao != NULL)
@@ -331,31 +335,33 @@ int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
     return 0;
 }
 
-void escrever_buffer_no_arquivo(FILE *f, char *buffer)
+void escrever_buffer_no_arquivo(FILE *f_dados, char *buffer)
 {
-    fwrite(buffer, sizeof(char), TAM_REGISTRO, f);
+    fwrite(buffer, sizeof(char), TAM_REGISTRO, f_dados);
 }
 
-void atualizar_nros_estacoes_no_header(FILE *f){
-    Header *header = ler_header_do_arquivo(f);
-    header->status = '0';
-    escrever_header_no_arquivo(f, header);
+void atualizar_nros_estacoes_no_header(FILE *f_dados)
+{
+    Header *header_dados = ler_header_do_arquivo(f_dados);
+    header_dados->status = '0';
+
+    escrever_header_no_arquivo(f_dados, header_dados);
 
     // auxiliares
     Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
     InfoParesEstacoes info_pares_estacoes;
-    
+
     inicializar_pares(&info_pares_estacoes);
 
-    fseek(f, TAM_HEADER, SEEK_SET);
+    fseek(f_dados, TAM_HEADER, SEEK_SET);
 
     char buffer[TAM_REGISTRO];
 
     int numero_estacoes = 0;
 
     // contagem de número de estações únicas e pares válidos
-    while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
+    while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
         escrever_buffer_na_estacao(buffer, estacao);
 
@@ -363,7 +369,6 @@ void atualizar_nros_estacoes_no_header(FILE *f){
         if (estacao->removido == '1')
         {
             limpar_estacao(estacao);
-            imprimir_estacao(estacao);
             continue;
         }
 
@@ -386,15 +391,15 @@ void atualizar_nros_estacoes_no_header(FILE *f){
         limpar_estacao(estacao);
     }
 
-    header->status = '1';
-    header->nroEstacoes = set_estacoes->tamanho;
-    header->nroParesEstacao = info_pares_estacoes.nroPares;
+    header_dados->status = '1';
+    header_dados->nroEstacoes = set_estacoes->tamanho;
+    header_dados->nroParesEstacao = info_pares_estacoes.nroPares;
 
-    escrever_header_no_arquivo(f, header);
+    escrever_header_no_arquivo(f_dados, header_dados);
     destruir_set_estacoes(set_estacoes);
     destruir_pares(&info_pares_estacoes);
 
-    free(header);
+    free(header_dados);
 
     destruir_estacao(estacao);
 }

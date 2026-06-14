@@ -6,10 +6,10 @@ SRCS = programaTrab.c \
 	Header/Header.c \
 	EstruturasAuxiliares/SetNomes.c \
 	EstruturasAuxiliares/ParEstacoes.c \
-	BTREE/BTREE.c \
 	BTREE/btree_busca.c \
 	BTREE/btree_insercao.c \
 	BTREE/btree_remocao.c \
+	BTREE/BTREE.c \
 	IO/IO.c \
 	IO/misc.c \
 	IO/parser.c \
@@ -40,6 +40,9 @@ truncate: clean
 v:
 	valgrind --leak-check=yes ./programaTrab
 
+vv: 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./programaTrab < v.in
+
 clean:
 	rm -f $(OBJS) $(EXEC)
 c:
@@ -67,4 +70,4 @@ ii:
 	./programaTrab < insert_i.in
 
 zip:
-	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" 
+	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" -x "*.in" 
