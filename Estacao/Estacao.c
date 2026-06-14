@@ -1,35 +1,9 @@
 #include "Estacao.h"
 #include "../EstruturasAuxiliares/EstruturasAuxiliares.h"
 
-/*cria estação normal: campos iniciados com 0 serão convertidos em -1 (nulos)*/
-Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
-{
-    Estacao *estacao = (Estacao *)malloc(sizeof(Estacao));
-
-    if (estacao == NULL)
-    {
-        return NULL;
-    }
-
-    estacao->removido = '0';
-    estacao->proximo = -1;
-    estacao->codEstacao = codEstacao;
-    estacao->codLinha = codLinha;
-    estacao->codProxEstacao = codProxEstacao;
-    estacao->distProxEstacao = distProxEstacao;
-    estacao->codLinhaIntegra = codLinhaIntegra;
-    estacao->codEstacaoIntegra = codEstacaoIntegra;
-    estacao->tamNomeEstacao = strlen(nomeEstacao);
-    estacao->nomeEstacao = nomeEstacao;
-    estacao->tamNomeLinha = strlen(nomeLinha);
-    estacao->nomeLinha = nomeLinha;
-
-    return estacao;
-}
-
-/*cria estação com campos de busca definidos como nulos igual a -1, e 0 para campos que não devem ser considerados para a busca*/
 Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
 {
+    // cria estação com campos de busca definidos como nulos igual a -1, e -2 para campos que não devem ser considerados para a busca
     Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
 
     if (estacao == NULL)
@@ -53,65 +27,41 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     return estacao;
 }
 
-// comparar estações — ea é estação de busca (campos 0 são desconsiderados; -1 são escolhidos para serem nulos)
 int comparar_estacoes(Estacao *ea, Estacao *eb)
 {
-    // printf("codEstacao\n");
+    // estação A é estação de busca (campos -2 são desconsiderados; -1 são escolhidos para serem nulos)
+    // estação B é a estação do arquivo
+    // se um campo não é desconsiderado e é diferente, retorna 0 (não é a estação que procura)
+
     if (ea->codEstacao != -2 && ea->codEstacao != eb->codEstacao)
         return 0;
-    // printf("codLinha = %d\n", ea->codLinha);
 
     if (ea->codLinha != -2 && ea->codLinha != eb->codLinha)
         return 0;
-    // printf("codProxEstacao\n");
 
     if (ea->codProxEstacao != -2 && ea->codProxEstacao != eb->codProxEstacao)
         return 0;
-    // printf("distProxEstacao\n");
 
     if (ea->distProxEstacao != -2 && ea->distProxEstacao != eb->distProxEstacao)
         return 0;
-    // printf("codLinhaIntegra\n");
 
     if (ea->codLinhaIntegra != -2 && ea->codLinhaIntegra != eb->codLinhaIntegra)
         return 0;
-    // printf("codEstacaoIntegra\n");
 
     if (ea->codEstacaoIntegra != -2 && ea->codEstacaoIntegra != eb->codEstacaoIntegra)
         return 0;
-    // printf("tamNomeEstacao\n");
-    // printf("%d (%s) %d (%s)\n", ea->tamNomeEstacao, ea->nomeEstacao, eb->tamNomeEstacao, eb->nomeEstacao);
 
     if (ea->tamNomeEstacao != 0 && ea->tamNomeEstacao != eb->tamNomeEstacao)
         return 0;
-    // printf("tamNomeLinha\n");
 
     if (ea->tamNomeLinha != 0 && ea->tamNomeLinha != eb->tamNomeLinha)
         return 0;
-    // printf("nomeEstacao\n");
 
     if (ea->tamNomeEstacao != 0 && strcmp(ea->nomeEstacao, eb->nomeEstacao) != 0)
         return 0;
-    // printf("nomeLinha\n");
 
     if (ea->tamNomeLinha != 0 && strcmp(ea->nomeLinha, eb->nomeLinha) != 0)
         return 0;
-
-    // printf("ea: \n");
-
-    // if(ea->tamNomeLinha != 0){
-    //     printf("-----------------------------\n");
-    //     printf("codEstacao: %d\n", ea->codEstacao);
-    //     printf("nomeEstacao: %s\n", ea->nomeEstacao);
-    //     printf("codLinha: %d\n", ea->codLinha);
-    //     printf("nomeLinha: %s\n", ea->nomeLinha);
-    //     printf("codProxEstacao: %d\n", ea->codProxEstacao);
-    //     printf("distProxEstacao: %d\n", ea->distProxEstacao);
-    //     printf("codLinhaIntegra: %d\n", ea->codLinhaIntegra);
-    //     printf("codEstacaoIntegra: %d\n", ea->codEstacaoIntegra);
-    // }
-
-    // printf("Encontrou\n");
 
     return 1;
 }
@@ -187,6 +137,7 @@ void limpar_estacao(Estacao *estacao)
 
 void set_valores_estacao_para_busca(Estacao *estacao)
 {
+    // cria uma estação de busca resetada
     estacao->codEstacao = -2;
     estacao->codLinha = -2;
     estacao->codProxEstacao = -2;
@@ -209,7 +160,7 @@ void set_valores_estacao_para_busca(Estacao *estacao)
 
 void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra)
 {
-
+    // setter para estação
     estacao->codEstacao = codEstacao == -2 ? -1 : codEstacao;
     estacao->codLinha = codLinha == -2 ? -1 : codLinha;
     estacao->codProxEstacao = codProxEstacao == -2 ? -1 : codProxEstacao;
@@ -259,7 +210,7 @@ char *criar_buffer()
 
 int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
 {
-    // escrever
+    // escrever os campos da estação buffer
     int offset = 0;
 
     memset(buffer, CHAR_LIXO, TAM_REGISTRO);
@@ -293,8 +244,8 @@ int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
 }
 
 int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
-{
-
+{   
+    // escreve os dados do buffer na estrutura de estação
     int offset = 0;
     char removido;
     int proximo;
@@ -390,7 +341,8 @@ void atualizar_nros_estacoes_no_header(FILE *f){
     header->status = '0';
     escrever_header_no_arquivo(f, header);
 
-    Estacao *estacao = criar_estacao(0, "", 0, "", 0, 0, 0, 0);
+    // auxiliares
+    Estacao *estacao = (Estacao *)calloc(1, sizeof(Estacao));
     SetNomesEstacoes *set_estacoes = criar_set_estacoes();
     InfoParesEstacoes info_pares_estacoes;
     

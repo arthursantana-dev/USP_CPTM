@@ -25,20 +25,6 @@
 	} Estacao;
 
 	/**
-	 * @brief Instancia e inicializa uma estrutura Estacao padrão; campos int com valor 0 são convertidos em nulos (-1).
-	 * @param codEstacao Código da estação.
-	 * @param nomeEstacao Nome da estação (string).
-	 * @param codLinha Código da linha.
-	 * @param nomeLinha Nome da linha (string).
-	 * @param codProxEstacao Código da próxima estação.
-	 * @param distProxEstacao Distância para a próxima estação.
-	 * @param codLinhaIntegra Código da linha de integração.
-	 * @param codEstacaoIntegra Código da estação de integração.
-	 * @return Retorna um ponteiro para a nova Estacao alocada na memória (malloc).
-	 */
-	Estacao *criar_estacao(int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra);
-
-	/**
 	 * @brief Instancia e inicializa uma estrutura Estacao configurada estritamente para servir como objeto de busca, onde 0 significa ignorar o campo e -1 significa buscar por valor nulo.
 	 * @param codEstacao Código da estação para busca.
 	 * @param nomeEstacao Nome da estação para busca.

@@ -2,7 +2,7 @@
 
 int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
 {
-    // imprimir_estacao(estacao_selecao);
+    // verificações iniciais
     char buffer[TAM_REGISTRO];
 
     Header *header = ler_header_do_arquivo(f);
@@ -29,8 +29,8 @@ int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
 
     Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
+    // fluxo separado para codEstação (se achar, para a busca)
     if(estacao_selecao->codEstacao != -2){
-        // printf("entrei 1\n");
         int offset = arvore_b_buscar(fab, &header_b, estacao_selecao->codEstacao);
         if(offset == -1){
             printf("Registro inexistente.\n");
@@ -40,14 +40,13 @@ int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
             fread(buffer, TAM_REGISTRO, 1, f);
 
             escrever_buffer_na_estacao(buffer, ea);
-            // imprimir_estacao(ea);
-
             if (ea->removido == '1')
             {
                 printf("Registro inexistente.\n");
             }
             else
             {
+                // verificando se os outros campos batem
                 if(comparar_estacoes(estacao_selecao, ea)){
                     imprimir_estacao(ea);
                 }
@@ -64,7 +63,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
 
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        // Tecnicamente, ea foi lido
+        // ea foi lido no fread do while
         escrever_buffer_na_estacao(buffer, ea);
 
         if (ea->removido == '1')
@@ -73,6 +72,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f, FILE *fab)
             continue;
         }
 
+        // se ea corresponde a busca, imprime
         if (comparar_estacoes(estacao_selecao, ea))
         {
             imprimir_estacao(ea);
@@ -120,9 +120,9 @@ int SELECT_ALL(FILE *f)
 
     Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
 
+    // iteração no arquivo e impressão de todas as estações
     while (fread(buffer, TAM_REGISTRO, 1, f) == 1)
     {
-        
         escrever_buffer_na_estacao(buffer, ea);
         if (ea->removido == '1')
         {
