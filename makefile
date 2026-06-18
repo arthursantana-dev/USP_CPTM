@@ -18,6 +18,7 @@ SRCS = programaTrab.c \
 	CRUD/crud_insert.c \
 	CRUD/crud_update.c \
 	CRUD/crud_select.c \
+	CRUD/crud_order_by.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -68,6 +69,9 @@ di:
 
 ii:
 	./programaTrab < insert_i.in
+
+oi: 
+	./programaTrab < order_by.in
 
 zip:
 	zip -r t.zip . -x "*.git*" -x "testes/*" -x "Makefile" -x "*.zip" -x "*.bin" -x "*.csv" -x "*.in" 

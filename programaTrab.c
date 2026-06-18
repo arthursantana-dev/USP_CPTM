@@ -27,7 +27,12 @@
 	7. CREATE INDEX - Santana
 	8. SELECT WHERE - Martins
 	9. INSERT INTO - Martins
-	10.DELETE - Santana
+   10. DELETE - Santana
+
+   11. JOIN (N^2) - Martins
+   12. JOIN (Nlog_4(N)) - Martins
+   13. ORDER BY - Santana
+   14. SORT-MERGE-JOIN - Santana
 
 	Obs.:
 
@@ -50,6 +55,9 @@ int main()
 
 	char nome_arquivo_binario[MAX_TAM_NOME];
 	char nome_arquivo_btree[MAX_TAM_NOME];
+	char nome_arquivo_ordenado[MAX_TAM_NOME];
+
+	char campo_ordenacao[MAX_TAM_NOME];
 
 	int n;
 
@@ -153,6 +161,18 @@ int main()
 		err = DELETE(n, f_dados, f_ab);
 
 		break;
+
+	case 13: 
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", campo_ordenacao);
+		scanf("%s", nome_arquivo_ordenado);
+
+		f_dados = fopen(nome_arquivo_binario, "rb");
+
+		err = ORDER_BY(f_dados, campo_ordenacao, nome_arquivo_ordenado);
+
+		break;
+
 	}
 
 	if (f_dados != NULL)

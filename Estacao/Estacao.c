@@ -70,6 +70,33 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
     return 1;
 }
 
+int _comparar_cod_estacao(const void *a, const void *b)
+{
+    Estacao *ea = *(Estacao **)a;
+    Estacao *eb = *(Estacao **)b;
+
+    return ea->codEstacao - eb->codEstacao;
+}
+
+int _comparar_cod_prox_estacao(const void *a, const void *b)
+{
+    Estacao *ea = *(Estacao **)a;
+    Estacao *eb = *(Estacao **)b;
+
+    return ea->codProxEstacao - eb->codProxEstacao;
+}
+
+int ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao)
+{
+    if (strcmp(campo_ordenacao, "codProxEstacao") == 0)
+    {
+        qsort(estacoes, numero_estacoes, sizeof(Estacao*), _comparar_cod_prox_estacao);
+        return;
+    }
+    qsort(estacoes, numero_estacoes, sizeof(Estacao*), _comparar_cod_estacao);
+    return;
+}
+
 void copiar_estacao(Estacao *estacao, Estacao *novos_valores)
 {
     if (novos_valores->codEstacao != -2)
@@ -248,7 +275,7 @@ int escrever_estacao_no_buffer(Estacao *estacao, char *buffer)
 }
 
 int escrever_buffer_na_estacao(char *buffer, Estacao *estacao)
-{   
+{
     // escreve os dados do buffer na estrutura de estação
     int offset = 0;
     char removido;

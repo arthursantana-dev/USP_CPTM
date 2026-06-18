@@ -8,7 +8,11 @@
     #include "../Header/Header.h"
     #include "../BTREE/BTREE.h"
 
-    int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario);
+    /* funções do trabalho 2 */
+
+    int ORDER_BY (FILE *f_dados, char* campo_ordenacao, char* nome_arquivo_ordenado);
+
+    /* funções do trabalho 1 */
 
     int DELETE(int n, FILE *f_dados, FILE* f_ab);
 
@@ -25,9 +29,12 @@
 
     /* funções do trabalho introdutorio */
 
+    int CREATE(char *nome_arquivo_csv, char *nome_arquivo_binario);
+
     int SELECT_SEM_INDICE(int n, FILE *f_dados);
 
     int DELETE_SEM_INDICE(int n, FILE *f_dados);
-int INSERT_SEM_INDICE(FILE *f_dados);
+
+    int INSERT_SEM_INDICE(FILE *f_dados);
 
 #endif

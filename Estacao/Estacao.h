@@ -46,6 +46,8 @@
 	 */
 	int comparar_estacoes(Estacao *ea, Estacao *eb);
 
+	int ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao);
+
 	/**
 	 * @brief Atualiza in-place os dados de uma estação existente, substituindo apenas os campos explicitamente informados em novos_valores.
 	 * @param estacao Ponteiro para a estação original que terá seus dados editados.
