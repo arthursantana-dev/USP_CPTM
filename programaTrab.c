@@ -59,6 +59,11 @@ int main()
 
 	char campo_ordenacao[MAX_TAM_NOME];
 
+	char campo_juncao_A[MAX_TAM_NOME];
+	char campo_juncao_B[MAX_TAM_NOME];
+
+	char nome_arquivo_binario_B[MAX_TAM_NOME];
+
 	int n;
 
 	scanf("%d", &opcode);
@@ -173,6 +178,16 @@ int main()
 
 		break;
 
+	case 14:
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", campo_juncao_A);
+		scanf("%s", nome_arquivo_binario_B);
+		scanf("%s", campo_juncao_B);
+
+		err = SORT_MERGE_JOIN(nome_arquivo_binario, nome_arquivo_binario_B);
+
+		break;
+
 	}
 
 	if (f_dados != NULL)
@@ -187,7 +202,7 @@ int main()
 		return 0;
 	}
 
-	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7 && opcode != 8)
+	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7 && opcode != 8 && opcode != 14)
 	{
 		BinarioNaTela(nome_arquivo_binario);
 	}

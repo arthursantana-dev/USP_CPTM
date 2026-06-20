@@ -46,7 +46,7 @@
 	 */
 	int comparar_estacoes(Estacao *ea, Estacao *eb);
 
-	int ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao);
+	void ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao);
 
 	/**
 	 * @brief Atualiza in-place os dados de uma estação existente, substituindo apenas os campos explicitamente informados em novos_valores.
@@ -56,6 +56,8 @@
 	void copiar_estacao(Estacao *estacao, Estacao *novos_valores);
 
 	void set_estacao(Estacao *estacao, int codEstacao, char *nomeEstacao, int codLinha, char *nomeLinha, int codProxEstacao, int distProxEstacao, int codLinhaIntegra, int codEstacaoIntegra);
+
+	void imprimir_join_estacoes(Estacao* estacao_A, Estacao* estacao_B);
 
 	/**
 	 * @brief Libera de forma segura toda a memória dinâmica (strings alocadas e struct) atrelada à estação.

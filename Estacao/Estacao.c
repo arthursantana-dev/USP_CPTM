@@ -86,7 +86,7 @@ int _comparar_cod_prox_estacao(const void *a, const void *b)
     return ea->codProxEstacao - eb->codProxEstacao;
 }
 
-int ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao)
+void ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao)
 {
     if (strcmp(campo_ordenacao, "codProxEstacao") == 0)
     {
@@ -137,6 +137,12 @@ void copiar_estacao(Estacao *estacao, Estacao *novos_valores)
         strcpy(estacao->nomeLinha, novos_valores->nomeLinha);
     }
 }
+
+
+void imprimir_join_estacoes(Estacao* estacao_A, Estacao* estacao_B){
+    printf("%d %s %s %d %s\n", estacao_A->codEstacao, estacao_A->nomeEstacao, estacao_A->nomeLinha, estacao_B->codEstacao, estacao_B->nomeEstacao);
+}
+
 
 void destruir_estacao(Estacao *estacao)
 {

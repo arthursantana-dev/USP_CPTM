@@ -12,6 +12,8 @@
 
     int ORDER_BY (FILE *f_dados, char* campo_ordenacao, char* nome_arquivo_ordenado);
 
+    int SORT_MERGE_JOIN(char* nome_arquivo_binario_A, char* nome_arquivo_binario_B);
+
     /* funções do trabalho 1 */
 
     int DELETE(int n, FILE *f_dados, FILE* f_ab);
