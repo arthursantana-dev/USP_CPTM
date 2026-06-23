@@ -9,6 +9,9 @@
     #include "../BTREE/BTREE.h"
 
     /* funções do trabalho 2 */
+    int NESTED_LOOP_JOIN(FILE *f_dados_A, char* campo_juncao_A, FILE *f_dados_B, char* campo_juncao_B);
+    
+    int SINGLE_LOOP_JOIN(FILE *f_dados, FILE *f_dados_B, FILE *f_ab);
 
     int ORDER_BY (FILE *f_dados, char* campo_ordenacao, char* nome_arquivo_ordenado);
 

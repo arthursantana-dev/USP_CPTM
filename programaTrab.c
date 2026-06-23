@@ -166,6 +166,28 @@ int main()
 		err = DELETE(n, f_dados, f_ab);
 
 		break;
+	
+	case 11:
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", campo_juncao_A);
+		scanf("%s", nome_arquivo_binario_B);
+		scanf("%s", campo_juncao_B);
+		f_dados = fopen(nome_arquivo_binario, "rb");
+		FILE* f_dados_b = fopen(nome_arquivo_binario_B, "rb");
+		err = NESTED_LOOP_JOIN(f_dados, campo_juncao_A, f_dados_b, campo_juncao_B);
+		break;
+
+	case 12:
+		scanf("%s", nome_arquivo_binario);
+		scanf("%s", campo_juncao_A);
+		scanf("%s", nome_arquivo_binario_B);
+		scanf("%s", campo_juncao_B);
+		scanf("%s", nome_arquivo_btree);
+		f_dados = fopen(nome_arquivo_binario, "rb");
+		f_dados_b = fopen(nome_arquivo_binario_B, "rb");
+		f_ab = fopen(nome_arquivo_btree, "rb");
+		err = SINGLE_LOOP_JOIN(f_dados, f_dados_b, f_ab);
+		break;
 
 	case 13: 
 		scanf("%s", nome_arquivo_binario);
@@ -202,7 +224,7 @@ int main()
 		return 0;
 	}
 
-	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7 && opcode != 8 && opcode != 14)
+	if (opcode != 1 && opcode != 2 && opcode != 3 && opcode != 7 && opcode != 8 && opcode!=11 && opcode != 12 && opcode != 14)
 	{
 		BinarioNaTela(nome_arquivo_binario);
 	}

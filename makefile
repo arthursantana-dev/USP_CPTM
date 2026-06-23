@@ -18,7 +18,8 @@ SRCS = programaTrab.c \
 	CRUD/crud_insert.c \
 	CRUD/crud_update.c \
 	CRUD/crud_select.c \
-	CRUD/crud_order_by.c
+	CRUD/crud_order_by.c \
+	CRUD/crud_join.c
 
 OBJS = $(SRCS:.c=.o)
 
