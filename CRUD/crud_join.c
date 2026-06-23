@@ -98,18 +98,18 @@ int NESTED_LOOP_JOIN(FILE *f_dados, char *campo_juncao_A, FILE *f_dados_B, char 
 
     fseek(f_dados, TAM_HEADER, SEEK_SET);
 
-    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-    Estacao *eb = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_a = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_b = (Estacao *)calloc(1, sizeof(Estacao));
 
     int encontrado = 0;
 
     // iteração no arquivo e impressão de todas as estações
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
-        escrever_buffer_na_estacao(buffer, ea);
-        if (ea->removido == '1')
+        escrever_buffer_na_estacao(buffer, estacao_a);
+        if (estacao_a->removido == '1')
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
 
@@ -117,42 +117,41 @@ int NESTED_LOOP_JOIN(FILE *f_dados, char *campo_juncao_A, FILE *f_dados_B, char 
         
         while(fread(buffer, TAM_REGISTRO, 1, f_dados_B) == 1)
         {
-            escrever_buffer_na_estacao(buffer, eb);
-            if (eb->removido == '1')
+            escrever_buffer_na_estacao(buffer, estacao_b);
+            if (estacao_b->removido == '1')
             {
-                limpar_estacao(eb);
+                limpar_estacao(estacao_b);
                 continue;
             }
 
-            _comparacao *compA = get_valor_chave(ea, campo_juncao_A);
-            _comparacao *compB = get_valor_chave(eb, campo_juncao_B);
+            _comparacao *compA = get_valor_chave(estacao_a, campo_juncao_A);
+            _comparacao *compB = get_valor_chave(estacao_b, campo_juncao_B);
 
             if (compA == NULL || compB == NULL)
             {
                 
                 free(compA);
                 free(compB);
-                destruir_estacao(ea);
-                destruir_estacao(eb);
-                printf("foi isso q aconteceu");
+                destruir_estacao(estacao_a);
+                destruir_estacao(estacao_b);
                 return EXIT_FAILURE;
             }
 
             if (comparar_valores(compA, compB))
             {
                 encontrado = 1;
-                imprimir_join_estacoes(ea, eb);
+                imprimir_join_estacoes(estacao_a, estacao_b);
             }
 
             free(compA);
             free(compB);
 
-            limpar_estacao(eb);
+            limpar_estacao(estacao_b);
         }
-        limpar_estacao(ea);
+        limpar_estacao(estacao_a);
     }
 
-    destruir_estacao(ea);
+    destruir_estacao(estacao_a);
     
     if(!encontrado)
     {
@@ -190,50 +189,50 @@ int SINGLE_LOOP_JOIN(FILE *f_dados, FILE *f_dados_B, FILE *f_ab)
 
     fseek(f_dados, TAM_HEADER, SEEK_SET);
 
-    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
-    Estacao *eb = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_a = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_b = (Estacao *)calloc(1, sizeof(Estacao));
 
     int encontrado = 0;
 
     // iteração no arquivo e impressão de todas as estações
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
-        escrever_buffer_na_estacao(buffer, ea);
-        if (ea->removido == '1')
+        escrever_buffer_na_estacao(buffer, estacao_a);
+        if (estacao_a->removido == '1')
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
 
-        int codEstacao = ea->codProxEstacao;
+        int codEstacao = estacao_a->codProxEstacao;
         if (codEstacao == -1)
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
         int byteoffset = btree_buscar(f_ab, &header_b, codEstacao);
         if (byteoffset == -1)
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
         fseek(f_dados_B, byteoffset, SEEK_SET);
         fread(buffer, TAM_REGISTRO, 1, f_dados_B);
-        escrever_buffer_na_estacao(buffer, eb);
-        if (eb->removido == '1')
+        escrever_buffer_na_estacao(buffer, estacao_b);
+        if (estacao_b->removido == '1')
         {
-            limpar_estacao(eb);
-            limpar_estacao(ea);
+            limpar_estacao(estacao_b);
+            limpar_estacao(estacao_a);
             continue;
         }
         encontrado = 1;
-        imprimir_join_estacoes(ea, eb);
-        limpar_estacao(eb);
-        limpar_estacao(ea);
+        imprimir_join_estacoes(estacao_a, estacao_b);
+        limpar_estacao(estacao_b);
+        limpar_estacao(estacao_a);
     }
 
-    destruir_estacao(ea);  
-    destruir_estacao(eb);
+    destruir_estacao(estacao_a);  
+    destruir_estacao(estacao_b);
 
     if(!encontrado)
     {

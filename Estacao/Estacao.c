@@ -31,40 +31,40 @@ Estacao *criar_estacao_para_busca(int codEstacao, char *nomeEstacao, int codLinh
     return estacao;
 }
 
-int comparar_estacoes(Estacao *ea, Estacao *eb)
+int comparar_estacoes(Estacao *estacao_a, Estacao *estacao_b)
 {
     // estação A é estação de busca (campos -2 são desconsiderados; -1 são escolhidos para serem nulos)
     // estação B é a estação do arquivo
     // se um campo não é desconsiderado e é diferente, retorna 0 (não é a estação que procura)
 
-    if (ea->codEstacao != -2 && ea->codEstacao != eb->codEstacao)
+    if (estacao_a->codEstacao != -2 && estacao_a->codEstacao != estacao_b->codEstacao)
         return 0;
 
-    if (ea->codLinha != -2 && ea->codLinha != eb->codLinha)
+    if (estacao_a->codLinha != -2 && estacao_a->codLinha != estacao_b->codLinha)
         return 0;
 
-    if (ea->codProxEstacao != -2 && ea->codProxEstacao != eb->codProxEstacao)
+    if (estacao_a->codProxEstacao != -2 && estacao_a->codProxEstacao != estacao_b->codProxEstacao)
         return 0;
 
-    if (ea->distProxEstacao != -2 && ea->distProxEstacao != eb->distProxEstacao)
+    if (estacao_a->distProxEstacao != -2 && estacao_a->distProxEstacao != estacao_b->distProxEstacao)
         return 0;
 
-    if (ea->codLinhaIntegra != -2 && ea->codLinhaIntegra != eb->codLinhaIntegra)
+    if (estacao_a->codLinhaIntegra != -2 && estacao_a->codLinhaIntegra != estacao_b->codLinhaIntegra)
         return 0;
 
-    if (ea->codEstacaoIntegra != -2 && ea->codEstacaoIntegra != eb->codEstacaoIntegra)
+    if (estacao_a->codEstacaoIntegra != -2 && estacao_a->codEstacaoIntegra != estacao_b->codEstacaoIntegra)
         return 0;
 
-    if (ea->tamNomeEstacao != 0 && ea->tamNomeEstacao != eb->tamNomeEstacao)
+    if (estacao_a->tamNomeEstacao != 0 && estacao_a->tamNomeEstacao != estacao_b->tamNomeEstacao)
         return 0;
 
-    if (ea->tamNomeLinha != 0 && ea->tamNomeLinha != eb->tamNomeLinha)
+    if (estacao_a->tamNomeLinha != 0 && estacao_a->tamNomeLinha != estacao_b->tamNomeLinha)
         return 0;
 
-    if (ea->tamNomeEstacao != 0 && strcmp(ea->nomeEstacao, eb->nomeEstacao) != 0)
+    if (estacao_a->tamNomeEstacao != 0 && strcmp(estacao_a->nomeEstacao, estacao_b->nomeEstacao) != 0)
         return 0;
 
-    if (ea->tamNomeLinha != 0 && strcmp(ea->nomeLinha, eb->nomeLinha) != 0)
+    if (estacao_a->tamNomeLinha != 0 && strcmp(estacao_a->nomeLinha, estacao_b->nomeLinha) != 0)
         return 0;
 
     return 1;
@@ -72,18 +72,18 @@ int comparar_estacoes(Estacao *ea, Estacao *eb)
 
 int _comparar_cod_estacao(const void *a, const void *b)
 {
-    Estacao *ea = *(Estacao **)a;
-    Estacao *eb = *(Estacao **)b;
+    Estacao *estacao_a = *(Estacao **)a;
+    Estacao *estacao_b = *(Estacao **)b;
 
-    return ea->codEstacao - eb->codEstacao;
+    return estacao_a->codEstacao - estacao_b->codEstacao;
 }
 
 int _comparar_cod_prox_estacao(const void *a, const void *b)
 {
-    Estacao *ea = *(Estacao **)a;
-    Estacao *eb = *(Estacao **)b;
+    Estacao *estacao_a = *(Estacao **)a;
+    Estacao *estacao_b = *(Estacao **)b;
 
-    return ea->codProxEstacao - eb->codProxEstacao;
+    return estacao_a->codProxEstacao - estacao_b->codProxEstacao;
 }
 
 void ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao)

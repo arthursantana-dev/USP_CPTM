@@ -44,7 +44,7 @@
 	 * @param eb Ponteiro para a estação "candidata", extraída do arquivo de dados.
 	 * @return Retorna 1 se a estação candidata satisfizer as condições de busca, ou 0 caso contrário.
 	 */
-	int comparar_estacoes(Estacao *ea, Estacao *eb);
+	int comparar_estacoes(Estacao *estacao_a, Estacao *estacao_b);
 
 	void ordenar_estacoes(Estacao* estacoes[], int numero_estacoes, char *campo_ordenacao);
 

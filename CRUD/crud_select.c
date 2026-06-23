@@ -25,7 +25,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
     fseek(f_dados, TAM_HEADER, SEEK_SET);
 
     int achou = 0;
-    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_a = (Estacao *)calloc(1, sizeof(Estacao));
 
     // prioriza a busca pelo índice caso a chave primária tenha sido informada
     if (estacao_selecao->codEstacao != -2)
@@ -42,18 +42,18 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
             fseek(f_dados, offset, SEEK_SET);
             fread(buffer, TAM_REGISTRO, 1, f_dados);
 
-            escrever_buffer_na_estacao(buffer, ea);
+            escrever_buffer_na_estacao(buffer, estacao_a);
 
-            if (ea->removido == '1')
+            if (estacao_a->removido == '1')
             {
                 printf("Registro inexistente.\n");
             }
             else
             {
                 // confirma se os demais parâmetros de busca não primários batem
-                if (comparar_estacoes(estacao_selecao, ea))
+                if (comparar_estacoes(estacao_selecao, estacao_a))
                 {
-                    imprimir_estacao(ea);
+                    imprimir_estacao(estacao_a);
                 }
                 else
                 {
@@ -62,7 +62,7 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
             }
         }
 
-        destruir_estacao(ea);
+        destruir_estacao(estacao_a);
         free(header_dados);
         return EXIT_SUCCESS;
     }
@@ -71,26 +71,26 @@ int crud_select(Estacao *estacao_selecao, FILE *f_dados, FILE *f_ab)
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
         // ea foi lido no fread do while
-        escrever_buffer_na_estacao(buffer, ea);
+        escrever_buffer_na_estacao(buffer, estacao_a);
 
         // filtra os registros logicamente removidos
-        if (ea->removido == '1')
+        if (estacao_a->removido == '1')
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
 
         // se ea corresponde a busca, imprime
-        if (comparar_estacoes(estacao_selecao, ea))
+        if (comparar_estacoes(estacao_selecao, estacao_a))
         {
-            imprimir_estacao(ea);
+            imprimir_estacao(estacao_a);
             achou = 1;
         }
 
-        limpar_estacao(ea);
+        limpar_estacao(estacao_a);
     }
 
-    destruir_estacao(ea);
+    destruir_estacao(estacao_a);
 
     if (!achou)
     {
@@ -126,24 +126,24 @@ int SELECT_ALL(FILE *f_dados)
 
     fseek(f_dados, TAM_HEADER, SEEK_SET);
 
-    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_a = (Estacao *)calloc(1, sizeof(Estacao));
 
     // iteração no arquivo e impressão de todas as estações
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
 
-        escrever_buffer_na_estacao(buffer, ea);
-        if (ea->removido == '1')
+        escrever_buffer_na_estacao(buffer, estacao_a);
+        if (estacao_a->removido == '1')
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
-        imprimir_estacao(ea);
+        imprimir_estacao(estacao_a);
 
-        limpar_estacao(ea);
+        limpar_estacao(estacao_a);
     }
 
-    destruir_estacao(ea);
+    destruir_estacao(estacao_a);
 
     free(header_dados);
     return 0;
@@ -204,31 +204,31 @@ int crud_select_sem_indice(Estacao *estacao_selecao, FILE *f_dados)
     fseek(f_dados, TAM_HEADER, SEEK_SET);
 
     int achou = 0;
-    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_a = (Estacao *)calloc(1, sizeof(Estacao));
 
     // varredura linear completa no arquivo de dados
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
-        escrever_buffer_na_estacao(buffer, ea);
+        escrever_buffer_na_estacao(buffer, estacao_a);
 
         // ignora registros logicamente apagados
-        if (ea->removido == '1')
+        if (estacao_a->removido == '1')
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
 
         // verifica se os parametros da struct coincidem com o registro
-        if (comparar_estacoes(estacao_selecao, ea))
+        if (comparar_estacoes(estacao_selecao, estacao_a))
         {
-            imprimir_estacao(ea);
+            imprimir_estacao(estacao_a);
             achou = 1;
         }
 
-        limpar_estacao(ea);
+        limpar_estacao(estacao_a);
     }
 
-    destruir_estacao(ea);
+    destruir_estacao(estacao_a);
 
     if (!achou)
     {

@@ -21,30 +21,30 @@ int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f_dados)
     // indo para o primeiro registro
     fseek(f_dados, TAM_HEADER, SEEK_SET);
 
-    Estacao *ea = (Estacao *)calloc(1, sizeof(Estacao));
+    Estacao *estacao_a = (Estacao *)calloc(1, sizeof(Estacao));
 
     while (fread(buffer, TAM_REGISTRO, 1, f_dados) == 1)
     {
         // armazena a estação do arquivo na estação A
-        escrever_buffer_na_estacao(buffer, ea);
+        escrever_buffer_na_estacao(buffer, estacao_a);
 
         // se logicamente removido, pula para o próximo registro
-        if (ea->removido == '1')
+        if (estacao_a->removido == '1')
         {
-            limpar_estacao(ea);
+            limpar_estacao(estacao_a);
             continue;
         }
 
         // se a estação A for correspondente à busca, atualiza os valores
-        if (comparar_estacoes(estacao_busca, ea))
+        if (comparar_estacoes(estacao_busca, estacao_a))
         {
-            copiar_estacao(ea, estacao_valores);
-            escrever_estacao_no_buffer(ea, buffer);
+            copiar_estacao(estacao_a, estacao_valores);
+            escrever_estacao_no_buffer(estacao_a, buffer);
             fseek(f_dados, -TAM_REGISTRO, SEEK_CUR);
             escrever_buffer_no_arquivo(f_dados, buffer);
         }
 
-        limpar_estacao(ea);
+        limpar_estacao(estacao_a);
     }
 
     header->status = '1';
@@ -55,7 +55,7 @@ int crud_update(Estacao *estacao_busca, Estacao *estacao_valores, FILE *f_dados)
 
     free(header);
 
-    destruir_estacao(ea);
+    destruir_estacao(estacao_a);
 
     return EXIT_SUCCESS;
 }
